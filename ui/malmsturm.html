@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-<html ng-app="malmsturm" lang="de">
+<html ng-app="openrole" lang="de">
   <head>
-      <title>Malmsturm Charakter Generator</title>
+      <title>Open Role - Malmsturm</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <!-- Latest compiled and minified CSS -->
       <link rel="stylesheet" href="css/bootstrap.min.css">
-      <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">-->
-      <!-- Optional theme -->
       <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-      <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">-->
-
       <link rel="stylesheet" href="css/bootstrap-notify.css">
       <link rel="stylesheet" href="css/openrole.css">
       <style>
@@ -37,23 +32,11 @@
       }
 
       </style>
-      <script src="js/lib/jquery-1.11.0.min.js"></script>
-      <script src="js/lib/bootstrap.min.js"></script>
-      <!-- Latest compiled and minified JavaScript -->
-      <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>-->
-      <script src="js/lib/jquery-ui.min.js"></script>
-      <script src="js/lib/jquery.ui.touch-punch.min.js"></script>
-      <script src="js/lib/bootstrap-notify.js"></script>
-      <script src="js/lib/angular.min.js"></script>
-      <script src="js/lib/angular-resource.min.js"></script>
-      <script src="js/lib/angular-dragdrop.min.js"></script>
-      <script src="js/lib/jspdf.min.js"></script>
-      <!-- <script src="js/lib/dev/jspdf.source.js"></script>-->
 
-      <script src="js/malmsturm/app.js"></script>
   </head>
 <body>
     <div ng-controller="MalmsturmCtrl as ctrl">
+        <div id="top-layer" ng-hide="initialized"><span class="badge">Loading</span></div>
         <div ng-include="'content/nav.html'"></div>
 
         <div class="container">
@@ -159,4 +142,18 @@
         <div class='notifications bottom-left'></div>
   </div>
   </body>
+  <script src="js/lib/jquery-1.11.0.min.js"></script>
+  <script src="js/lib/bootstrap.min.js"></script>
+  <script src="js/lib/jquery-ui.min.js"></script>
+  <script src="js/lib/jquery.ui.touch-punch.min.js"></script>
+  <script src="js/lib/bootstrap-notify.js"></script>
+  <script src="js/lib/angular.min.js"></script>
+  <script src="js/lib/angular-resource.min.js"></script>
+  <script src="js/lib/angular-dragdrop.min.js"></script>
+  <script src="js/lib/angular-cookies.min.js"></script>
+  <script src="js/lib/angular-local-storage.min.js"></script>
+  <script src="js/lib/jspdf.min.js"></script>
+
+  <script src="js/openrole/common.js"></script>
+  <script src="js/malmsturm/MalmsturmCtrl.js"></script>
 </html>
