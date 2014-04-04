@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module('openrole', ['ngDragDrop', 'LocalStorageModule']);
+var app = angular.module('openrole');
 
 app.config(['localStorageServiceProvider', function(localStorageServiceProvider){
     localStorageServiceProvider.setPrefix('openroleStorage');
@@ -21,8 +21,8 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         $scope.loggedin = ($http.defaults.headers.common["X-Openrole-Token"] != null);
 
         // init base config
-        $http.get($rootScope.serviceHost + '/config').then(function(response) {
-            $rootScope.GLOBALCONFIG = angular.fromJson(response.data);
+        $http.get($rootScope.serviceHost + '/config').then(function(reponse) {
+            $rootScope.GLOBALCONFIG = angular.fromJson(reponse.data);
             $rootScope.initialized = true;
         });
 
@@ -49,3 +49,31 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
     }]
 
     );
+
+// locale controller
+app.controller('LocaleCtrl', function ($scope, $translate, localStorageService) {
+
+    $scope.changeLanguage = function (key) {
+        console.log("changing language to "+key+ " preferred ="+$translate.preferredLanguage() + " current stored="+localStorageService.get("lang"));
+        $translate.use(key);
+        if (key == $translate.preferredLanguage()) {
+            // remove entry
+            console.log("removing local storage value");
+            localStorageService.remove("lang");
+        } else {
+            // store
+            localStorageService.add("lang", key);
+        }
+    };
+    // init the stored language
+    if (localStorageService.get("lang") != null) {
+        console.log("using stored language="+localStorageService.get("lang"));
+        $scope.changeLanguage(localStorageService.get("lang"));
+    }
+});
+
+// global init for all
+app.config(function ($translateProvider) {
+  $translateProvider.fallbackLanguage('de');
+  $translateProvider.determinePreferredLanguage();
+});

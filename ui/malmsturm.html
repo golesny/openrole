@@ -43,10 +43,10 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Spielerfigur:</h3>
+                    <h3 class="panel-title" translate="TITLE_CHARACTER"></h3>
                 </div>
                 <div class="panel-body">
-                    <input type="text" ng-model="charactername" class="form-control" placeholder="Name">
+                    <input type="text" ng-model="charactername" class="form-control" placeholder="{{'CHARACTERNAME' |translate}}">
                 </div>
             </div>
 
@@ -59,7 +59,6 @@
                         <div class="list-inline" style="padding-left: 8px;">
                         <span class="badge or-skill-lbl">+{{CONFIG.skillpyramidstartvalue - $index}} {{CONFIG.stufenleiter[CONFIG.skillpyramidstartvalue - $index]}}</span>
                         <span ng-repeat="item in list" data-drop="true"
-                              style="padding: 8px;"
                                ng-model='list' jqyoui-droppable="{index: {{$index}}, onDrop:'ctrl.dropCallback(item, $index)'}">
                           <span class="label label-default or-skill-box"
                                 ng-model="list"
@@ -153,7 +152,9 @@
   <script src="js/lib/angular-cookies.min.js"></script>
   <script src="js/lib/angular-local-storage.min.js"></script>
   <script src="js/lib/jspdf.min.js"></script>
-
+  <script src="js/lib/angular-translate.min.js"></script>
+  <script src="js/openrole/dependencies.js"></script>
+  <script src="js/malmsturm/locale.js"></script>
   <script src="js/openrole/common.js"></script>
   <script src="js/malmsturm/MalmsturmCtrl.js"></script>
 </html>

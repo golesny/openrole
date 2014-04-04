@@ -18,3 +18,10 @@ img { max-width: 100%; height: auto}
     z-index: 99999;
     cursor: wait;
 }
+
+.hideUninitalized {
+    visibility: hidden;
+}
+.hideUninitalized[is-init="true"] {
+    visibility: inherit;
+}
