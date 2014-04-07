@@ -2,5 +2,6 @@
 var app = angular.module('openrole',
     ['ngDragDrop',
      'LocalStorageModule',
-     'pascalprecht.translate'
+     'pascalprecht.translate',
+     'ui.bootstrap'
     ]);

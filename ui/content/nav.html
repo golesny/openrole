@@ -35,10 +35,14 @@
                     <input type="text" class="form-control" placeholder="e-mail" ng-model="email">
                     <input type="password" class="form-control" placeholder="passwort" ng-model="pw">
                     <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-log-in"></span> Anmelden</button>
-                    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-log-in"></span> Registrieren</button>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-link" ng-click="registerDialog()"><span class="glyphicon glyphicon-edit"></span> Registrieren</button>
                 </div>
-            </form>
-          </div>
+              </form>
+
+          </div><!-- LoginCtrl -->
+
+
 
           <div ng-controller="LocaleCtrl">
             <ul class="nav navbar-nav">
@@ -52,4 +56,48 @@
           </div>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
+
 </nav>
+
+<!-- Modal Registration dialog -->
+<div ng-controller="LoginCtrl">
+    <script type="text/ng-template" id="registration.html">
+        <form class="form-horizontal">
+        <div class="modal-header">
+            <h3>Registrierung</h3>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger" ng-show="errorExists()">{{registerError}}</div>
+            <div class="form-group" >
+                <label class="control-label col-xs-4">E-Mail</label>
+                <div class="col-xs-8">
+                    <input type="text" class="form-control" placeholder="e-mail" ng-model="email">
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="control-label col-xs-4">Passwort</label>
+                <div class="col-xs-8">
+                    <input type="password" class="form-control" placeholder="passwort" ng-model="pw">
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="control-label col-xs-4">Passwort (wiederholen)</label>
+                <div class="col-xs-8">
+                    <input type="password" class="form-control" placeholder="passwort" ng-model="pwrepeat">
+                </div>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control">
+Die E-Mail und das Passwort werden unumkehrbar verschlüsselt (SHA1 Hash) abgespeichert und können daher nicht wiederhergestellt werden. Nur zum Login und für die Passwort vergessen Funktion wird die E-Mail übertragen.
+Die E-Mail wird nie geprüft, nicht weitergegeben und wird in keinster Weise weiterverwendet außer für die Passwort vergessen Funktion.
+Möchtest du auf die Passwort vergessen Funktion verzichten, kannst du einen beliebigen Usernamen benutzen, das hat zur Folge, dass bei einem Verlust des Passworts der Zugang nur mit einer freiwilligen Spende und einer E-Mail über das Support-System wiederhergestellt werden.
+                </textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="register()">Anmelden</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+        </form>
+    </script>
+</div>
