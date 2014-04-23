@@ -19,6 +19,7 @@ app.config(function ($translateProvider) {
 app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal',
          function($scope, $rootScope, $http, $location, localStorageService, $modal)
     {
+        $rootScope.loading = "Loading"; // init loading text
         $rootScope.serviceHost = "https://open-role.appspot.com";
         if ($location.$$host == 'localhost') {
             // for dev
@@ -31,6 +32,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         // init base config
         $http.get($rootScope.serviceHost + '/config').then(function(reponse) {
             $rootScope.GLOBALCONFIG = angular.fromJson(reponse.data);
+            $rootScope.loadingReady = true;
             $rootScope.initialized = true;
         });
 
@@ -50,14 +52,14 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                 $scope.loggedin = false;
                 localStorageService.remove("X-Openrole-Token");
             });
-        }
+        };
 
         $scope.internalLogin = function(token) {
             // http://stackoverflow.com/questions/20777700/angular-js-controller-gets-the-cookie-from-login-request-header-even-after-doing
             $http.defaults.headers.common["X-Openrole-Token"] = token;
             $scope.loggedin = true;
             localStorageService.add("X-Openrole-Token", token);
-        }
+        };
 
 
         $scope.registerDialog = function () {
@@ -78,6 +80,26 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             }, function () {
                 console.info('Modal dismissed at: ' + new Date());
             });
+        };
+
+        $scope.store = function() {
+            var theController = this.$parent.$parent;
+            var or = theController.openrole;
+            var docId = or.docId;
+
+            $rootScope.loadingReady = false;
+            $rootScope.loading = "Speichere Charakter";
+            var openroleAsJSON = angular.toJson(or);
+            $http.post($rootScope.serviceHost + '/' +theController.openrole_module_name+'/store/'+docId, openroleAsJSON)
+                .success(function(data, status, headers, config){
+                    theController.openrole.docId = data;
+                    $rootScope.loadingReady = true;
+                })
+                .error(function(data, status, headers, config){
+                    alert("Could not load image data ");
+                    $rootScope.loadingReady = true;
+                })
+            ; // http post
         };
 
     }]

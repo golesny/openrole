@@ -11,7 +11,15 @@
 </head>
 <body>
 <div ng-controller="OpenroleCtrl as ctrl">
-    <div id="top-layer" ng-hide="initialized"><span class="badge">Loading</span></div>
+    <div id="top-layer" ng-hide="loadingReady"><div class="panel panel-default loadinganel">
+        <div class="panel-body">
+            <div class="progress progress-striped active">
+                <div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    {{loading}}
+                </div>
+            </div>
+        </div>
+    </div></div>
     <div ng-include="'content/nav.html'"></div>
 
     <div class="container">
@@ -22,7 +30,7 @@
             <div class="panel-body" translate="INTRODUCTION"></div>
         </div>
 
-        <div class="panel panel-default hideUninitalized" is-init="{{initialized}}" ng-repeat="system in GLOBALCONFIG.systems">
+        <div class="panel panel-default hideUninitalized" is-initialized="{{initialized}}" ng-repeat="system in GLOBALCONFIG.systems">
             <div class="panel-heading">
                 <h3 class="panel-title">{{system.name}}</h3>
             </div>

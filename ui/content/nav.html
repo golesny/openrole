@@ -24,7 +24,7 @@
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Charakter <b class="caret"></b></a>
                       <ul class="dropdown-menu">
                           <li ng-hide="{{openrole_module_name == 'Overview'}}"><a href="#"><span class="glyphicon glyphicon-open"></span> Öffnen ...</a></li>
-                          <li ng-hide="{{openrole_module_name == 'Overview'}}"><a href="#"><span class="glyphicon glyphicon-save"></span> Speichern</a></li>
+                          <li ng-hide="{{openrole_module_name == 'Overview'}}"><a href="#" ng-click="store()"><span class="glyphicon glyphicon-save"></span> Speichern</a></li>
                           <li ng-hide="{{openrole_module_name == 'Overview'}}" class="divider"></li>
                           <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Abmelden</a></li>
                       </ul>

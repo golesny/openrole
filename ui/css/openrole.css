@@ -19,9 +19,15 @@ img { max-width: 100%; height: auto}
     cursor: wait;
 }
 
+.loadinganel {
+   margin-top: 10%;
+   margin-left: 30%;
+   margin-right: 30%;
+}
+
 .hideUninitalized {
     visibility: hidden;
 }
-.hideUninitalized[is-init="true"] {
+.hideUninitalized[is-initialized="true"] {
     visibility: inherit;
 }

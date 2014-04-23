@@ -8,6 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 
 public class PathUtils {
 
+	/**
+	 * Tyical format is:<br>
+	 * /system/action/id
+	 */
 	public static RequestInfo extractRequestInfo(String pathInfo, Set<String> systems) throws IOException {
 		if (pathInfo != null && pathInfo.startsWith("/") && pathInfo.length() > 3) {
 			String[] parts = StringUtils.split(pathInfo, '/');

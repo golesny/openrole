@@ -132,47 +132,26 @@ public class OpenroleServiceServlet extends HttpServlet {
 
 			if (ServiceActions.store.equals(requestInfo.action)) {
 				String post = getPost(req.getReader());
-				// FIXME unique Key
-				Key key = KeyFactory.createKey(user.getKey(), requestInfo.system, Long.valueOf(1));
-				System.out.println("new key = " +key);
-				Entity entity = new Entity(requestInfo.system, key);
+				DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+				
+				Entity entity = findOrCreateEntityForUpdate(user, requestInfo.system, requestInfo.docId);
 
 				JSONObject jsonObject = new JSONObject(post);
-				System.out.println("jsonObject="+jsonObject.toString());
 				for (String k : JSONObject.getNames(jsonObject)) {
-					System.out.println("json.names="+k);
-					Object valObj = jsonObject.get(k);
-					System.out.println("       val  ="+valObj);
-					System.out.println("       class="+valObj.getClass().getName());
-					Object value = jsonToObject(valObj);
-
-					entity.setProperty(k, value);
+					if (! "docId".equals(k) ) {
+						Object valObj = jsonObject.get(k);
+						Object value = jsonToObject(valObj);
+						entity.setUnindexedProperty(k, value);
+					}
 				}
-				DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-				//        	datastore.put(entity);
-
-
-
-
-				// We have one entity group per Guestbook with all Greetings residing
-				// in the same entity group as the Guestbook to which they belong.
-				// This lets us run a transactional ancestor query to retrieve all
-				// Greetings for a given Guestbook.  However, the write rate to each
-				// Guestbook should be limited to ~1/second.
-				//        String guestbookName = req.getParameter("guestbookName");
-				//        Key guestbookKey = KeyFactory.createKey("Guestbook", guestbookName);
-				//        String content = req.getParameter("content");
-				//        Date date = new Date();
-				//        Entity greeting = new Entity("Greeting", guestbookKey);
-				//        greeting.setProperty("user", user);
-				//        greeting.setProperty("date", date);
-				//        greeting.setProperty("content", content);
-				//
-				//        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-				//        datastore.put(greeting);
-
-
+				Key newKey = datastore.put(entity);
+				System.out.println("stored with key = "+newKey);
+				
+				resp.setContentType("plain/text");
+				resp.getWriter().write(""+newKey.getId());
 				resp.setStatus(201);
+			} else {
+				throw new OpenRoleException("Service action '"+requestInfo.action+"' not valid", 403);
 			}
 		} catch (OpenRoleException e) {
 			resp.setStatus(e.responseCode);
@@ -180,6 +159,22 @@ public class OpenroleServiceServlet extends HttpServlet {
 			resp.getWriter().append(e.getMessage());
 		}
     }
+
+	private Entity findOrCreateEntityForUpdate(Entity user, String system, String docId) {
+		if (docId != null) {
+			long docIdL = Long.valueOf(docId);
+			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+			Key key = KeyFactory.createKey(user.getKey(), system, docIdL);
+			try {
+				return datastore.get(key);
+			} catch (EntityNotFoundException e) {
+				System.err.println("["+system+"] Illegal identifier '"+docId+"' from user "+user.getKey());
+				throw new OpenRoleException("Invalid identifer", 403);
+			}
+		}
+		// new 
+		return new Entity(system, user.getKey());
+	}
 
 	private void checkUserToken(Entity user) {
 		if (user == null) {
@@ -288,13 +283,13 @@ public class OpenroleServiceServlet extends HttpServlet {
 			JSONArray arr = (JSONArray)jsonObj;
 			for (int i=0; i<arr.length(); i++) {
 				Object obj = arr.get(i);
-				lstForStore.setProperty("idx_"+i, jsonToObject(obj));
+				lstForStore.setUnindexedProperty("idx_"+i, jsonToObject(obj));
 			}
 			value = lstForStore;
 		} else if (jsonObj instanceof JSONObject) {
 			EmbeddedEntity mapToStore = new EmbeddedEntity();
 			for (String k : JSONObject.getNames((JSONObject)jsonObj)) {
-				mapToStore.setProperty(k, jsonToObject(((JSONObject) jsonObj).get(k)));
+				mapToStore.setUnindexedProperty(k, jsonToObject(((JSONObject) jsonObj).get(k)));
 			}
 			value = mapToStore;
 		}
