@@ -9,6 +9,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import de.golesny.openrole.service.util.PathUtils;
+
 public class PathUtilsTest {
 	
 	@Test

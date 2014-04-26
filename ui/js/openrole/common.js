@@ -39,7 +39,9 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         // http://gregpike.net/demos/angular-local-storage/demo/demo.html
         $scope.login = function() {
             console.log("login");
-            $http.post($rootScope.serviceHost + '/login?email='+$scope.email, $scope.pw)
+            $http.post($rootScope.serviceHost + '/login?email='+$scope.email, $scope.pw, {
+                headers: { 'Content-Type': 'plain/text; charset=UTF-8'}
+            })
               .success(function(data, status, headers, config){
                 console.log("logged in. token = "+data);
                 $scope.internalLogin(data);
@@ -61,12 +63,85 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             localStorageService.add("X-Openrole-Token", token);
         };
 
+        $scope.store = function() {
+            var theController = this.$parent.$parent;
+            var or = theController.openrole;
+            var docId = or.docId;
+
+            $rootScope.loadingReady = false;
+            $rootScope.loading = "Speichere Charakter";
+            var openroleAsJSON = angular.toJson(or);
+            $http.post($rootScope.serviceHost + '/' +theController.openrole_module_name+'/store/'+docId, openroleAsJSON, {
+                  headers: { 'Content-Type': 'application/json; charset=UTF-8'}
+                })
+                .success(function(data, status, headers, config){
+                    theController.openrole.docId = data;
+                    $rootScope.loadingReady = true;
+                })
+                .error(function(data, status, headers, config){
+                    alert(status+": Could not store character. Cause: "+data);
+                    $rootScope.loadingReady = true;
+                })
+            ; // http post
+        };
+
+        $scope.open = function() {
+
+            var theController = this.$parent.$parent;
+            $rootScope.loadingReady = false;
+            $rootScope.loading = "Lade Charakterliste";
+
+            $http.get($rootScope.serviceHost + '/' +theController.openrole_module_name+'/list')
+                .success(function(data, status, headers, config){
+                    $rootScope.loadingReady = true;
+                    $scope.openDialog(theController, data);
+                })
+                .error(function(data, status, headers, config){
+                    $rootScope.loadingReady = true;
+                    alert(status+": Could not load character list");
+                })
+            ; // get
+
+
+        }
+
+        $scope.openDialog = function(theController, characterlistJson) {
+            // create and open the dialog
+            var modalOpenDialogInstance = $modal.open({
+                templateUrl: 'id.dialog.open.html',
+                controller: DialogOpenCtrl,
+                resolve: {
+                    characterlist: function() {
+                    // the the character list from service
+                        return angular.fromJson(characterlistJson);
+                    }
+                }
+            });
+
+            modalOpenDialogInstance.result.then(function (characterDocId) {
+                console.info("dialog closed. character chosen: "+characterDocId);
+                $rootScope.loadingReady = false;
+                $rootScope.loading = "Lade Charakter "+characterDocId;
+                $http.get($rootScope.serviceHost + '/'+theController.openrole_module_name+'/get/'+characterDocId)
+                    .success(function (data, status, headers, config) {
+                        $rootScope.loadingReady = true;
+                        // here we have to put the new data asychnronously instead of setting references
+                        var ctrler = theController;
+                        angular.copy(data, ctrler.openrole);
+                    })
+                    .error(function (data, status, headers, config) {
+                        alert(status+": Could not load character");
+                    });
+            }, function () {
+                console.info('Modal dismissed at: ' + new Date());
+            });
+        }
 
         $scope.registerDialog = function () {
 
             var modalInstance = $modal.open({
                 templateUrl: 'registration.html',
-                controller: ModalRegistrationCtrl,
+                controller: DialogRegistrationCtrl,
                 resolve: {
                     //registerError: function() {
                     //    return $scope.registerError;
@@ -81,80 +156,9 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                 console.info('Modal dismissed at: ' + new Date());
             });
         };
-
-        $scope.store = function() {
-            var theController = this.$parent.$parent;
-            var or = theController.openrole;
-            var docId = or.docId;
-
-            $rootScope.loadingReady = false;
-            $rootScope.loading = "Speichere Charakter";
-            var openroleAsJSON = angular.toJson(or);
-            $http.post($rootScope.serviceHost + '/' +theController.openrole_module_name+'/store/'+docId, openroleAsJSON)
-                .success(function(data, status, headers, config){
-                    theController.openrole.docId = data;
-                    $rootScope.loadingReady = true;
-                })
-                .error(function(data, status, headers, config){
-                    alert("Could not load image data ");
-                    $rootScope.loadingReady = true;
-                })
-            ; // http post
-        };
-
     }]
 
     );
-
-
-
-// http://angular-ui.github.io/bootstrap/#/modal
-// Please note that $modalInstance represents a modal window (instance) dependency.
-// It is not the same as the $modal service used above.
-
-var ModalRegistrationCtrl = function ($scope, $modalInstance, $http, $rootScope) {
-
-    $scope.register = function () {
-        console.log("validate register user data");
-        if (this.email == null || this.email == '') {
-            $scope.registerError = 'Bitte E-Mail eingegeben';
-            return;
-        }
-        if (this.pw == null || this.pw == '') {
-            $scope.registerError = 'Bitte Passwort eingegeben';
-            return;
-        }
-        if (this.pw != this.pwrepeat) {
-            $scope.registerError = 'Passwörter müssen identisch sein';
-            return;
-        }
-        console.log("validation passed email="+this.email);
-        $scope.registerError = null;
-        $http.post($rootScope.serviceHost + '/register?email='+this.email, this.pw)
-            .success(function(data, status, headers, config) {
-                console.log("Registered user: ["+status+"] "+data);
-                if (status == 201) {
-                    $modalInstance.close(data);
-                    $scope.registerError = null;
-                } else {
-                    $scope.registerError = data;
-                }
-            })
-            .error(function(data, status, headers, config) {
-                console.log("Could not register user: "+data);
-                $scope.registerError = data;
-            });
-    };
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-        $scope.registerError = null;
-    };
-
-    $scope.errorExists = function() {
-        return $scope.registerError != null;
-    };
-};
 
 // locale controller
 app.controller('LocaleCtrl', function ($scope, $translate, localStorageService) {
@@ -177,3 +181,4 @@ app.controller('LocaleCtrl', function ($scope, $translate, localStorageService) 
         $scope.changeLanguage(localStorageService.get("lang"));
     }
 });
+

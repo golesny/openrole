@@ -5,6 +5,8 @@ public enum ServiceActions {
 	store,
 	/** updates an existing document */
 	update,
-	/** Gets an existing document */
-	get
+	/** Get an existing document */
+	get,
+	/** Get a list of all documents for the given system */
+	list
 }

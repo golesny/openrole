@@ -1,10 +1,14 @@
-package de.golesny.openrole.service;
+package de.golesny.openrole.service.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.UnknownServiceException;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+
+import de.golesny.openrole.service.RequestInfo;
+import de.golesny.openrole.service.ServiceActions;
 
 public class PathUtils {
 
@@ -42,5 +46,15 @@ public class PathUtils {
 			}
 		}
 		throw new UnknownServiceException("Unknown system");
+	}
+	
+	public static String getPost(BufferedReader reader) throws IOException {
+		StringBuffer jb = new StringBuffer();
+    	String line = null;
+    	while ((line = reader.readLine()) != null)
+    	{
+    		jb.append(line);
+    	}
+    	return jb.toString();
 	}
 }

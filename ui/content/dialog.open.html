@@ -1,0 +1,19 @@
+
+<div ng-controller="LoginCtrl">
+    <script type="text/ng-template" id="id.dialog.open.html">
+        <div class="modal-header">
+            <h3>Öffne Charakter</h3>
+        </div>
+        <div class="modal-body">
+          <div class="pre-scrollable" style="height: 200px">
+            <div class="list-group">
+                <a ng-repeat="ch in characterlist"  class="list-group-item" ng-class="{active: selected.char == ch}" ng-click="selected.char = ch">{{ch.charactername}}</a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="openCharacter()">Öffnen</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+</div>
