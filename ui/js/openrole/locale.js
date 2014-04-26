@@ -1,3 +1,4 @@
+"use strict";
 
 // i18n for index.html
 var app = angular.module('openrole');

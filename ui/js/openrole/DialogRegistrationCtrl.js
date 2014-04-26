@@ -1,3 +1,4 @@
+"use strict";
 
 // http://angular-ui.github.io/bootstrap/#/modal
 // Please note that $modalInstance represents a modal window (instance) dependency.

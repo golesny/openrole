@@ -1,3 +1,5 @@
+"use strict";
+
 var DialogOpenCtrl = function ($scope, $modalInstance, $http, $rootScope, characterlist) {
     $scope.characterlist = characterlist;
     $scope.selected = {

@@ -30,29 +30,42 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         $scope.loggedin = ($http.defaults.headers.common["X-Openrole-Token"] != null);
 
         // init base config
-        $http.get($rootScope.serviceHost + '/config').then(function(reponse) {
-            $rootScope.GLOBALCONFIG = angular.fromJson(reponse.data);
-            $rootScope.loadingReady = true;
-            $rootScope.initialized = true;
-        });
+        $http.get($rootScope.serviceHost + '/config')
+            .success(function(data, status, headers, config) {
+                $rootScope.GLOBALCONFIG = angular.fromJson(data);
+                $rootScope.loadingReady = true;
+                $rootScope.initialized = true;
+            })
+            .error(function(data, status, headers, config) {
+                $rootScope.loadingReady = true;
+                $rootScope.addAlert('danger', status+': Could not get config from server: '+data);
+            })
+        ;
 
         // http://gregpike.net/demos/angular-local-storage/demo/demo.html
         $scope.login = function() {
             console.log("login");
             $http.post($rootScope.serviceHost + '/login?email='+$scope.email, $scope.pw, {
                 headers: { 'Content-Type': 'plain/text; charset=UTF-8'}
-            })
+              })
               .success(function(data, status, headers, config){
                 console.log("logged in. token = "+data);
                 $scope.internalLogin(data);
-            });
-        }
+              })
+              .error(function(data, status, headers, config) {
+                    $rootScope.addAlert('danger', status+': Could not log in: '+data);
+              });
+        };
         $scope.logout = function() {
             console.log("logout");
-            $http.get($rootScope.serviceHost + '/logout').then(function(response) {
+            $http.get($rootScope.serviceHost + '/logout')
+            .success(function(data, status, headers, config){
                 $http.defaults.headers.common["X-Openrole-Token"] = null;
                 $scope.loggedin = false;
                 localStorageService.remove("X-Openrole-Token");
+            })
+            .error(function(data, status, headers, config) {
+                $rootScope.addAlert('danger', status+': Could not log in: '+data);
             });
         };
 
@@ -79,7 +92,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                     $rootScope.loadingReady = true;
                 })
                 .error(function(data, status, headers, config){
-                    alert(status+": Could not store character. Cause: "+data);
+                    $rootScope.addAlert('danger', status+": Could not store character. Cause: "+data);
                     $rootScope.loadingReady = true;
                 })
             ; // http post
@@ -98,12 +111,12 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                 })
                 .error(function(data, status, headers, config){
                     $rootScope.loadingReady = true;
-                    alert(status+": Could not load character list");
+                    $rootScope.addAlert('danger', status+": Could not load character list. Cause: "+data);
                 })
             ; // get
 
 
-        }
+        };
 
         $scope.openDialog = function(theController, characterlistJson) {
             // create and open the dialog
@@ -130,12 +143,13 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                         angular.copy(data, ctrler.openrole);
                     })
                     .error(function (data, status, headers, config) {
-                        alert(status+": Could not load character");
+                        $rootScope.loadingReady = true;
+                        $rootScope.addAlert('danger', status+": Could not load character. Cause: "+data);
                     });
             }, function () {
                 console.info('Modal dismissed at: ' + new Date());
             });
-        }
+        };
 
         $scope.registerDialog = function () {
 

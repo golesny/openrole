@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/bootstrap-notify.css">
     <link rel="stylesheet" href="css/openrole.css">
 </head>
 <body>
@@ -21,6 +19,8 @@
         </div>
     </div></div>
     <div ng-include="'content/nav.html'"></div>
+    <div ng-include="'content/dialog.open.html'"></div>
+    <div ng-include="'content/dialog.alert.html'"></div>
 
     <div class="container">
         <div class="panel panel-default">
@@ -60,6 +60,7 @@
 <script src="js/openrole/common.js"></script>
 <script src="js/openrole/DialogOpenCtrl.js"></script>
 <script src="js/openrole/DialogRegistrationCtrl.js"></script>
+<script src="js/openrole/DialogAlertCtrl.js"></script>
 <script src="js/openrole/OverviewCtrl.js"></script>
 </body>
 </html>

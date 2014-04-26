@@ -1,7 +1,6 @@
 package de.golesny.openrole.service;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

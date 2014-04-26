@@ -1,3 +1,4 @@
+"use strict";
 
 // i18n for dungeonslayers.html
 var app = angular.module('openrole');

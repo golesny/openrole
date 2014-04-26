@@ -5,8 +5,6 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link rel="stylesheet" href="css/bootstrap.min.css">
-      <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-      <link rel="stylesheet" href="css/bootstrap-notify.css">
       <link rel="stylesheet" href="css/openrole.css">
       <style>
       span.or-skill-box {
@@ -48,6 +46,7 @@
 
         <div ng-include="'content/nav.html'"></div>
         <div ng-include="'content/dialog.open.html'"></div>
+        <div ng-include="'content/dialog.alert.html'"></div>
 
         <div class="container hideUninitalized" is-initialized="{{initialized}}">
 
@@ -140,7 +139,7 @@
                     <h3 class="panel-title">Notification Test</h3>
                 </div>
                 <div class="panel-body">
-                    <button class='btn btn-warning' ng-click="notifyUser('test 123')">Click For Notification</button>
+
                 </div>
             </div>
 
@@ -169,5 +168,6 @@
   <script src="js/openrole/common.js"></script>
   <script src="js/openrole/DialogOpenCtrl.js"></script>
   <script src="js/openrole/DialogRegistrationCtrl.js"></script>
+  <script src="js/openrole/DialogAlertCtrl.js"></script>
   <script src="js/malmsturm/MalmsturmCtrl.js"></script>
 </html>

@@ -64,21 +64,19 @@ angular.module('openrole')
             $scope.move(arraylist, $index, $index +1);
         };
 
-        $scope.notifyUser = function(message) {
-            $('.bottom-left').notify({
-                message: { text: message },
-                type: 'info'
-            }).show();
-        };
-
 
 $scope.loadAllImages = function(index){
     console.log("loading image "+index);
+
     //bind load event
     if( index >= $scope.imageRecords.length ){
+        $rootScope.loading = "Generiere PDF";
         $scope.createInternalPDF();
+        $rootScope.loadingReady = true;
         return;
     }
+    $rootScope.loadingReady = false;
+    $rootScope.loading = "Lade Bild "+(index+1)+"/"+$scope.imageRecords.length;
 
     //add image path
     $http.get($scope.imageRecords[index])
@@ -89,7 +87,8 @@ $scope.loadAllImages = function(index){
             $scope.loadAllImages(index + 1);
         })
         .error(function(data, status, headers, config){
-            alert("Could not load image data ");
+            $rootScope.addAlert('danger', status+": Could not load images. Cause: "+data);
+            $rootScope.loadingReady = true;
         })
     ;
 };
