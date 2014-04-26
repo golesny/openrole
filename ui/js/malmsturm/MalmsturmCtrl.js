@@ -2,7 +2,7 @@
 
 angular.module('openrole')
   .controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location',  function($scope, $rootScope, $http, $location) {
-    $scope.openrole_module_version = '0.0.4.20140325';
+    $scope.openrole_module_version = '0.1.0.20140426';
     $scope.openrole_module_name = 'malmsturm';
     $scope.imageRecords = ['img/malmsturm/logo.dataurl','img/malmsturm/rune.dataurl'];
     $scope.imageLoaded = [];
