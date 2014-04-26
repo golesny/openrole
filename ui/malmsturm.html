@@ -87,17 +87,16 @@
                 <ul class="list-group">
                     <li class="list-group-item" ng-repeat="aspect in openrole.aspects">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Aspekt" ng-model="aspect.name">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                                        <ul class="dropdown-menu pull-right">
-                                            <li><a href="#" ng-click="delete(aspects, $index)"><span class="glyphicon glyphicon-remove-sign"></span> Löschen</a></li>
-                                            <li class="divider"></li>
-                                            <li ng-show="!$first"><a href="#" ng-click="moveUp(aspects, $index)"><span class="glyphicon glyphicon-chevron-up"></span> Hoch</a></li>
-                                            <li ng-show="!$last"><a href="#" ng-click="moveDown(aspects, $index)"><span class="glyphicon glyphicon-chevron-down"></span> Runter</a></li>
+                                        <ul class="dropdown-menu dropdown-menu-left">
+                                            <li><a href="#" ng-click="delete(openrole.aspects, $index)"><span class="glyphicon glyphicon-remove-sign"></span> Löschen</a></li>
+                                            <li class="divider" ng-hide="$first && $last"></li>
+                                            <li ng-show="!$first"><a href="#" ng-click="moveUp(openrole.aspects, $index)"><span class="glyphicon glyphicon-chevron-up"></span> Hoch</a></li>
+                                            <li ng-show="!$last"><a href="#" ng-click="moveDown(openrole.aspects, $index)"><span class="glyphicon glyphicon-chevron-down"></span> Runter</a></li>
                                         </ul>
-
                                     </div>
+                                    <input type="text" class="form-control" placeholder="Aspekt" ng-model="aspect.name">
                                 </div><!-- /input-group -->
                                 <textarea class="form-control" placeholder="Ereignisse" ng-model="aspect.description"></textarea>
                         </li>
@@ -115,17 +114,16 @@
                 <ul class="list-group">
                     <li class="list-group-item" ng-repeat="talent in openrole.talents">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Talent/Gabe" ng-model="talent.name">
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                                    <ul class="dropdown-menu pull-right">
+                                    <ul class="dropdown-menu">
                                         <li><a href="#" ng-click="delete(talents, $index)"><span class="glyphicon glyphicon-remove-sign"></span> Löschen</a></li>
                                         <li class="divider"></li>
                                         <li><a href="#" ng-click="moveUp(talents, $index, $first)"><span class="glyphicon glyphicon-chevron-up"></span> Hoch</a></li>
                                         <li><a href="#" ng-click="moveDown(talents, $index, $last)"><span class="glyphicon glyphicon-chevron-down"></span> Runter</a></li>
                                     </ul>
-
                                 </div>
+                                <input type="text" class="form-control" placeholder="Talent/Gabe" ng-model="talent.name">
                             </div><!-- /input-group -->
                           </li>
                         <li class="list-group-item" >

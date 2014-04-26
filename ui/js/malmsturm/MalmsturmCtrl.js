@@ -50,7 +50,7 @@ angular.module('openrole')
             arraylist.splice($index, 1);
         };
 
-        $scope.move = function(arraylist, fromIdx, toIdx) { // TODO
+        $scope.move = function(arraylist, fromIdx, toIdx) {
             var tmp = arraylist[fromIdx];
             arraylist[fromIdx] = arraylist[toIdx];
             arraylist[toIdx] = tmp;
