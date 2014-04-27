@@ -64,27 +64,27 @@ angular.module('openrole')
             $scope.move(arraylist, $index, $index +1);
         };
 
-
-$scope.loadAllImages = function(index){
+// todo make as service
+$rootScope.loadAllImages = function(imageRecords, imageLoaded, index, createPDFAfterLoad){
     console.log("loading image "+index);
 
     //bind load event
-    if( index >= $scope.imageRecords.length ){
+    if( index >= imageRecords.length ){
         $rootScope.loading = "Generiere PDF";
-        $scope.createInternalPDF();
+        createPDFAfterLoad();
         $rootScope.loadingReady = true;
         return;
     }
     $rootScope.loadingReady = false;
-    $rootScope.loading = "Lade Bild "+(index+1)+"/"+$scope.imageRecords.length;
+    $rootScope.loading = "Lade Bild "+(index+1)+"/"+imageRecords.length;
 
     //add image path
-    $http.get($scope.imageRecords[index])
+    $http.get(imageRecords[index])
         .success(function(data, status, headers, config){
-            console.log("Loaded image "+index+" "+$scope.imageRecords[index]);
+            console.log("Loaded image "+index+" "+imageRecords[index]);
             // convert to dataurl, because jsPDF displays dataURLs nicer
-            $scope.imageLoaded[index] = data; //"data:image/jpeg;base64," + Base64.encodeBinary(data);
-            $scope.loadAllImages(index + 1);
+            imageLoaded[index] = data; //"data:image/jpeg;base64," + Base64.encodeBinary(data);
+            $rootScope.loadAllImages(imageRecords, imageLoaded, index + 1, createPDFAfterLoad);
         })
         .error(function(data, status, headers, config){
             $rootScope.addAlert('danger', status+": Could not load images. Cause: "+data);
@@ -92,9 +92,10 @@ $scope.loadAllImages = function(index){
         })
     ;
 };
-        $scope.createPDF = function() {
-            $scope.loadAllImages(0);
-        };
+    $scope.createPDF = function() {
+            $rootScope.loadAllImages($scope.imageRecords, $scope.imageLoaded, 0, $scope.createInternalPDF);
+    };
+
     $scope.createInternalPDF = function() {
         console.log("creating PDF");
             var doc = new jsPDF();

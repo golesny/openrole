@@ -2,10 +2,13 @@ package de.golesny.openrole.service;
 
 public class OpenRoleException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
-	public int responseCode = 500;
+	
+	public final int responseCode;
+	public final String resourceKey;
 
-	public OpenRoleException(String message, int responseCode) {
-		super(message);
+	public OpenRoleException(String internalLogMessage, String resourceKey, int responseCode) {
+		super(internalLogMessage);
+		this.resourceKey = resourceKey;
 		this.responseCode = responseCode;
 	}
 }

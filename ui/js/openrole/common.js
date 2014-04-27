@@ -56,16 +56,28 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                     $rootScope.addAlert('danger', status+': Could not log in: '+data);
               });
         };
+        var internalClientSideLogout = function() {
+            $http.defaults.headers.common["X-Openrole-Token"] = null;
+            $scope.loggedin = false;
+            localStorageService.remove("X-Openrole-Token");
+        }
         $scope.logout = function() {
-            console.log("logout");
+            console.log("loggin out");
+            $rootScope.loadingReady = false;
+            $rootScope.loading = "Logout";
             $http.get($rootScope.serviceHost + '/logout')
             .success(function(data, status, headers, config){
-                $http.defaults.headers.common["X-Openrole-Token"] = null;
-                $scope.loggedin = false;
-                localStorageService.remove("X-Openrole-Token");
+                internalClientSideLogout();
+                $rootScope.loadingReady = true;
             })
             .error(function(data, status, headers, config) {
-                $rootScope.addAlert('danger', status+': Could not log in: '+data);
+                if (status == 401) {
+                    // already logged out
+                    internalClientSideLogout();
+                } else {
+                    $rootScope.addAlert('danger', status+': Could not log in: '+data);
+                }
+                $rootScope.loadingReady = true;
             });
         };
 

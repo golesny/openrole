@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import de.golesny.openrole.service.OpenRoleException;
+import de.golesny.openrole.service.OpenroleServiceServlet;
 
 public final class DigestUtils {
 
@@ -15,8 +16,7 @@ public final class DigestUtils {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
 			return byteArrayToHexString(md.digest(plain.getBytes(DEFAULTCHARSET)));
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			throw new OpenRoleException("Could not create an hash for password", 500);
+			throw new OpenRoleException(e.getMessage(), OpenroleServiceServlet.INTERNAL_SERVER_ERROR, 500);
 		}
 	}
 

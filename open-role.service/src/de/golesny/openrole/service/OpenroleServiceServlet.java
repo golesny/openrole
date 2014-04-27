@@ -1,10 +1,10 @@
 package de.golesny.openrole.service;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,6 +32,8 @@ import de.golesny.openrole.service.util.PathUtils;
 
 @SuppressWarnings("serial")
 public class OpenroleServiceServlet extends HttpServlet {
+	private static final Logger log = Logger.getLogger(OpenroleServiceServlet.class.getName());
+	public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
 	private static final String CONTENTTYPE_JSON_UTF_8 = "application/json; charset=UTF-8";
 	private static final String USER_PROP_USER = "user";
 	private static final String USER_PROP_PWHASH = "pwhash";
@@ -91,18 +93,18 @@ public class OpenroleServiceServlet extends HttpServlet {
 				doList(req, resp, user, requestInfo);
 				break;
 			default:
-				throw new OpenRoleException("Illegal action", 403);
+				throw new OpenRoleException("Unhandled get action: "+requestInfo.action, "ILLEGAL_ACTION", 403);
 			}
 		} catch (OpenRoleException e) {
 			resp.setStatus(e.responseCode);
 			resp.setContentType("plain/text");
-			resp.getWriter().append(e.getMessage());
-			e.printStackTrace();
+			resp.getWriter().append(e.resourceKey);
+			log(e);
 		} catch (Exception e) {
 			resp.setStatus(500);
 			resp.setContentType("plain/text");
-			resp.getWriter().append(e.getMessage());
-			e.printStackTrace();
+			resp.getWriter().append(INTERNAL_SERVER_ERROR);
+			log(e);
 		}
 	}
 
@@ -110,7 +112,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		user.setProperty(USER_PROP_RANDOMSHA1, null);
 		datastore.put(user);
-		System.out.println("user "+user.getKey().getName()+" logged out");
+		log.fine("user "+user.getKey().getName()+" logged out");
 	}
 
 	@Override
@@ -124,7 +126,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 				resp.setStatus(200); // ok
 				resp.setContentType("text/plain");
 				resp.getWriter().write(hash);
-				System.out.println(new Date()+" User logged in: "+email+ " pwHash="+hash);
+				log.fine(" User logged in: "+email+ " pwHash="+hash);
 				return;
 			} else if (SLASH_REGISTER.equals(req.getPathInfo())) {
 				String hash = doRegister(req.getParameter("email"), PathUtils.getPost(req.getReader()));
@@ -137,30 +139,31 @@ public class OpenroleServiceServlet extends HttpServlet {
 			Entity user = getUser(req.getHeader(HEADER_TOKEN)); 
 			checkUserToken(user);
 
-			System.out.println("getPathInfo="+req.getPathInfo());
+			log.finer("getPathInfo="+req.getPathInfo());
 			RequestInfo requestInfo = PathUtils.extractRequestInfo(req.getPathInfo(), SYSTEMS.keySet());
 
 
 			switch (requestInfo.action) {
 			case get:
-				throw new OpenRoleException("Service action '"+requestInfo.action+"' not valid", 403);
+				throw new OpenRoleException("Invalid action get called", "SERVICE_ACTION_INVALID", 403);
 			case store:
 				doStore(req, resp, user, requestInfo);
 				break;
 			case update:
 				break;
 			default:
-				throw new OpenRoleException("Service action '"+requestInfo.action+"' not valid", 403);
+				throw new OpenRoleException("Service action '"+requestInfo.action+"' not valid", "SERVICE_ACTION_INVALID", 403);
 			}
 		} catch (OpenRoleException e) {
 			resp.setStatus(e.responseCode);
 			resp.setContentType("plain/text");
-			resp.getWriter().append(e.getMessage());
+			resp.getWriter().append(e.resourceKey);
+			log(e);
 		} catch (Exception e) {
 			resp.setStatus(500);
 			resp.setContentType("plain/text");
-			resp.getWriter().append(e.getMessage());
-			e.printStackTrace();
+			resp.getWriter().append(INTERNAL_SERVER_ERROR);
+			log(e);
 		}
     }
 
@@ -174,7 +177,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 		JSONObject jsonObject = new JSONObject(post);
 		JsonUtils.updateEntity(entity, jsonObject);
 		Key newKey = datastore.put(entity);
-		System.out.println("stored with key = "+newKey);
+		log.finer("stored with key = "+newKey);
 		
 		resp.setContentType("plain/text");
 		resp.getWriter().write(""+newKey.getId());
@@ -212,7 +215,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 	
 	private void checkUserToken(Entity user) {
 		if (user == null) {
-			throw new OpenRoleException("Not logged in", 403);
+			throw new OpenRoleException("User was not logged in", "NOT_LOGGED_IN", 401);
 		}
 	}
 
@@ -232,10 +235,10 @@ public class OpenroleServiceServlet extends HttpServlet {
 				}
 				return randomSHA1;
 			} else {
-				throw new OpenRoleException("USER_PW_WRONG", 403);
+				throw new OpenRoleException("User ID "+user.getProperty(USER_PROP_USER)+" typed wrong password", "USER_PW_WRONG", 403);
 			}
 		} catch (EntityNotFoundException e) {
-			throw new OpenRoleException("USER_PW_WRONG", 403);
+			throw new OpenRoleException("Couldn't find entity User with key "+key, "USER_PW_WRONG", 403);
 		}
 	}
 
@@ -245,7 +248,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 		Key key = KeyFactory.createKey(USER_PROP_USER, lowercaseEmailSHA1);
 		try {
 			datastore.get(key);
-			throw new OpenRoleException("USER_ALREADY_EXISTS", 409);
+			throw new OpenRoleException("User "+lowercaseEmailSHA1+" already exists while registration", "USER_ALREADY_EXISTS", 409);
 		} catch (EntityNotFoundException e) {
 			// we can proceed
 			Entity newUser = new Entity(key);
@@ -277,6 +280,19 @@ public class OpenroleServiceServlet extends HttpServlet {
 	private void initConfig() {
 		if (configAsJson == null) {
 			configAsJson = JsonUtils.getConfigAsString(SYSTEMS);
+		}
+	}
+	
+	private void log(Exception e) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(e.getClass().getSimpleName()).append(": ");
+		sb.append(e.getMessage());
+		if (e instanceof OpenRoleException) {
+			OpenRoleException ore = (OpenRoleException)e;
+			sb.append(" | ").append(ore.resourceKey).append(":").append(ore.responseCode);
+			log.warning(sb.toString());
+		} else {
+			log.severe(sb.toString());
 		}
 	}
 }

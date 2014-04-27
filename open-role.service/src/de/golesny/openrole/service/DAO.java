@@ -23,8 +23,7 @@ public class DAO {
 			try {
 				return datastore.get(key);
 			} catch (EntityNotFoundException e) {
-				System.err.println("["+system+"] Illegal identifier '"+docId+"' from user "+user.getKey());
-				throw new OpenRoleException("Invalid identifer", 403);
+				throw new OpenRoleException("["+system+"] Illegal identifier '"+docId+"' from user "+user.getKey(), "ID_NOT_FOUND", 403);
 			}
 		}
 		// new 
@@ -39,10 +38,10 @@ public class DAO {
 			try {
 				return datastore.get(key);
 			} catch (EntityNotFoundException e) {
-				throw new OpenRoleException("ID not accessible", 403);
+				throw new OpenRoleException("["+requestInfo.system+"] Illegal identifier '"+requestInfo.docId+"' from user "+user.getKey(), "ID_NOT_FOUND", 403);
 			}
 		}
-		throw new OpenRoleException("ID must not be null", 403);
+		throw new OpenRoleException("["+requestInfo.system+"] Identifiermus not be null from user "+user.getKey(), "ID_NOT_FOUND", 403);
 	}
 
 	public List<Map<String, String>> getCharacterOverview(Entity user, RequestInfo reqInfo) {

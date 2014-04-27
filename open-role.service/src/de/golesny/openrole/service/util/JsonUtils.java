@@ -3,6 +3,7 @@ package de.golesny.openrole.service.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -12,8 +13,10 @@ import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 
 import de.golesny.openrole.service.OpenRoleException;
+import de.golesny.openrole.service.OpenroleServiceServlet;
 
 public class JsonUtils {
+	private static final Logger log = Logger.getLogger(JsonUtils.class.getName());
 	
 	public static String getConfigAsString(Map<String,String> systems) {
 		JSONObject jsonConfig = new JSONObject();
@@ -48,7 +51,7 @@ public class JsonUtils {
 		} else if (jsonObj == null) {
 			// do nothing
 		} else {
-			throw new OpenRoleException("Unhandled object class: "+jsonObj.getClass(), 500);
+			throw new OpenRoleException("Unhandled object class: "+jsonObj.getClass(), OpenroleServiceServlet.INTERNAL_SERVER_ERROR, 500);
 		}
 		return value;
 	}
@@ -86,7 +89,7 @@ public class JsonUtils {
 		} else if (entity == null) {
 			return null;
 		} else {
-			System.out.println("Unhandled entity class "+entity.getClass().getName());
+			log.warning("Unhandled entity class "+entity.getClass().getName());
 			return null;
 		}
 	}
