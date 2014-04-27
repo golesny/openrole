@@ -16,8 +16,8 @@ app.config(function ($translateProvider) {
 });
 
 // ------------ global controller --------------
-app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal',
-         function($scope, $rootScope, $http, $location, localStorageService, $modal)
+app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal','alertService',
+         function($scope, $rootScope, $http, $location, localStorageService, $modal, alertService)
     {
         $rootScope.loading = "Loading"; // init loading text
         $rootScope.serviceHost = "https://open-role.appspot.com";
@@ -38,7 +38,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             })
             .error(function(data, status, headers, config) {
                 $rootScope.loadingReady = true;
-                $rootScope.addAlert('danger', status+': Could not get config from server: '+data);
+                alertService.addAlert('danger', status+': Could not get config from server: '+data);
             })
         ;
 
@@ -53,7 +53,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                 $scope.internalLogin(data);
               })
               .error(function(data, status, headers, config) {
-                    $rootScope.addAlert('danger', status+': Could not log in: '+data);
+                    alertService.addAlert('danger', status+': Could not log in: '+data);
               });
         };
         var internalClientSideLogout = function() {
@@ -75,7 +75,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                     // already logged out
                     internalClientSideLogout();
                 } else {
-                    $rootScope.addAlert('danger', status+': Could not log in: '+data);
+                    alertService.addAlert('danger', status+': Could not log in: '+data);
                 }
                 $rootScope.loadingReady = true;
             });
@@ -86,6 +86,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             $http.defaults.headers.common["X-Openrole-Token"] = token;
             $scope.loggedin = true;
             localStorageService.add("X-Openrole-Token", token);
+            alertService.addAlert('success', 'You are logged in, now');
         };
 
         $scope.store = function() {
@@ -104,7 +105,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                     $rootScope.loadingReady = true;
                 })
                 .error(function(data, status, headers, config){
-                    $rootScope.addAlert('danger', status+": Could not store character. Cause: "+data);
+                    alertService.addAlert('danger', status+": Could not store character. Cause: "+data);
                     $rootScope.loadingReady = true;
                 })
             ; // http post
@@ -123,7 +124,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                 })
                 .error(function(data, status, headers, config){
                     $rootScope.loadingReady = true;
-                    $rootScope.addAlert('danger', status+": Could not load character list. Cause: "+data);
+                    alertService.addAlert('danger', status+": Could not load character list. Cause: "+data);
                 })
             ; // get
 
@@ -156,7 +157,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                     })
                     .error(function (data, status, headers, config) {
                         $rootScope.loadingReady = true;
-                        $rootScope.addAlert('danger', status+": Could not load character. Cause: "+data);
+                        alertService.addAlert('danger', status+": Could not load character. Cause: "+data);
                     });
             }, function () {
                 console.info('Modal dismissed at: ' + new Date());
