@@ -73,6 +73,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 				// global configuration requested without system
 				initConfig();
 				resp.getWriter().println(configAsJson);
+				log.fine("returning config");
 				return;
 			}
 			Entity user = getUser(req.getHeader(HEADER_TOKEN)); 

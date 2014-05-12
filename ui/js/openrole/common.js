@@ -15,32 +15,42 @@ app.config(function ($translateProvider) {
     $translateProvider.determinePreferredLanguage();
 });
 
-// ------------ global controller --------------
-app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal','alertService',
-         function($scope, $rootScope, $http, $location, localStorageService, $modal, alertService)
-    {
-        $rootScope.loading = "Loading"; // init loading text
-        $rootScope.serviceHost = "https://open-role.appspot.com";
-        if ($location.$$host == 'localhost') {
-            // for dev
-            $rootScope.serviceHost = "http://localhost:8888";
-        }
-        $rootScope.serviceHost = $rootScope.serviceHost + "/open_role_service";
-        $http.defaults.headers.common["X-Openrole-Token"] = localStorageService.get("X-Openrole-Token");
-        $scope.loggedin = ($http.defaults.headers.common["X-Openrole-Token"] != null);
+// global controller
+app.controller('OpenroleCtrl',['$scope','$rootScope','$http','$location', function($scope, $rootScope, $http, $location) {
+    $scope.openrole_module_name = 'Overview';
+}]);
 
-        // init base config
-        $http.get($rootScope.serviceHost + '/config')
-            .success(function(data, status, headers, config) {
-                $rootScope.GLOBALCONFIG = angular.fromJson(data);
-                $rootScope.loadingReady = true;
-                $rootScope.initialized = true;
-            })
-            .error(function(data, status, headers, config) {
-                $rootScope.loadingReady = true;
-                alertService.addAlert('danger', status+': Could not get config from server: '+data);
-            })
-        ;
+// ------------ global controller --------------
+app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal','alertService','loaderService',
+         function($scope, $rootScope, $http, $location, localStorageService, $modal, alertService, loaderService) {
+
+             $rootScope.serviceHost = "https://open-role.appspot.com";
+             if ($location.$$host == 'localhost') {
+                 // for dev
+                 $rootScope.serviceHost = "http://localhost:8888";
+             }
+             $rootScope.serviceHost = $rootScope.serviceHost + "/open_role_service";
+             $http.defaults.headers.common["X-Openrole-Token"] = localStorageService.get("X-Openrole-Token");
+             $scope.loggedin = ($http.defaults.headers.common["X-Openrole-Token"] != null);
+
+             // init base config
+             if ($rootScope.initializing != true) {
+                 console.log("initializing --> getting config from server");
+                 $rootScope.initializing = true;
+                 $http.get($rootScope.serviceHost + '/config')
+                     .success(function (data, status, headers, config) {
+                         console.log("success on getting config");
+                         $rootScope.GLOBALCONFIG = angular.fromJson(data);
+                         loaderService.setLoadingReady();
+                         $rootScope.initialized = true;
+                     })
+                     .error(function (data, status, headers, config) {
+                         loaderService.setLoadingReady();
+                         alertService.addAlert('danger', status + ': Could not get config from server: ' + data);
+                     })
+                 ;
+             }
+
 
         // http://gregpike.net/demos/angular-local-storage/demo/demo.html
         $scope.login = function() {
@@ -63,12 +73,11 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         }
         $scope.logout = function() {
             console.log("loggin out");
-            $rootScope.loadingReady = false;
-            $rootScope.loading = "Logout";
+            loaderService.setLoadingStart("Logout");
             $http.get($rootScope.serviceHost + '/logout')
             .success(function(data, status, headers, config){
                 internalClientSideLogout();
-                $rootScope.loadingReady = true;
+                    loaderService.setLoadingReady();
             })
             .error(function(data, status, headers, config) {
                 if (status == 401) {
@@ -77,7 +86,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
                 } else {
                     alertService.addAlert('danger', status+': Could not log in: '+data);
                 }
-                $rootScope.loadingReady = true;
+                loaderService.setLoadingReady();
             });
         };
 
@@ -94,19 +103,18 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             var or = theController.openrole;
             var docId = or.docId;
 
-            $rootScope.loadingReady = false;
-            $rootScope.loading = "Speichere Charakter";
+            loaderService.setLoadingStart("Speichere Charakter");
             var openroleAsJSON = angular.toJson(or);
             $http.post($rootScope.serviceHost + '/' +theController.openrole_module_name+'/store/'+docId, openroleAsJSON, {
                   headers: { 'Content-Type': 'application/json; charset=UTF-8'}
                 })
                 .success(function(data, status, headers, config){
                     theController.openrole.docId = data;
-                    $rootScope.loadingReady = true;
+                    loaderService.setLoadingReady();
                 })
                 .error(function(data, status, headers, config){
                     alertService.addAlert('danger', status+": Could not store character. Cause: "+data);
-                    $rootScope.loadingReady = true;
+                    loaderService.setLoadingReady();
                 })
             ; // http post
         };
@@ -114,16 +122,15 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         $scope.open = function() {
 
             var theController = this.$parent.$parent;
-            $rootScope.loadingReady = false;
-            $rootScope.loading = "Lade Charakterliste";
+            loaderService.setLoadingStart("Lade Charakterliste");
 
             $http.get($rootScope.serviceHost + '/' +theController.openrole_module_name+'/list')
                 .success(function(data, status, headers, config){
-                    $rootScope.loadingReady = true;
+                    loaderService.setLoadingReady();
                     $scope.openDialog(theController, data);
                 })
                 .error(function(data, status, headers, config){
-                    $rootScope.loadingReady = true;
+                    loaderService.setLoadingReady();
                     alertService.addAlert('danger', status+": Could not load character list. Cause: "+data);
                 })
             ; // get
@@ -146,17 +153,16 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
 
             modalOpenDialogInstance.result.then(function (characterDocId) {
                 console.info("dialog closed. character chosen: "+characterDocId);
-                $rootScope.loadingReady = false;
-                $rootScope.loading = "Lade Charakter "+characterDocId;
+                loaderService.setLoadingStart("Lade Charakter "+characterDocId);
                 $http.get($rootScope.serviceHost + '/'+theController.openrole_module_name+'/get/'+characterDocId)
                     .success(function (data, status, headers, config) {
-                        $rootScope.loadingReady = true;
+                        loaderService.setLoadingReady();
                         // here we have to put the new data asychnronously instead of setting references
                         var ctrler = theController;
                         angular.copy(data, ctrler.openrole);
                     })
                     .error(function (data, status, headers, config) {
-                        $rootScope.loadingReady = true;
+                        loaderService.setLoadingReady();
                         alertService.addAlert('danger', status+": Could not load character. Cause: "+data);
                     });
             }, function () {
@@ -187,25 +193,5 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
 
     );
 
-// locale controller
-app.controller('LocaleCtrl', function ($scope, $translate, localStorageService) {
 
-    $scope.changeLanguage = function (key) {
-        console.log("changing language to "+key+ " preferred ="+$translate.preferredLanguage() + " current stored="+localStorageService.get("lang"));
-        $translate.use(key);
-        if (key == $translate.preferredLanguage()) {
-            // remove entry
-            console.log("removing local storage value");
-            localStorageService.remove("lang");
-        } else {
-            // store
-            localStorageService.add("lang", key);
-        }
-    };
-    // init the stored language
-    if (localStorageService.get("lang") != null) {
-        console.log("using stored language="+localStorageService.get("lang"));
-        $scope.changeLanguage(localStorageService.get("lang"));
-    }
-});
 

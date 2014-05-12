@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/openrole.css">
 </head>
 <body>
-<div ng-controller="OpenroleCtrl as ctrl">
+<div ng-controller="OpenroleCtrl">
     <div id="top-layer" ng-hide="loadingReady"><div class="panel panel-default loadinganel">
         <div class="panel-body">
             <div class="progress progress-striped active">
@@ -21,6 +21,7 @@
     <div ng-include="'content/nav.html'"></div>
     <div ng-include="'content/dialog.open.html'"></div>
     <div ng-include="'content/dialog.alert.html'"></div>
+    <!-- header end -->
 
     <div class="container">
         <div class="panel panel-default">
@@ -35,32 +36,38 @@
                 <h3 class="panel-title">{{system.name}}</h3>
             </div>
             <div class="panel-body">
-                <a href="{{system.id}}.html"><img src="img/{{system.id}}/logo.jpg" alt="{{system.id}}"></a>
+                <a ng-href="{{system.id}}.html"><img ng-src="img/{{system.id}}/logo.jpg" ng-alt="{{system.id}}"></a>
             </div>
         </div>
     </div>
 
+    <!-- footer start -->
     <footer ng-include="'content/footer.html'"></footer>
-    <div class='notifications bottom-left'></div>
 </div>
-
+<!-- scripts -->
 <script src="js/lib/jquery-1.11.0.min.js"></script>
 <script src="js/lib/bootstrap.min.js"></script>
-<!-- Latest compiled and minified JavaScript -->
-<!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>-->
 <script src="js/lib/jquery-ui.min.js"></script>
 <script src="js/lib/angular.min.js"></script>
-<!--<script src="js/lib/angular-resource.min.js"></script>-->
 <script src="js/lib/angular-local-storage.min.js"></script>
+<!-- only for malmsturm, yet-->
 <script src="js/lib/angular-dragdrop.min.js"></script>
+<!-- i18n -->
 <script src="js/lib/angular-translate.min.js"></script>
+<!-- alerts(?) -->
 <script src="js/lib/ui-bootstrap-tpls-0.10.0.min.js"></script>
+
+<script src="js/lib/jspdf.min.2014-03-29.js"></script>
+<!-- custom jsPDF plugin -->
+<script src="js/openrole/jsPdf.openrole.plugins.js"></script>
+
 <script src="js/openrole/dependencies.js"></script>
 <script src="js/openrole/locale.js"></script>
 <script src="js/openrole/common.js"></script>
 <script src="js/openrole/DialogOpenCtrl.js"></script>
 <script src="js/openrole/DialogRegistrationCtrl.js"></script>
 <script src="js/openrole/AlertService.js"></script>
-<script src="js/openrole/OverviewCtrl.js"></script>
+<script src="js/openrole/LoaderService.js"></script>
+
 </body>
 </html>

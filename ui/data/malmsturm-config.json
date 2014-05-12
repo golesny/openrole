@@ -71,5 +71,7 @@
         "1": "Durchschnittlich",
         "0": "Mäßig",
         "-1": "Armselig",
-        "-2": "Grauenhaft"}
+        "-2": "Grauenhaft"},
+    "stufenleiterstart": -2,
+    "stufenleiterend": 12
 }
