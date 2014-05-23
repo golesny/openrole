@@ -1,6 +1,7 @@
-'use strict';
+"use strict";
 
-angular
-  .module('webappApp', [
-    'ngResource'
-  ]);
+var app = angular.module('openrole',
+    ['LocalStorageModule',
+     'pascalprecht.translate',
+      'ui.bootstrap'
+    ]);

@@ -4,7 +4,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
-    <title>Open Role - Charakter Generator Platform</title>
+    <title>Open Role - Dungeonslayers</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -18,7 +18,7 @@
     <!-- endbuild -->
 </head>
 <body ng-app="openrole">
-<div ng-controller="OpenroleCtrl">
+<div ng-controller="DungeonslayersCtrl as ctrl">
     <div id="top-layer" ng-hide="loadingReady"><div class="panel panel-default loadinganel">
         <div class="panel-body">
             <div class="progress progress-striped active">
@@ -33,29 +33,23 @@
     <div ng-include="'views/dialog.alert.html'"></div>
     <!-- header end -->
 
-    <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title" translate="WELCOME"></h3>
-            </div>
-            <div class="panel-body" translate="INTRODUCTION"></div>
-        </div>
+    <div class="container hideUninitalized" is-initialized="{{initialized}}">
 
-        <div class="panel panel-default hideUninitalized" is-initialized="{{initialized}}" ng-repeat="system in GLOBALCONFIG.systems">
+        <!--<div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">{{system.name}}</h3>
+                <h3 class="panel-title">Spielerfigur:</h3>
             </div>
             <div class="panel-body">
-                <a ng-href="{{system.id}}.html"><img ng-src="images/{{system.id}}/logo.jpg" ng-alt="{{system.id}}"></a>
+                <input type="text" ng-model="charactername" class="form-control" placeholder="Name">
             </div>
-        </div>
+        </div> -->
+        <div class="well" translate="COMING"></div>
     </div>
 
     <!-- footer start -->
     <footer ng-include="'views/footer.html'"></footer>
 </div>
 </body>
-
 
 <!-- build:js scripts/vendor.js -->
 <!-- bower:js -->
@@ -92,9 +86,6 @@
 <script src="scripts/openrole/DialogRegistrationCtrl.js"></script>
 <script src="scripts/openrole/AlertService.js"></script>
 <script src="scripts/openrole/LoaderService.js"></script>
-<script src="scripts/malmsturm/MalmsturmCtrl.js"></script>
-<script src="scripts/malmsturm/pdf.1.js"></script>
-<script src="scripts/dungeonslayers/DungeonslayersCtrl.js"></script>
 <!-- endbuild -->
 
 </html>

@@ -1,0 +1,60 @@
+
+/* Space out content a bit */
+body {
+  min-height: 2000px;
+  padding-top: 70px;
+  padding-bottom: 20px;
+}
+
+img { max-width: 100%; height: auto}
+
+
+#top-layer {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  opacity: 0.7;
+  background-color: black;
+  z-index: 99999;
+  cursor: wait;
+}
+
+.loadinganel {
+  margin-top: 10%;
+  margin-left: 30%;
+  margin-right: 30%;
+}
+
+.hideUninitalized {
+  visibility: hidden;
+}
+.hideUninitalized[is-initialized="true"] {
+  visibility: inherit;
+}
+
+/* malmsturm */
+span.or-skill-box {
+  cursor: pointer;
+  background: rgb(47, 47, 47);
+  display: inline-block;
+  width: 120px;
+  font-size: 12px;
+  margin: 3px;
+  height: 22px;
+  padding-top: 5px;
+}
+span.or-skill-box[data-drag="false"] {
+  background-color: white;
+  cursor: default;
+  background: rgb(190, 190, 190);
+  color: rgb(190, 190, 190);
+}
+span.or-skill-lbl {
+  display: inline-block;
+  width: 130px;
+  margin-right: 20px;
+}

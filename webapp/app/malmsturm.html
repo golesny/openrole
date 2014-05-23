@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <title>Open Role - Malmsturm</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css styles/vendor.css -->
+    <link rel="stylesheet" href="styles/vendor.css">
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css({.tmp,app}) styles/openrole.css -->
+    <link rel="stylesheet" href="styles/openrole.css">
+    <!-- endbuild -->
+</head>
+<body ng-app="openrole">
+<div ng-controller="MalmsturmCtrl as ctrl">
+    <div id="top-layer" ng-hide="loadingReady"><div class="panel panel-default loadinganel">
+        <div class="panel-body">
+            <div class="progress progress-striped active">
+                <div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    {{loading}}
+                </div>
+            </div>
+        </div>
+    </div></div>
+    <div ng-include="'views/nav.html'"></div>
+    <div ng-include="'views/dialog.open.html'"></div>
+    <div ng-include="'views/dialog.alert.html'"></div>
+    <!-- header end -->
+
+    <div class="container hideUninitalized" is-initialized="{{initialized}}">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" translate="TITLE_CHARACTER"></h3>
+            </div>
+            <div class="panel-body">
+                <input type="text" ng-model="openrole.charactername" class="form-control" placeholder="{{'CHARACTERNAME' |translate}}">
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Fertigkeiten</h3>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="list in openrole.skillpyramid">
+                    <div class="list-inline" style="padding-left: 8px;">
+                        <span class="badge or-skill-lbl">+{{openrole.CONFIG.skillpyramidstartvalue - $index}} {{openrole.CONFIG.stufenleiter[openrole.CONFIG.skillpyramidstartvalue - $index]}}</span>
+                        <span ng-repeat="item in list" data-drop="true"
+                              ng-model='list' jqyoui-droppable="{index: {{$index}}, onDrop:'ctrl.dropCallback(item, $index)'}">
+                          <span class="label label-default or-skill-box"
+                                ng-model="list"
+                                data-drag="{{item.title!='_'}}" data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{index: {{$index}}}">
+                             {{item.title}}
+                          </span>
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Aspekte</h3>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="aspect in openrole.aspects">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-left">
+                                <li><a href="#" ng-click="delete(openrole.aspects, $index)"><span class="glyphicon glyphicon-remove-sign"></span> Löschen</a></li>
+                                <li class="divider" ng-hide="$first && $last"></li>
+                                <li ng-show="!$first"><a href="#" ng-click="moveUp(openrole.aspects, $index)"><span class="glyphicon glyphicon-chevron-up"></span> Hoch</a></li>
+                                <li ng-show="!$last"><a href="#" ng-click="moveDown(openrole.aspects, $index)"><span class="glyphicon glyphicon-chevron-down"></span> Runter</a></li>
+                            </ul>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Aspekt" ng-model="aspect.name">
+                    </div><!-- /input-group -->
+                    <textarea class="form-control" placeholder="Ereignisse" ng-model="aspect.description"></textarea>
+                </li>
+                <li class="list-group-item" >
+                    <button type="button" class="btn btn-default btn-xs" ng-click="newAspect()"><span class="glyphicon glyphicon-plus-sign"></span> Neuer Aspekt</button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Talente und Gaben</h3>
+            </div>
+
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="talent in openrole.talents">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" ng-click="delete(talents, $index)"><span class="glyphicon glyphicon-remove-sign"></span> Löschen</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" ng-click="moveUp(talents, $index, $first)"><span class="glyphicon glyphicon-chevron-up"></span> Hoch</a></li>
+                                <li><a href="#" ng-click="moveDown(talents, $index, $last)"><span class="glyphicon glyphicon-chevron-down"></span> Runter</a></li>
+                            </ul>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Talent/Gabe" ng-model="talent.name">
+                    </div><!-- /input-group -->
+                </li>
+                <li class="list-group-item" >
+                    <button type="button" class="btn btn-default btn-xs" ng-click="newTalent()"><span class="glyphicon glyphicon-plus-sign"></span> Neues Talent/Neue Gabe</button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Notification Test</h3>
+            </div>
+            <div class="panel-body">
+
+            </div>
+        </div>
+
+    </div><!-- container -->
+
+
+    <!-- footer start -->
+    <footer ng-include="'views/footer.html'"></footer>
+</div>
+</body>
+
+<!-- build:js scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/es5-shim/es5-shim.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/json3/lib/json3.min.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/carousel.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
+<script src="bower_components/angular-translate/angular-translate.js"></script>
+<script src="bower_components/jspdf/dist/jspdf.min.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<script src="scripts/app.js"></script>
+<script src="scripts/openrole/jsPdf.openrole.plugins.js"></script>
+<script src="scripts/openrole/locale.js"></script>
+<script src="scripts/openrole/common.js"></script>
+<script src="scripts/openrole/DialogOpenCtrl.js"></script>
+<script src="scripts/openrole/DialogRegistrationCtrl.js"></script>
+<script src="scripts/openrole/AlertService.js"></script>
+<script src="scripts/openrole/LoaderService.js"></script>
+
+<script src="scripts/malmsturm/MalmsturmCtrl.js"></script>
+<script src="scripts/malmsturm/pdf.1.js"></script>
+<!-- endbuild -->
+
+</html>

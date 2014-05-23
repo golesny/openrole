@@ -56,7 +56,7 @@ module.exports = function (grunt) {
         files: [
           '<%= yeoman.app %>/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
-          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg,dataurl}'
         ]
       }
     },
@@ -146,7 +146,7 @@ module.exports = function (grunt) {
     // Automatically inject Bower components into the app
     bowerInstall: {
       app: {
-        src: ['<%= yeoman.app %>/index.html'],
+        src: ['<%= yeoman.app %>/*.html'],
         ignorePath: '<%= yeoman.app %>/'
       },
       sass: {
@@ -191,8 +191,8 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css' //,
-          //'<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}' ,
-          //  '<%= yeoman.dist %>/styles/fonts/*'
+            //'<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}' ,
+            //  '<%= yeoman.dist %>/styles/fonts/*'
           ]
         }
       }
@@ -232,8 +232,8 @@ module.exports = function (grunt) {
     //  dist: {
     //    files: [{
     //      expand: true,
-     //     cwd: '<%= yeoman.app %>/images',
-      //    src: '{,*/}*.{png,jpg,jpeg,gif}',
+    //     cwd: '<%= yeoman.app %>/images',
+    //    src: '{,*/}*.{png,jpg,jpeg,gif}',
     //      dest: '<%= yeoman.dist %>/images'
     //    }]
     //  }
@@ -301,7 +301,7 @@ module.exports = function (grunt) {
             '.htaccess',
             '*.html',
             'views/{,*/}*.html',
-            'images/{,*/}*.{webp,ico,png,jpg}',
+            'images/{,*/}*.{webp,ico,png,jpg,dataurl}',
             'fonts/*'
           ]
         }, {
@@ -331,8 +331,8 @@ module.exports = function (grunt) {
       ],
       dist: [
         'compass:dist' /*,
-        'imagemin',
-        'svgmin'*/
+         'imagemin',
+         'svgmin'*/
       ]
     },
 
@@ -342,7 +342,7 @@ module.exports = function (grunt) {
     // cssmin: {
     //   dist: {
     //     files: {
-    //       '<%= yeoman.dist %>/styles/main.css': [
+    //       '<%= yeoman.dist %>/styles/vendor.css': [
     //         '.tmp/styles/{,*/}*.css',
     //         '<%= yeoman.app %>/styles/{,*/}*.css'
     //       ]
