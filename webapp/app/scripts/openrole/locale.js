@@ -19,8 +19,12 @@ app.config(function ($translateProvider) {
     },
     COMING: 'Perhaps coming ...',
     TITLE_CHARACTER: 'Character',
-    CHARACTERNAME: 'Charactername'
-  })
+    CHARACTERNAME: 'Charactername',
+    MSG: {
+      SERVER_NOT_AVAILABLE: 'Server not available to load the configuration.',
+      LOGGED_IN: 'You are logged in, now.'
+    }
+  });
 
   $translateProvider.translations('de', {
     WELCOME: 'Willkommen bei Open Role',
@@ -37,7 +41,11 @@ app.config(function ($translateProvider) {
     },
     COMING: 'Kommt vielleicht mal ...',
     TITLE_CHARACTER: 'Spielerfigur',
-    CHARACTERNAME: 'Charaktername'
+    CHARACTERNAME: 'Charaktername',
+    MSG: {
+      SERVER_NOT_AVAILABLE: 'Der Server ist nicht verfügbar, um die Konfiguration zu laden.',
+      LOGGED_IN: 'Du bist eingeloggt.'
+    }
   })
 });
 

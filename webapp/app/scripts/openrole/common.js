@@ -15,6 +15,16 @@ app.config(function ($translateProvider) {
   $translateProvider.determinePreferredLanguage();
 });
 
+// exception handling
+app.factory('$exceptionHandler', [function () {
+  return function (exception, cause) {
+    console.error(exception.stack);
+    alert("An application error occurred in open-role. Please send a mail with this error to the developer. Thanks.");
+    window.location.href = "mailto:daniel@golesny.de?subject=Open-Role Error&body="+exception.stack;
+    // more we can't do here, because I can't inject anything
+  };
+}]);
+
 // global controller
 app.controller('OpenroleCtrl',['$scope','$rootScope','$http','$location', function($scope, $rootScope, $http, $location) {
   $scope.openrole_module_name = 'Overview';
@@ -46,7 +56,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
           })
           .error(function (data, status, headers, config) {
             loaderService.setLoadingReady();
-            alertService.danger(status + ': Could not get config from server: ' + data);
+            alertService.danger(status, 'MSG.SERVER_NOT_AVAILABLE', data);
           })
         ;
       }
@@ -66,7 +76,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             if (data == "USER_PW_WRONG") {
               // show Passwort vergessen button
             }
-            alertService.danger(status+': Could not log in: '+data);
+            alertService.danger(status, ': Could not log in: ', data);
           });
       };
       var internalClientSideLogout = function() {
@@ -87,7 +97,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
               // already logged out
               internalClientSideLogout();
             } else {
-              alertService.danger(status+': Could not log in: '+data);
+              alertService.danger(status, ': Could not log in: ', data);
             }
             loaderService.setLoadingReady();
           });
@@ -98,7 +108,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         $http.defaults.headers.common["X-Openrole-Token"] = token;
         $scope.loggedin = true;
         localStorageService.add("X-Openrole-Token", token);
-        alertService.success('You are logged in, now');
+        alertService.success('MSG.LOGGED_IN');
       };
 
       $scope.store = function() {
