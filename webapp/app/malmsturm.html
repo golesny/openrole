@@ -49,11 +49,12 @@
                 <h3 class="panel-title">Fertigkeiten</h3>
             </div>
             <ul class="list-group">
-                <li class="list-group-item" ng-repeat="list in openrole.skillpyramid">
+                <li class="list-group-item"  style="padding:0;" ng-repeat="list in openrole.skillpyramid">
                     <div class="list-inline" style="padding-left: 8px;">
                         <span class="badge or-skill-lbl">+{{openrole.CONFIG.skillpyramidstartvalue - $index}} {{openrole.CONFIG.stufenleiter[openrole.CONFIG.skillpyramidstartvalue - $index]}}</span>
                         <span ng-repeat="item in list" data-drop="true"
-                              ng-model='list' jqyoui-droppable="{index: {{$index}}, onDrop:'ctrl.dropCallback(item, $index)'}">
+                              ng-model='list' jqyoui-droppable="{index: {{$index}}, onDrop:'ctrl.dropCallback(item, $index)'}"
+                              style="display:inline-block;padding:5px;">
                           <span class="label label-default or-skill-box"
                                 ng-model="list"
                                 data-drag="{{item.title!='_'}}" data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{index: {{$index}}}">
@@ -157,6 +158,9 @@
 <script src="bower_components/angular-translate/angular-translate.js"></script>
 <script src="bower_components/jspdf/dist/jspdf.min.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/angular-touch/angular-touch.js"></script>
+<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+<script src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 

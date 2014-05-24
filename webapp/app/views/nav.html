@@ -20,21 +20,21 @@
             </ul>
           <div ng-controller="LoginCtrl">
               <ul class="nav navbar-nav" ng-show="loggedin">
-                  <li class="dropdown">
+                  <li class="dropdown" ng-hide="{{openrole_module_name == 'Overview'}}">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Charakter <b class="caret"></b></a>
                       <ul class="dropdown-menu">
-                          <li ng-hide="{{openrole_module_name == 'Overview'}}"><a href="#" ng-click="open()"><span class="glyphicon glyphicon-open"></span> Öffnen ...</a></li>
-                          <li ng-hide="{{openrole_module_name == 'Overview'}}"><a href="#" ng-click="store()"><span class="glyphicon glyphicon-save"></span> Speichern</a></li>
-                          <li ng-hide="{{openrole_module_name == 'Overview'}}" class="divider"></li>
-                          <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Abmelden</a></li>
+                          <li><a href="#" ng-click="open()"><span class="glyphicon glyphicon-open"></span> Öffnen ...</a></li>
+                          <li><a href="#" ng-click="store()"><span class="glyphicon glyphicon-save"></span> Speichern</a></li>
                       </ul>
                   </li>
+                  <li><a href="preferences.html"><span class="glyphicon glyphicon-cog"></span> <span translate="MENU.PREFERENCES"></span></a></li>
+                  <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon glyphicon-off"></span> <span translate="MENU.LOGOUT"></span></a></li>
               </ul>
               <form class="navbar-form navbar-left" ng-submit="login()" ng-hide="loggedin">
                 <div class="form-group" >
                     <input type="text" class="form-control" placeholder="e-mail" ng-model="email">
                     <input type="password" class="form-control" placeholder="passwort" ng-model="pw">
-                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-log-in"></span> Anmelden</button>
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-log-in"></span> Anmelden</button>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-link" ng-click="registerDialog()"><span class="glyphicon glyphicon-edit"></span> Registrieren</button>
                 </div>

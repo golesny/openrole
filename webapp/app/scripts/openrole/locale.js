@@ -13,6 +13,10 @@ app.config(function ($translateProvider) {
     OPEN_CHARACTER_TITLE: 'Open a character',
     OPEN: 'Open',
     CANCEL: 'Cancel',
+    MENU: {
+      LOGOUT: 'Log out',
+      PREFERENCES: 'Preferences'
+    },
     COMING: 'Perhaps coming ...',
     TITLE_CHARACTER: 'Character',
     CHARACTERNAME: 'Charactername'
@@ -27,6 +31,10 @@ app.config(function ($translateProvider) {
     OPEN_CHARACTER_TITLE: 'Öffne einen Charakter',
     OPEN: 'Öffnen',
     CANCEL: 'Abbrechen',
+    MENU: {
+      LOGOUT: 'Abmelden',
+      PREFERENCES: 'Einstellungen'
+    },
     COMING: 'Kommt vielleicht mal ...',
     TITLE_CHARACTER: 'Spielerfigur',
     CHARACTERNAME: 'Charaktername'
