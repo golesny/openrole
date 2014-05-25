@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Text;
 
 import de.golesny.openrole.service.OpenRoleException;
 import de.golesny.openrole.service.OpenroleServiceServlet;
@@ -31,8 +32,16 @@ public class JsonUtils {
 	
 	protected static Object jsonToEntityObject(Object jsonObj) {
 		Object value = null;
-		if (jsonObj instanceof Long || jsonObj instanceof Integer || jsonObj instanceof String) {
+		if (jsonObj == null) {
+			// do nothing
+		} else if (jsonObj instanceof Long || jsonObj instanceof Integer) {
 			value = jsonObj;
+		} else if (jsonObj instanceof String) {
+			if ( ((String)jsonObj).length() > 500) {
+				value = new Text((String)jsonObj);
+			} else {
+				value = jsonObj;
+			}
 		} else if (jsonObj instanceof JSONArray) {
 			EmbeddedEntity lstForStore = new EmbeddedEntity();
 			JSONArray arr = (JSONArray)jsonObj;
@@ -48,8 +57,6 @@ public class JsonUtils {
 				mapToStore.setUnindexedProperty(k, jsonToEntityObject(((JSONObject) jsonObj).get(k)));
 			}
 			value = mapToStore;
-		} else if (jsonObj == null) {
-			// do nothing
 		} else {
 			throw new OpenRoleException("Unhandled object class: "+jsonObj.getClass(), OpenroleServiceServlet.INTERNAL_SERVER_ERROR, 500);
 		}
@@ -68,6 +75,8 @@ public class JsonUtils {
 	public static Object entityObjectToJson(Object entity) {
 		if (entity instanceof Long || entity instanceof String) {
 			return entity;
+		} else if (entity instanceof Text) {
+			return ((Text)entity).getValue();
 		} else if (entity instanceof EmbeddedEntity) {
 			EmbeddedEntity e = (EmbeddedEntity)entity;
 			if (isArray(e)) {
