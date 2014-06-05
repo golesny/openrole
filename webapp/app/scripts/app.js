@@ -7,3 +7,7 @@ var app = angular.module('openrole',
       'ngTouch',
       'ngDragDrop'
     ]);
+
+app.constant("SYSTEMS",
+  [/*{"id":"dungeonslayers", "name":"Dungeonslayers"}, */{"id":"malmsturm", "name":"Malmsturm"}]
+);

@@ -31,9 +31,9 @@ app.controller('OpenroleCtrl',['$scope','$rootScope','$http','$location', functi
 }]);
 
 // ------------ global controller --------------
-app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal','alertService','loaderService',
-    function($scope, $rootScope, $http, $location, localStorageService, $modal, alertService, loaderService) {
-
+app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal','alertService','loaderService','SYSTEMS',
+    function($scope, $rootScope, $http, $location, localStorageService, $modal, alertService, loaderService, SYSTEMS) {
+      $rootScope.systems = SYSTEMS;
       $rootScope.serviceHost = "https://open-role.appspot.com";
       if ($location.$$host == 'localhost') {
         // for dev
@@ -44,23 +44,8 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       $scope.loggedin = ($http.defaults.headers.common["X-Openrole-Token"] != null);
 
       // init base config
-      if ($rootScope.initializing != true) {
-        console.log("initializing --> getting config from server");
-        $rootScope.initializing = true;
-        $http.get($rootScope.serviceHost + '/config')
-          .success(function (data, status, headers, config) {
-            console.log("success on getting config");
-            $rootScope.GLOBALCONFIG = angular.fromJson(data);
-            loaderService.setLoadingReady();
-            $rootScope.initialized = true;
-          })
-          .error(function (data, status, headers, config) {
-            loaderService.setLoadingReady();
-            alertService.danger(status, 'MSG.SERVER_NOT_AVAILABLE', data);
-          })
-        ;
-      }
-
+      $rootScope.initialized = true;
+      loaderService.setLoadingReady();
 
       // http://gregpike.net/demos/angular-local-storage/demo/demo.html
       $scope.login = function() {
@@ -126,7 +111,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             loaderService.setLoadingReady();
           })
           .error(function(data, status, headers, config){
-            alertService.danger(status+": Could not store character. Cause: "+data);
+            alertService.danger(status, 'MSG.COULD_NOT_STORE_CHAR', data);
             loaderService.setLoadingReady();
           })
         ; // http post
@@ -172,7 +157,9 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
               loaderService.setLoadingReady();
               // here we have to put the new data asychnronously instead of setting references
               var ctrler = theController;
-              angular.copy(data, ctrler.openrole);
+              var newCharObj = {};
+              angular.copy(data, newCharObj);
+              ctrler.characterLoaded(newCharObj);
             })
             .error(function (data, status, headers, config) {
               loaderService.setLoadingReady();

@@ -32,7 +32,7 @@ public class JsonUtils {
 	
 	protected static Object jsonToEntityObject(Object jsonObj) {
 		Object value = null;
-		if (jsonObj == null) {
+		if (jsonObj == null || JSONObject.NULL.equals(jsonObj)) {
 			// do nothing
 		} else if (jsonObj instanceof Long || jsonObj instanceof Integer) {
 			value = jsonObj;

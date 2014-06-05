@@ -41,7 +41,7 @@
             <div class="panel-body" translate="INTRODUCTION"></div>
         </div>
 
-        <div class="panel panel-default hideUninitalized" is-initialized="{{initialized}}" ng-repeat="system in GLOBALCONFIG.systems">
+        <div class="panel panel-default hideUninitalized" is-initialized="{{initialized}}" ng-repeat="system in systems">
             <div class="panel-heading">
                 <h3 class="panel-title">{{system.name}}</h3>
             </div>
@@ -86,7 +86,7 @@
 <!-- endbower -->
 <!-- endbuild -->
 
-<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<!-- build:js({.tmp,app}) scripts/openrole.js -->
 <script src="scripts/app.js"></script>
 <script src="scripts/openrole/jsPdf.openrole.plugins.js"></script>
 <script src="scripts/openrole/locale.js"></script>
@@ -95,9 +95,7 @@
 <script src="scripts/openrole/DialogRegistrationCtrl.js"></script>
 <script src="scripts/openrole/AlertService.js"></script>
 <script src="scripts/openrole/LoaderService.js"></script>
-<script src="scripts/malmsturm/MalmsturmCtrl.js"></script>
-<script src="scripts/malmsturm/pdf.1.js"></script>
-<script src="scripts/dungeonslayers/DungeonslayersCtrl.js"></script>
+<script src="scripts/openrole/openroleInputList.js"></script>
 <!-- endbuild -->
 
 </html>

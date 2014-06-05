@@ -18,11 +18,14 @@ app.config(function ($translateProvider) {
       PREFERENCES: 'Preferences'
     },
     COMING: 'Perhaps coming ...',
-    TITLE_CHARACTER: 'Character',
-    CHARACTERNAME: 'Charactername',
     MSG: {
       SERVER_NOT_AVAILABLE: 'Server not available to load the configuration.',
-      LOGGED_IN: 'You are logged in, now.'
+      LOGGED_IN: 'You are logged in, now.',
+      INTERNAL_SERVER_ERROR: 'Server error occurred.',
+      COULD_NOT_STORE_CHAR: 'Could not store character'
+    },
+    BUTTON: {
+      ADD: 'Add {{name}}'
     }
   });
 
@@ -40,11 +43,14 @@ app.config(function ($translateProvider) {
       PREFERENCES: 'Einstellungen'
     },
     COMING: 'Kommt vielleicht mal ...',
-    TITLE_CHARACTER: 'Spielerfigur',
-    CHARACTERNAME: 'Charaktername',
     MSG: {
       SERVER_NOT_AVAILABLE: 'Der Server ist nicht verfügbar, um die Konfiguration zu laden.',
-      LOGGED_IN: 'Du bist eingeloggt.'
+      LOGGED_IN: 'Du bist eingeloggt.',
+      INTERNAL_SERVER_ERROR: 'Ein Serverfehler ist aufgetreten.',
+      COULD_NOT_STORE_CHAR: 'Der Charakter konnte nicht gespeichert werden.'
+    },
+    BUTTON: {
+      ADD: '{{name}} hinzufügen'
     }
   })
 });

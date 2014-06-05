@@ -33,7 +33,7 @@ import de.golesny.openrole.service.util.PathUtils;
 @SuppressWarnings("serial")
 public class OpenroleServiceServlet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(OpenroleServiceServlet.class.getName());
-	public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+	public static final String INTERNAL_SERVER_ERROR = "MSG.INTERNAL_SERVER_ERROR";
 	private static final String CONTENTTYPE_JSON_UTF_8 = "application/json; charset=UTF-8";
 	private static final String USER_PROP_USER = "user";
 	private static final String USER_PROP_PWHASH = "pwhash";

@@ -8,7 +8,14 @@ angular.module('openrole')
       var type = args[0];
       var msg = "";
       for (var i = 1; i < args.length; i++) {
-        msg += $translate.instant(""+args[i]) + " ";
+        if (args[i] instanceof Error) {
+          var splits = args[i].stack.split("\n");
+          for (var j=0; j < 4 && j < splits.length; j++) {
+            msg += splits[j]+" ";
+          }
+        } else {
+          msg += $translate.instant(""+args[i]) + " ";
+        }
       }
       console.log("[AlertService/"+type+"] "+msg);
       $rootScope.alerts.push({type: type, msg: msg});
