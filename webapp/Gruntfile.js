@@ -368,9 +368,17 @@ module.exports = function (grunt) {
         configFile: 'karma.conf.js',
         singleRun: true
       }
+    },
+    protractor: {
+      options: {
+        keepAlive: true, // If false, the grunt process stops when the test fails.
+        noColor: false // If true, protractor will not use colors in its output.
+      },
+      run: {
+        configFile: "protractor.conf.js"
+      }
     }
   });
-
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
@@ -397,7 +405,8 @@ module.exports = function (grunt) {
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma'
+    'karma',
+    'protractor:run'
   ]);
 
   grunt.registerTask('build', [

@@ -94,7 +94,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 				doList(req, resp, user, requestInfo);
 				break;
 			default:
-				throw new OpenRoleException("Unhandled get action: "+requestInfo.action, "ILLEGAL_ACTION", 403);
+				throw new OpenRoleException("Unhandled get action: "+requestInfo.action, "MSG.ILLEGAL_ACTION", 403);
 			}
 		} catch (OpenRoleException e) {
 			resp.setStatus(e.responseCode);
@@ -146,14 +146,14 @@ public class OpenroleServiceServlet extends HttpServlet {
 
 			switch (requestInfo.action) {
 			case get:
-				throw new OpenRoleException("Invalid action get called", "SERVICE_ACTION_INVALID", 403);
+				throw new OpenRoleException("Invalid action get called", "MSG.SERVICE_ACTION_INVALID", 403);
 			case store:
 				doStore(req, resp, user, requestInfo);
 				break;
 			case update:
 				break;
 			default:
-				throw new OpenRoleException("Service action '"+requestInfo.action+"' not valid", "SERVICE_ACTION_INVALID", 403);
+				throw new OpenRoleException("Service action '"+requestInfo.action+"' not valid", "MSG.SERVICE_ACTION_INVALID", 403);
 			}
 		} catch (OpenRoleException e) {
 			resp.setStatus(e.responseCode);
@@ -216,7 +216,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 	
 	private void checkUserToken(Entity user) {
 		if (user == null) {
-			throw new OpenRoleException("User was not logged in", "NOT_LOGGED_IN", 401);
+			throw new OpenRoleException("User was not logged in", "MSG.NOT_LOGGED_IN", 401);
 		}
 	}
 
@@ -239,7 +239,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 				throw new OpenRoleException("User ID "+user.getProperty(USER_PROP_USER)+" typed wrong password", "USER_PW_WRONG", 403);
 			}
 		} catch (EntityNotFoundException e) {
-			throw new OpenRoleException("Couldn't find entity User with key "+key, "USER_PW_WRONG", 403);
+			throw new OpenRoleException("Couldn't find entity User with key "+key, "MSG.USER_PW_WRONG", 403);
 		}
 	}
 
@@ -249,7 +249,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 		Key key = KeyFactory.createKey(USER_PROP_USER, lowercaseEmailSHA1);
 		try {
 			datastore.get(key);
-			throw new OpenRoleException("User "+lowercaseEmailSHA1+" already exists while registration", "USER_ALREADY_EXISTS", 409);
+			throw new OpenRoleException("User "+lowercaseEmailSHA1+" already exists while registration", "MSG.USER_ALREADY_EXISTS", 409);
 		} catch (EntityNotFoundException e) {
 			// we can proceed
 			Entity newUser = new Entity(key);

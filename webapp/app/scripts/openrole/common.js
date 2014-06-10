@@ -10,10 +10,10 @@ app.config(['localStorageServiceProvider', function(localStorageServiceProvider)
 }]);
 
 // init translation
-app.config(function ($translateProvider) {
+app.config(['$translateProvider', function ($translateProvider) {
   $translateProvider.fallbackLanguage('de');
   $translateProvider.determinePreferredLanguage();
-});
+}]);
 
 // exception handling
 app.factory('$exceptionHandler', [function () {
@@ -163,7 +163,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             })
             .error(function (data, status, headers, config) {
               loaderService.setLoadingReady();
-              alertService.dangwe(status+": Could not load character. Cause: "+data);
+              alertService.danger(status+": Could not load character. Cause: "+data);
             });
         }, function () {
           console.info('Modal dismissed at: ' + new Date());

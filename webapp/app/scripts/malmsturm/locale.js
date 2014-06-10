@@ -3,7 +3,7 @@
 // i18n for index.html
 var app = angular.module('openrole');
 
-app.config(function ($translateProvider) {
+app.config(['$translateProvider',function ($translateProvider) {
   //$translateProvider.translations('en', {
   // MALMSTURM: {
   //   TITLE_CHARACTER: 'Character',
@@ -36,4 +36,4 @@ app.config(function ($translateProvider) {
       ANZAHL_BEUTE_ANZEIGEN: 'Beute-Ankreuzkästchen anzeigen (0 = ausblenden)'
     }
   })
-});
+}]);

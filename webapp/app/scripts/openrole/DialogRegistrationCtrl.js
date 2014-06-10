@@ -4,7 +4,8 @@
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
 
-var DialogRegistrationCtrl = function ($scope, $modalInstance, $http, $rootScope) {
+var DialogRegistrationCtrl = ['$scope', '$modalInstance', '$http', '$rootScope', '$translate',
+  function ($scope, $modalInstance, $http, $rootScope,$translate) {
 
     $scope.register = function () {
         console.log("validate register user data");
@@ -29,12 +30,12 @@ var DialogRegistrationCtrl = function ($scope, $modalInstance, $http, $rootScope
                     $modalInstance.close(data);
                     $scope.registerError = null;
                 } else {
-                    $scope.registerError = data;
+                    $scope.registerError = $translate.instant(data);
                 }
             })
             .error(function(data, status, headers, config) {
                 console.log("Could not register user: "+data);
-                $scope.registerError = data;
+                $scope.registerError = $translate.instant(data);
             });
     };
 
@@ -46,4 +47,4 @@ var DialogRegistrationCtrl = function ($scope, $modalInstance, $http, $rootScope
     $scope.errorExists = function() {
         return $scope.registerError != null;
     };
-};
+}];

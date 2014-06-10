@@ -3,7 +3,7 @@
 // i18n for index.html
 var app = angular.module('openrole');
 
-app.config(function ($translateProvider) {
+app.config(['$translateProvider', function ($translateProvider) {
   $translateProvider.translations('en', {
     WELCOME: 'Welcome to Open Role ...',
     INTRODUCTION: 'Click on the system logo you like to create a character for',
@@ -47,16 +47,21 @@ app.config(function ($translateProvider) {
       SERVER_NOT_AVAILABLE: 'Der Server ist nicht verfügbar, um die Konfiguration zu laden.',
       LOGGED_IN: 'Du bist eingeloggt.',
       INTERNAL_SERVER_ERROR: 'Ein Serverfehler ist aufgetreten.',
-      COULD_NOT_STORE_CHAR: 'Der Charakter konnte nicht gespeichert werden.'
+      COULD_NOT_STORE_CHAR: 'Der Charakter konnte nicht gespeichert werden.',
+      ILLEGAL_ACTION: 'Illegale Operation',
+      SERVICE_ACTION_INVALID: 'Illegale Server-Aktion',
+      USER_PW_WRONG: 'Falscher User oder falsches Passwort',
+      USER_ALREADY_EXISTS: 'Der Username existiert schon. Bitte wähle einen anderen Namen',
+      ID_NOT_FOUND: 'Der Charakter wurde für einen anderen Account angelegt und daher für diesen Account nicht abgespeichert werden. Erstelle einen neuen Charakter'
     },
     BUTTON: {
       ADD: '{{name}} hinzufügen'
     }
   })
-});
+}]);
 
 // locale controller
-app.controller('LocaleCtrl', function ($scope, $translate, localStorageService) {
+app.controller('LocaleCtrl', ['$scope', '$translate', 'localStorageService', function ($scope, $translate, localStorageService) {
 
   $scope.changeLanguage = function (key) {
     console.log("changing language to "+key+ " preferred ="+$translate.preferredLanguage() + " current stored="+localStorageService.get("lang"));
@@ -75,4 +80,4 @@ app.controller('LocaleCtrl', function ($scope, $translate, localStorageService) 
     console.log("using stored language="+localStorageService.get("lang"));
     $scope.changeLanguage(localStorageService.get("lang"));
   }
-});
+}]);

@@ -23,7 +23,7 @@ public class DAO {
 			try {
 				return datastore.get(key);
 			} catch (EntityNotFoundException e) {
-				throw new OpenRoleException("["+system+"] Illegal identifier '"+docId+"' from user "+user.getKey(), "ID_NOT_FOUND", 403);
+				throw new OpenRoleException("["+system+"] Illegal identifier '"+docId+"' from user "+user.getKey(), "MSG.ID_NOT_FOUND", 403);
 			}
 		}
 		// new 

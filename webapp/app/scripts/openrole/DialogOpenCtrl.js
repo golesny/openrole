@@ -1,6 +1,6 @@
 "use strict";
 
-var DialogOpenCtrl = function ($scope, $modalInstance, $http, $rootScope, characterlist) {
+var DialogOpenCtrl = ['$scope', '$modalInstance', '$http', '$rootScope', 'characterlist', function ($scope, $modalInstance, $http, $rootScope, characterlist) {
     $scope.characterlist = characterlist;
     $scope.selected = {
         char: $scope.characterlist[0]
@@ -13,4 +13,4 @@ var DialogOpenCtrl = function ($scope, $modalInstance, $http, $rootScope, charac
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-};
+}];
