@@ -48,7 +48,7 @@ var initPDFTemplates = function(system, callback) {
 };
 
 // global controller
-app.controller('OpenroleCtrl',['$scope','$rootScope','$http','$location', function($scope, $rootScope, $http, $location) {
+app.controller('OpenroleCtrl',['$scope', function($scope) {
   $scope.openrole_module_name = 'Overview';
 }]);
 
