@@ -36,11 +36,11 @@ app.config(['$translateProvider', function ($translateProvider) {
     GENERATING_PDF : 'Generiere PDF',
     ERROR_LOAD_IMG : 'Konnte Bilder nicht laden. Grund:',
     OPEN_CHARACTER_TITLE: 'Öffne einen Charakter',
-    OPEN: 'Öffnen',
-    CANCEL: 'Abbrechen',
+    PDFTEMPLATE:'PDF-Template',
     MENU: {
       LOGOUT: 'Abmelden',
-      PREFERENCES: 'Einstellungen'
+      PREFERENCES: 'Einstellungen',
+      PREFERENCES_LOCAL: 'Lokale Einstellungen'
     },
     COMING: 'Kommt vielleicht mal ...',
     MSG: {
@@ -55,7 +55,13 @@ app.config(['$translateProvider', function ($translateProvider) {
       ID_NOT_FOUND: 'Der Charakter wurde für einen anderen Account angelegt und daher für diesen Account nicht abgespeichert werden. Erstelle einen neuen Charakter'
     },
     BUTTON: {
-      ADD: '{{name}} hinzufügen'
+      OPEN: 'Öffnen',
+      ADD: '{{name}} hinzufügen',
+      SAVE: 'Speichern',
+      CANCEL: 'Abbrechen'
+    },
+    PREF: {
+      DEVURL: 'Entwickler Extension URL'
     }
   })
 }]);

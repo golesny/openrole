@@ -10,6 +10,13 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
     $scope.imageToLoad = ['images/malmsturm/logo.dataurl','images/malmsturm/rune.dataurl'];
     $scope.imageLoaded = [];
     $scope.openrole = {'docId': ''};
+    $scope.registeredPDFTemplates = [];
+    initPDFTemplates($scope.openrole_module_name, function(obj, isAdditionalAdd) {
+      $scope.registeredPDFTemplates.push(obj);
+      if (isAdditionalAdd) {
+        $scope.$apply();
+      }
+    });
 
     $scope.reset = function() {
       // to avoid references we deep copy it
@@ -101,14 +108,18 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
       console.log("creating PDF.1");
 
       try {
-        var tmplName = eval('templateMalmsturm1');
+        var tmplName = eval($scope.openrole.pdftemplate);
         var doc = tmplName($scope.openrole, $scope.imageLoaded, $translate);
-        if ($location.$$host == 'localhost') {
-          // for development: open in new window (not working in IE)
-          doc.output('dataurlnewwindow');
+        if (!angular.isDefined(doc)) {
+          alertService.danger("Template did not return the document.");
         } else {
-          // for production: download file
-          doc.save("malmsturm.pdf");
+          if ($location.$$host == 'localhost') {
+            // for development: open in new window (not working in IE)
+            doc.output('dataurlnewwindow');
+          } else {
+            // for production: download file
+            doc.save("malmsturm.pdf");
+          }
         }
       } catch (e) {
         alertService.danger(e);
@@ -238,7 +249,8 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
         {"header":"Spin (3 Erfolge) erlaubt wahlweise",
         "content":["+1/-1 auf die nächste Aktion",
         "die Erzeugung eines zeitweiligen Aspekts"]}
-      ]
+      ],
+      "pdftemplate": "templateMalmsturm1"
     };
     // end empty character JSON
     // init

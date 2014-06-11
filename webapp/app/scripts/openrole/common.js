@@ -25,6 +25,28 @@ app.factory('$exceptionHandler', [function () {
   };
 }]);
 
+/* template block is for loading custom templates */
+var registeredTemplates = [];
+var registeredTemplatesCallbacks = {};
+// for pdf tenplate to register themself for a system
+var registerTemplate = function(system, id, descr) {
+  console.log("registering PDF template for "+system+" with id "+id+"("+descr+")");
+  var templ = {"system":system, "id":id, "name":descr};
+  registeredTemplates.push(templ);
+  if (system in registeredTemplatesCallbacks) {
+    registeredTemplatesCallbacks[system](templ, true);
+  }
+};
+var initPDFTemplates = function(system, callback) {
+  // filter all registered templates
+  for (var i=0;i<registeredTemplates.length; i++) {
+    if (registeredTemplates[i].system === system) {
+      callback(registeredTemplates[i], false);
+    }
+  }
+  registeredTemplatesCallbacks[system] = callback;
+};
+
 // global controller
 app.controller('OpenroleCtrl',['$scope','$rootScope','$http','$location', function($scope, $rootScope, $http, $location) {
   $scope.openrole_module_name = 'Overview';
@@ -46,6 +68,16 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       // init base config
       $rootScope.initialized = true;
       loaderService.setLoadingReady();
+
+      // init developer extension
+      var devUrl = localStorageService.get("DeveloperExtensionURL");
+      if (angular.isDefined(devUrl) && ! angular.isDefined($rootScope.devUrlAdded)) {
+        console.log("loading developer extension url: "+devUrl);
+        var s = document.createElement('script'); // use global document since Angular's $document is weak
+        s.src = devUrl;
+        document.body.appendChild(s);
+        $rootScope.devUrlAdded = true;
+      }
 
       // http://gregpike.net/demos/angular-local-storage/demo/demo.html
       $scope.login = function() {

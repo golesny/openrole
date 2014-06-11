@@ -4,7 +4,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
-    <title>Open Role - Malmsturm</title>
+    <title>Open Role - Character Generator Platform</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -18,7 +18,7 @@
     <!-- endbuild -->
 </head>
 <body ng-app="openrole">
-<div ng-controller="MalmsturmCtrl as ctrl">
+<div ng-controller="OpenroleCtrl">
     <div id="top-layer" ng-hide="loadingReady"><div class="panel panel-default loadinganel">
         <div class="panel-body">
             <div class="progress progress-striped active">
@@ -33,87 +33,28 @@
     <div ng-include="'views/dialog.alert.html'"></div>
     <!-- header end -->
 
-    <div class="container hideUninitalized" is-initialized="{{initialized}}">
+    <div class="container hideUninitalized" is-initialized="{{initialized}}" ng-controller="PreferencesCtrl">
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title" translate="MALMSTURM.TITLE_CHARACTER"></h3>
+                <h3 class="panel-title"><span class="glyphicon glyphicon-cog"></span> <span translate="MENU.PREFERENCES_LOCAL"></span></h3>
             </div>
             <div class="panel-body">
-                <input type="text" ng-model="openrole.charactername" class="form-control" placeholder="{{'MALMSTURM.CHARACTERNAME' |translate}}">
+                <label translate="PREF.DEVURL"></label>
+                <input type="text" ng-model="prefs.DeveloperExtensionURL" class="form-control" placeholder="{{'PREF.DEVURL' |translate}}">
+            </div>
+            <div class="panel-footer">
+                <button type="button" ng-click="savePref()" class="btn btn-primary" translate="BUTTON.SAVE" id="save"></button>
+                <button type="button" ng-click="loadPref()" class="btn btn-danger" translate="BUTTON.CANCEL" id="cancel"></button>
             </div>
         </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title" translate="MALMSTURM.SKILLS"></h3>
-            </div>
-            <ul class="list-group">
-                <li class="list-group-item" ng-repeat="list in openrole.skillpyramid">
-                    <div class="list-inline">
-                        <span class="badge or-skill-lbl">+{{openrole.skillpyramidstartvalue - $index}} {{openrole.stufenleiter[openrole.skillpyramidstartvalue - $index]}}</span>
-                        <span ng-repeat="item in list" data-drop="true"
-                              ng-model='list' jqyoui-droppable="{index: {{$index}}, onDrop:'ctrl.dropCallback(item, $index)'}"
-                              style="display:inline-block;padding:5px;">
-                          <span class="label label-default or-skill-box"
-                                ng-model="list"
-                                data-drag="{{item.title!='_'}}" data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{index: {{$index}}}">
-                             {{item.title}}
-                          </span>
-                        </span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <div openrole-input-list title="MALMSTURM.ASPECTS" placeholder="MALMSTURM.ASPECT" content="openrole.aspects" show-description-area="MALMSTURM.EVENTS"></div>
-
-        <div openrole-input-list title="MALMSTURM.TALENTS" placeholder="MALMSTURM.TALENTS_PLACEHOLDER" content="openrole.talents"></div>
-
-        <div openrole-input-list title="MALMSTURM.WEAPONS" placeholder="MALMSTURM.WEAPON" content="openrole.weapons"></div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title" translate="MALMSTURM.BELASTUNG"></h3>
-            </div>
-            <div class="panel-body">
-                <div class="row" ng-repeat="bel in openrole.belastungspunkte">
-                    <div class="col-xs-2"><label class="control-label" translate="MALMSTURM.{{bel.id}}"></label></div>
-                    <div class="col-xs-3" style="text-align: right"><label class="control-label">{{bel.defaultval}} + {{bel.skillbonus}} ({{bel.dependsOnSkill}}) + </label></div>
-                    <div class="col-xs-1"><input type="text" class="form-control input-sm" ng-model="bel.bonus" ng-change="calcBelastung()"></div>
-                    <div class="col-xs-6" style="text-align: left"><label class="control-label">= {{bel.total}} <img src="images/malmsturm/rune.jpg" style="height: 20px;" ng-repeat="x in bel.totalArr track by $index"></label></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title" translate="MALMSTURM.DIVERSES"></h3>
-            </div>
-            <ul  class="list-group">
-                <li class="list-group-item form-inline">
-                    <input type="text" class="form-control input-sm" ng-model="openrole.beute">
-                    <label class="control-label" translate="MALMSTURM.ANZAHL_BEUTE_ANZEIGEN"></label>
-                </li>
-                <li class="list-group-item form-inline">
-                    <label class="control-label" translate="PDFTEMPLATE"></label>:
-
-                    <or-dropdown data-menu-type="button" select-val="openrole.pdftemplate = selectedVal"
-                                 preselected-item="openrole.pdftemplate" data-dropdown-data="registeredPDFTemplates"></or-dropdown>
-
-                </li>
-
-
-
-            </ul>
-        </div>
-
-    </div><!-- container -->
+    </div>
 
     <!-- footer start -->
     <footer ng-include="'views/footer.html'"></footer>
 </div>
 </body>
+
 
 <!-- build:js scripts/vendor.js -->
 <!-- bower:js -->
@@ -156,12 +97,6 @@
 <script src="scripts/openrole/openroleInputList.js"></script>
 <script src="scripts/openrole/PreferencesCtrl.js"></script>
 <script src="scripts/openrole/directiveDropdown.js"></script>
-<!-- endbuild -->
-
-<!-- build:js({.tmp,app}) scripts/malmsturm.js -->
-<script src="scripts/malmsturm/MalmsturmCtrl.js"></script>
-<script src="scripts/malmsturm/pdf.1.js"></script>
-<script src="scripts/malmsturm/locale.js"></script>
 <!-- endbuild -->
 
 </html>

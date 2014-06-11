@@ -1,4 +1,6 @@
 
+registerTemplate("malmsturm", "templateMalmsturm1", "Default Template 1x A4");
+
 function templateMalmsturm1(charData, imageLoaded, $translate) {
   var doc = new jsPDF();
 
