@@ -30,7 +30,7 @@ app.config(['$translateProvider', function ($translateProvider) {
   });
 
   $translateProvider.translations('de', {
-    WELCOME: 'Willkommen bei Open Role',
+    WELCOME: 'Willkommen bei openrole.net',
     INTRODUCTION: 'Klicke auf das System Logo um einen Charakter zu erstellen',
     LOADING: 'Lade',
     GENERATING_PDF : 'Generiere PDF',

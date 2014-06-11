@@ -7,7 +7,7 @@ describe("navigation-tester", function() {
 
   describe("index.title", function() {
     it("should display correct title", function() {
-      expect(browser.getTitle()).toBe("Open Role - Character Generator Platform");
+      expect(browser.getTitle()).toBe("openrole.net - Character Generator Platform");
     })
   });
 

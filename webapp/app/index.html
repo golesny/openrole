@@ -4,7 +4,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
-    <title>Open Role - Character Generator Platform</title>
+    <title>openrole.net - Character Generator Platform</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -41,12 +41,14 @@
             <div class="panel-body" translate="INTRODUCTION"></div>
         </div>
 
-        <div class="panel panel-default hideUninitalized" is-initialized="{{initialized}}" ng-repeat="system in systems">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{system.name}}</h3>
-            </div>
-            <div class="panel-body">
-                <a ng-href="{{system.id}}.html"><img ng-src="images/{{system.id}}/logo.jpg" ng-alt="{{system.id}}"></a>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4" ng-repeat="system in systems">
+            <div class="panel panel-default hideUninitalized" is-initialized="{{initialized}}" >
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{system.name}}</h3>
+                </div>
+                <div class="panel-body">
+                    <a ng-href="{{system.id}}.html"><img ng-src="images/{{system.id}}/logo.jpg" ng-alt="{{system.id}}"></a>
+                </div>
             </div>
         </div>
     </div>

@@ -9,5 +9,8 @@ var app = angular.module('openrole',
     ]);
 
 app.constant("SYSTEMS",
-  [/*{"id":"dungeonslayers", "name":"Dungeonslayers"}, */{"id":"malmsturm", "name":"Malmsturm"}]
+  [
+    //{"id":"dungeonslayers", "name":"Dungeonslayers"},
+    {"id":"malmsturm", "name":"Malmsturm"}
+  ]
 );
