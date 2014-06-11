@@ -1,0 +1,6 @@
+{
+  "name": "Open Role PDF Template Development Extension",
+  "manifest_version": 2,
+  "version": "1.0",
+  "web_accessible_resources": ["pdf.dev.js"]
+}
