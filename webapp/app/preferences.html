@@ -36,13 +36,70 @@
     <div class="container hideUninitalized" is-initialized="{{initialized}}" ng-controller="PreferencesCtrl">
 
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><span class="glyphicon glyphicon-cog"></span> <span translate="MENU.PREFERENCES_LOCAL"></span></h3>
-            </div>
-            <div class="panel-body">
-                <label translate="PREF.DEVURL"></label>
-                <input type="text" ng-model="prefs.DeveloperExtensionURL" class="form-control" placeholder="{{'PREF.DEVURL' |translate}}">
-            </div>
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                <span class="glyphicon glyphicon-cog"></span> <span translate="PREF.DEVURL"></span>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <input type="text" ng-model="prefs.DeveloperExtensionURL" class="form-control" placeholder="{{'PREF.DEVURL' |translate}}">
+
+                            <div class="well well-lg">
+                                {{'HELP.DEVURL.TITLE' |translate}}:
+                                <ol>
+                                    <li translate="HELP.DEVURL.STEP1"></li>
+                                    <li translate="HELP.DEVURL.STEP2"></li>
+                                    <li translate="HELP.DEVURL.STEP3"></li>
+                                    <li translate="HELP.DEVURL.STEP4"></li>
+                                    <li translate="HELP.DEVURL.STEP5"></li>
+                                    <li translate="HELP.DEVURL.STEP6"></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                Collapsible Group Item #2
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                Collapsible Group Item #3
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                        </div>
+                    </div>
+                </div>
+            </div -->
+
+
+
+
+
+
+
+
             <div class="panel-footer">
                 <button type="button" ng-click="savePref()" class="btn btn-primary" translate="BUTTON.SAVE" id="save"></button>
                 <button type="button" ng-click="loadPref()" class="btn btn-danger" translate="BUTTON.CANCEL" id="cancel"></button>
