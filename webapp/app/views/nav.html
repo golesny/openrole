@@ -3,46 +3,33 @@
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <a class="navbar-brand" href="index.html">openrole.net</a>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-main">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="index.html">openrole.net</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse">
+        <div class="collapse navbar-collapse" id="navbar-collapse-main" ng-controller="LoginCtrl">
             <ul class="nav navbar-nav">
-                <!-- li class="active" -->
-                <li ng-hide="{{openrole_module_name == 'Overview'}}"><a href="#" ng-click="reset()"><span class="glyphicon glyphicon-file"></span> Neu/Reset</a></li>
-                <li ng-hide="{{openrole_module_name == 'Overview'}}"><a  href="#" ng-click="createPDF()"><span class="glyphicon glyphicon-download"></span> PDF erzeugen</a></li>
-            </ul>
-          <div ng-controller="LoginCtrl"  class="collapse navbar-collapse" id="navbar-collapse-1">
-              <ul class="nav navbar-nav" ng-show="loggedin">
-                  <li class="dropdown" ng-hide="{{openrole_module_name == 'Overview'}}">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" dropdown><span class="glyphicon glyphicon-user"></span> Charakter <b class="caret"></b></a>
-                      <ul class="dropdown-menu">
-                          <li><a href="#" ng-click="open()"><span class="glyphicon glyphicon-open"></span> Öffnen ...</a></li>
-                          <li><a href="#" ng-click="store()"><span class="glyphicon glyphicon-save"></span> Speichern</a></li>
-                      </ul>
-                  </li>
-                  <li><a href="preferences.html"><span class="glyphicon glyphicon-cog"></span> <span translate="MENU.PREFERENCES"></span></a></li>
-                  <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon glyphicon-off"></span> <span translate="MENU.LOGOUT"></span></a></li>
+                <li ng-hide="openrole_module_name == 'Overview'"><a href="#" ng-click="reset()" title="Neu / Reset"><span class="glyphicon glyphicon-file"></span> Neu</a></li>
+                <li ng-hide="openrole_module_name == 'Overview'"><a  href="#" ng-click="createPDF()" title="PDF erzeugen"><span class="glyphicon glyphicon-download"></span> PDF</a></li>
+                <li ng-show="loggedin && openrole_module_name != 'Overview'"><a href="#" ng-click="open()"><span class="glyphicon glyphicon-open"></span> Öffnen</a></li>
+                <li ng-show="loggedin && openrole_module_name != 'Overview'"><a href="#" ng-click="store()"><span class="glyphicon glyphicon-save"></span> Speichern</a></li>
+                <li><a href="preferences.html" title="{{'MENU.PREFERENCES' | translate}}"><span class="glyphicon glyphicon-cog"></span></a></li>
+                <li ng-show="loggedin"><a href="#" ng-click="logout()" title="{{'MENU.LOGOUT' | translate}}"><span class="glyphicon glyphicon glyphicon-off"></span></a></li>
               </ul>
               <form class="navbar-form navbar-left" ng-submit="login()" ng-hide="loggedin">
                 <div class="form-group" >
                     <input type="text" class="form-control" placeholder="e-mail" ng-model="email">
                     <input type="password" class="form-control" placeholder="passwort" ng-model="pw">
                     <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-log-in"></span> Anmelden</button>
-                    <!-- Button trigger modal -->
                     <button type="button" class="btn btn-link" ng-click="registerDialog()"><span class="glyphicon glyphicon-edit"></span> Registrieren</button>
                 </div>
               </form>
-
-          </div><!-- LoginCtrl -->
-
 
 
           <!-- div ng-controller="LocaleCtrl">
