@@ -23,7 +23,7 @@ var DialogRegistrationCtrl = ['$scope', '$modalInstance', '$http', '$rootScope',
         }
         console.log("validation passed email="+this.email);
         $scope.registerError = null;
-        $http.post($rootScope.serviceHost + '/register?email='+this.email, this.pw)
+        $http.post($rootScope.serviceHost + '/register?email='+window.escape(this.email)+'&nick='+window.escape(this.nick), this.pw)
             .success(function(data, status, headers, config) {
                 console.log("Registered user: ["+status+"] "+data);
                 if (status == 201) {

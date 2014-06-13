@@ -25,6 +25,10 @@ app.factory('$exceptionHandler', [function () {
   };
 }]);
 
+app.filter('escape', function() {
+  return window.escape;
+});
+
 /* template block is for loading custom templates */
 var registeredTemplates = [];
 var registeredTemplatesCallbacks = {};
@@ -64,6 +68,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       $rootScope.serviceHost = $rootScope.serviceHost + "/open_role_service";
       $http.defaults.headers.common["X-Openrole-Token"] = localStorageService.get("X-Openrole-Token");
       $scope.loggedin = ($http.defaults.headers.common["X-Openrole-Token"] != null);
+      $rootScope.nick = localStorageService.get("X-Openrole-Nick");
 
       // init base config
       $rootScope.initialized = true;
@@ -82,7 +87,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       // http://gregpike.net/demos/angular-local-storage/demo/demo.html
       $scope.login = function() {
         console.log("login");
-        $http.post($rootScope.serviceHost + '/login?email='+$scope.email, $scope.pw, {
+        $http.post($rootScope.serviceHost + '/login?email='+window.escape($scope.email), $scope.pw, {
           headers: { 'Content-Type': 'plain/text; charset=UTF-8'}
         })
           .success(function(data, status, headers, config){
@@ -100,9 +105,12 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         $http.defaults.headers.common["X-Openrole-Token"] = null;
         $scope.loggedin = false;
         localStorageService.remove("X-Openrole-Token");
-      }
+        localStorageService.remove("X-Openrole-Nick");
+        $rootScope.nick = "";
+      };
+
       $scope.logout = function() {
-        console.log("loggin out");
+        console.log("log out");
         loaderService.setLoadingStart("Logout");
         $http.get($rootScope.serviceHost + '/logout')
           .success(function(data, status, headers, config){
@@ -120,12 +128,14 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
           });
       };
 
-      $scope.internalLogin = function(token) {
+      $scope.internalLogin = function(responseObj) {
         // http://stackoverflow.com/questions/20777700/angular-js-controller-gets-the-cookie-from-login-request-header-even-after-doing
-        $http.defaults.headers.common["X-Openrole-Token"] = token;
+        $http.defaults.headers.common["X-Openrole-Token"] = responseObj.token;
         $scope.loggedin = true;
-        localStorageService.add("X-Openrole-Token", token);
+        localStorageService.add("X-Openrole-Token", responseObj.token);
         alertService.success('MSG.LOGGED_IN');
+        localStorageService.add("X-Openrole-Nick", responseObj.nick);
+        $rootScope.nick = responseObj.nick;
       };
 
       $scope.store = function() {
@@ -214,9 +224,9 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
           }
         });
 
-        modalInstance.result.then(function (token) {
+        modalInstance.result.then(function (responseObj) {
           console.info("dialog closed. user registered");
-          $scope.internalLogin(token);
+          $scope.internalLogin(responseObj);
         }, function () {
           console.info('Modal dismissed at: ' + new Date());
         });

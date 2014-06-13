@@ -64,7 +64,18 @@ app.config(['$translateProvider', function ($translateProvider) {
       SERVICE_ACTION_INVALID: 'Illegale Server-Aktion',
       USER_PW_WRONG: 'Falscher User oder falsches Passwort',
       USER_ALREADY_EXISTS: 'Der Username existiert schon. Bitte wähle einen anderen Namen',
+      NICK_ALREADY_EXISTS: 'Der Nickname existiert schon. Bitte wähle einen anderen Namen',
       ID_NOT_FOUND: 'Der Charakter wurde für einen anderen Account angelegt und daher für diesen Account nicht abgespeichert werden. Erstelle einen neuen Charakter'
+    },
+    LABEL: {
+      NICK: 'Nickname',
+      NICK_NOTE: ' (freiwillig, nur für die Charakter-Freigabe-Funktion)',
+      EMAIL: 'E-Mail',
+      PW1: 'Passwort',
+      PW2: 'Passwort (wiederholen)',
+      DATAPROTECTION: 'Die E-Mail und das Passwort werden unumkehrbar verschlüsselt (SHA1 Hash) abgespeichert und können daher nicht wiederhergestellt werden. Nur zum Login und für die Passwort vergessen Funktion wird die E-Mail übertragen.\n'+
+        'Die E-Mail wird nie geprüft, nicht weitergegeben und wird in keinster Weise weiterverwendet außer für die Passwort vergessen Funktion.\n'+
+        'Möchtest du auf die Passwort vergessen Funktion verzichten, kannst du einen beliebigen Usernamen benutzen, das hat zur Folge, dass bei einem Verlust des Passworts der Zugang nur mit einer freiwilligen Spende und einer E-Mail über das Support-System wiederhergestellt werden.'
     },
     BUTTON: {
       OPEN: 'Öffnen',

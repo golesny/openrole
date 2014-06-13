@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,6 +23,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -36,6 +39,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 	public static final String INTERNAL_SERVER_ERROR = "MSG.INTERNAL_SERVER_ERROR";
 	private static final String CONTENTTYPE_JSON_UTF_8 = "application/json; charset=UTF-8";
 	private static final String USER_PROP_USER = "user";
+	private static final String USER_PROP_NICK = "nick";
 	private static final String USER_PROP_PWHASH = "pwhash";
 	private static final String USER_PROP_RANDOMSHA1 = "randomsha1";
 	private static final String HEADER_TOKEN = "X-Openrole-Token";
@@ -76,7 +80,17 @@ public class OpenroleServiceServlet extends HttpServlet {
 				log.fine("returning config");
 				return;
 			}
-			Entity user = getUser(req.getHeader(HEADER_TOKEN)); 
+			String token = req.getHeader(HEADER_TOKEN);
+			Entity user = null;
+			if (StringUtils.isEmpty(token)) {
+				if (SLASH_LOGOUT.equals(req.getPathInfo())) {
+					// already logged out
+					resp.setStatus(200);
+					return;
+				}
+			} else {
+				user = getUser(token); 
+			}
 			checkUserToken(user);
 			
 			if (SLASH_LOGOUT.equals(req.getPathInfo())) {
@@ -123,14 +137,14 @@ public class OpenroleServiceServlet extends HttpServlet {
 			if (SLASH_LOGIN.equals(req.getPathInfo())) {
 				String email = req.getParameter("email");
 				String pw = PathUtils.getPost(req.getReader());
-				String hash = doLogin(email, pw);
+				String responseJson = doLogin(email, pw);
 				resp.setStatus(200); // ok
-				resp.setContentType("text/plain");
-				resp.getWriter().write(hash);
-				log.fine(" User logged in: "+email+ " pwHash="+hash);
+				resp.setContentType(CONTENTTYPE_JSON_UTF_8);
+				resp.getWriter().write(responseJson);
+				log.fine("User logged in: "+email);
 				return;
 			} else if (SLASH_REGISTER.equals(req.getPathInfo())) {
-				String hash = doRegister(req.getParameter("email"), PathUtils.getPost(req.getReader()));
+				String hash = doRegister(req.getParameter("email"), PathUtils.getPost(req.getReader()), req.getParameter("nick"));
 				resp.setContentType("text/plain");
 				resp.setStatus(201); // created
 				resp.getWriter().write(hash);
@@ -220,6 +234,11 @@ public class OpenroleServiceServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * @param email
+	 * @param pw
+	 * @return json with login data
+	 */
 	public String doLogin(String email, String pw) {
 		String lowercaseEmailSHA1 = DigestUtils.getSHA1(email.toLowerCase());
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -234,7 +253,10 @@ public class OpenroleServiceServlet extends HttpServlet {
 					user.setProperty(USER_PROP_RANDOMSHA1, randomSHA1);
 					datastore.put(user);
 				}
-				return randomSHA1;
+				JSONObject json = new JSONObject();
+				json.put("nick", user.getProperty(USER_PROP_NICK));
+				json.put("token", randomSHA1);
+				return json.toString();
 			} else {
 				throw new OpenRoleException("User ID "+user.getProperty(USER_PROP_USER)+" typed wrong password", "USER_PW_WRONG", 403);
 			}
@@ -243,16 +265,28 @@ public class OpenroleServiceServlet extends HttpServlet {
 		}
 	}
 
-	public String doRegister(String email, String pw) {
+	public String doRegister(String email, String pw, String nick) {
 		String lowercaseEmailSHA1 = DigestUtils.getSHA1(email.toLowerCase());
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Key key = KeyFactory.createKey(USER_PROP_USER, lowercaseEmailSHA1);
 		try {
 			datastore.get(key);
-			throw new OpenRoleException("User "+lowercaseEmailSHA1+" already exists while registration", "MSG.USER_ALREADY_EXISTS", 409);
+			throw new OpenRoleException("E-Mail "+lowercaseEmailSHA1+" already exists while registration", "MSG.USER_ALREADY_EXISTS", 409);
 		} catch (EntityNotFoundException e) {
+			// check the nick, if not available
+			if (!StringUtils.isEmpty(nick)) {
+				Query query = new Query(USER_PROP_USER).setFilter(new Query.FilterPredicate(USER_PROP_NICK, FilterOperator.EQUAL, nick));
+				try {
+				  if (datastore.prepare(query).asSingleEntity() != null) {
+					  throw new OpenRoleException("There are to many results for nick "+nick, "MSG.NICK_ALREADY_EXISTS", 409);
+				  }
+				} catch (TooManyResultsException e1) {
+					throw new OpenRoleException("There are to many results for nick "+nick, "MSG.NICK_ALREADY_EXISTS", 409);
+				}
+			}
 			// we can proceed
 			Entity newUser = new Entity(key);
+			newUser.setProperty(USER_PROP_NICK, nick);
 			String pwHash = DigestUtils.getSHA1(pw);
 			newUser.setProperty(USER_PROP_PWHASH, pwHash);
 			String randomsha1 = DigestUtils.getSHA1(email + "-" + System.currentTimeMillis());
@@ -263,13 +297,14 @@ public class OpenroleServiceServlet extends HttpServlet {
 	}
 	
 	private Entity getUser(String token) {
+		log.fine("getting user with token "+token);
 		// Get the Datastore Service
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
 		Filter randomSha1Filter = new FilterPredicate(USER_PROP_RANDOMSHA1, FilterOperator.EQUAL, token);
 
 		// Use class Query to assemble a query
-		Query q = new Query("user").setFilter(randomSha1Filter);
+		Query q = new Query(USER_PROP_USER).setFilter(randomSha1Filter);
 
 		// Use PreparedQuery interface to retrieve results
 		PreparedQuery pq = datastore.prepare(q);
@@ -293,7 +328,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 			sb.append(" | ").append(ore.resourceKey).append(":").append(ore.responseCode);
 			log.warning(sb.toString());
 		} else {
-			log.severe(sb.toString());
+			log.severe(ExceptionUtils.getStackTrace(e));
 		}
 	}
 }
