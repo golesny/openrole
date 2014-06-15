@@ -18,6 +18,19 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
       }
     });
 
+    $scope.hideMoveButton = function(destList, skillListIndex, buttonSkillListIndex) {
+      if (skillListIndex == buttonSkillListIndex) {
+        // cannot move into same list
+        return true;
+      }
+      for (var i=0; i<destList.length; i++) {
+        if (destList[i].title == '_') {
+          return false;
+        }
+      }
+      return true;
+    };
+
     $scope.reset = function() {
       // to avoid references we deep copy it
       $scope.openrole = JSON.parse(JSON.stringify($scope.emptyCharacterJSON));
@@ -31,21 +44,80 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
       $scope.calcBelastung();
     };
 
-    // drag&Drap on skills
-    $scope.dropStartCallback = function(event, ui, fromListIndex, itemIndex, item) {
-      $scope.draggedFromListIndex = fromListIndex;
-      $scope.draggedIndex = itemIndex;
-      $scope.draggedItem = item;
-    };
-    $scope.dropCallback = function(event, ui, item) {
-      if (item.title == '_') {
-        var fillerList = $scope.openrole.skillpyramid[$scope.openrole.skillpyramid.length-1];
-        var emptyElementIdx = fillerList.indexOf(item);
-        if (emptyElementIdx > -1) {
-          fillerList.splice(emptyElementIdx, 1);
+    //
+    $scope.moveSkill = function(fromList, item, itemindex, tolistindex) {
+      var toList = $scope.openrole.skillpyramid[tolistindex];
+      if (toList === fromList) {
+        return;
+      }
+      // add
+      if ($scope.openrole.skillpyramid.length-1 == tolistindex) {
+        // add to the last list
+        toList.push(item);
+        // add empty to old list
+        fromList[itemindex] = {title: "_"};
+      } else {
+        // replace an empty entry
+        for (var i=0; i<toList.length; i++) {
+          if (toList[i].title == "_") {
+            toList[i] = item;
+            if ($scope.openrole.skillpyramid[$scope.openrole.skillpyramid.length-1] == fromList) {
+              // just remove from last list
+              fromList.splice(itemindex, 1);
+            } else {
+              // set empty item
+              fromList[itemindex] = {"title": '_'};
+            }
+            break;
+          }
         }
       }
-      $scope.calcBelastung();
+      // reset the value
+      $scope.listDescr = undefined;
+      // reset mark for skill switch
+      $scope.markedListIdx = undefined;
+      $scope.markedSkillIdx = undefined;
+    };
+
+    $scope.markOrMoveSkill = function(listIdx, skillIdx) {
+      if (angular.isDefined($scope.markedListIdx)) {
+        // move marked skill
+        var srcList = $scope.openrole.skillpyramid[$scope.markedListIdx];
+        var destList = $scope.openrole.skillpyramid[listIdx];
+        var tmp = destList[skillIdx];
+        //
+        if (srcList[$scope.markedSkillIdx].title == '_' && ($scope.openrole.skillpyramid.length - 1) == listIdx) {
+          // do not add emtpy item to last list, remove old entry
+          destList.splice(skillIdx, 1);
+        } else {
+          // add to the list
+          destList[skillIdx] = srcList[$scope.markedSkillIdx];
+        }
+        //
+        if (tmp.title == '_' && ($scope.openrole.skillpyramid.length - 1) == $scope.markedListIdx) {
+          // remove the moved item from last list
+          srcList.splice($scope.markedSkillIdx, 1);
+        } else {
+          srcList[$scope.markedSkillIdx] = tmp;
+        }
+        // unmark
+        $scope.markedListIdx = undefined;
+        $scope.markedSkillIdx = undefined;
+      } else {
+        $scope.markedListIdx = listIdx;
+        $scope.markedSkillIdx = skillIdx;
+      }
+    };
+
+    $scope.getMark = function(item, listIdx, skillIdx) {
+      var mark = "";
+      if ($scope.markedListIdx === listIdx && $scope.markedSkillIdx == skillIdx) {
+        mark = "marked";
+      }
+      if (item.title == '_') {
+        mark += "empty";
+      }
+      return mark;
     };
 
     $scope.calcBelastung = function() {

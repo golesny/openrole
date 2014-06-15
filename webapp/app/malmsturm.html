@@ -49,18 +49,33 @@
                 <h3 class="panel-title" translate="MALMSTURM.SKILLS"></h3>
             </div>
             <ul class="list-group">
-                <li class="list-group-item" ng-repeat="list in openrole.skillpyramid">
+                <li class="list-group-item" ng-repeat="list in openrole.skillpyramid track by $index">
                     <div class="list-inline">
                         <span class="badge or-skill-lbl">+{{openrole.skillpyramidstartvalue - $index}} {{openrole.stufenleiter[openrole.skillpyramidstartvalue - $index]}}</span>
-                        <span ng-repeat="item in list" data-drop="true"
-                              ng-model='list' jqyoui-droppable="{index: {{$index}}, onDrop:'ctrl.dropCallback(item, $index)'}"
-                              style="display:inline-block;padding:5px;">
-                          <span class="label label-default or-skill-box"
-                                ng-model="list"
-                                data-drag="{{item.title!='_'}}" data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{index: {{$index}}}">
-                             {{item.title}}
-                          </span>
-                        </span>
+
+                        <!-- Split button -->
+                        <div class="btn-group" ng-repeat="item in list track by $index" style="margin: 2px;">
+                            <button type="button" class="btn btn-or-skill" data-mark="{{getMark(item, $parent.$index, $index)}}"
+                                    style="min-width: 120px"
+                                    id="skill_List{{$parent.$index}}_Skill{{$index}}"
+                                    ng-click="markOrMoveSkill($parent.$index, $index)">{{item.title}}</button>
+                            <button type="button" class="btn btn-or-skill-dd dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    ng-hide="item.title=='_'" id="skillDD_List{{$parent.$index}}_Skill{{$index}}">
+                                <span class="caret"></span>
+                                <span class="sr-only">Move</span>
+                            </button>
+                            <div class="dropdown-menu" role="menu">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default"
+                                            ng-repeat="destlist in openrole.skillpyramid"
+                                            ng-click="moveSkill(list, item, $parent.$index, $index)"
+                                            ng-hide="hideMoveButton(destlist, $parent.$parent.$index, $index)"
+                                            id="moveBtn_List{{$parent.$parent.$index}}_Skill{{$parent.$index}}_{{$index}}">
+                                        +{{openrole.skillpyramidstartvalue - $index}}</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </li>
             </ul>
