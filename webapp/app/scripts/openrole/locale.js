@@ -52,7 +52,8 @@ app.config(['$translateProvider', function ($translateProvider) {
     PDFTEMPLATE:'PDF-Template',
     MENU: {
       LOGOUT: 'Abmelden',
-      PREFERENCES: 'Einstellungen'
+      PREFERENCES: 'Einstellungen',
+      CONTACT: 'Kontakt/Impressum'
     },
     COMING: 'Kommt vielleicht mal ...',
     MSG: {
