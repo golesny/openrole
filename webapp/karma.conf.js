@@ -47,7 +47,7 @@ module.exports = function(config) {
   'app/scripts/openrole/DialogRegistrationCtrl.js',
   'app/scripts/openrole/AlertService.js',
   'app/scripts/openrole/LoaderService.js',
-  'app/scripts/openrole/openroleInputList.js',
+  'app/scripts/openrole/directiveInputList.js',
   'app/scripts/openrole/PreferencesCtrl.js',
   'app/scripts/openrole/directiveDropdown.js',
     'app/scripts/malmsturm/MalmsturmCtrl.js',

@@ -322,7 +322,8 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
         "content":["+1/-1 auf die nächste Aktion",
         "die Erzeugung eines zeitweiligen Aspekts"]}
       ],
-      "pdftemplate": "templateMalmsturm1"
+      "pdftemplate": "templateMalmsturm1",
+      "shares": []
     };
     // end empty character JSON
     // init
