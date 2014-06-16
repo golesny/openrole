@@ -23,6 +23,10 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
         // cannot move into same list
         return true;
       }
+      if (buttonSkillListIndex == ($scope.openrole.skillpyramid.length - 1)) {
+        // we can always move to last list
+        return false;
+      }
       for (var i=0; i<destList.length; i++) {
         if (destList[i].title == '_') {
           return false;
