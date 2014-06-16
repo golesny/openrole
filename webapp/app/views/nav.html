@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-main">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-main" id="smalldevmenu">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -19,7 +19,7 @@
                 <li ng-hide="openrole_module_name == 'Overview'"><a  href="#" ng-click="createPDF()" title="PDF erzeugen"><span class="glyphicon glyphicon-download"></span> PDF</a></li>
                 <li ng-show="loggedin && openrole_module_name != 'Overview'"><a href="#" ng-click="open()"><span class="glyphicon glyphicon-open"></span> Öffnen</a></li>
                 <li ng-show="loggedin && openrole_module_name != 'Overview'"><a href="#" ng-click="store()"><span class="glyphicon glyphicon-save"></span> Speichern</a></li>
-                <li><a href="preferences.html" title="{{'MENU.PREFERENCES' | translate}}"><span class="glyphicon glyphicon-cog"></span></a></li>
+                <li><a href="preferences.html" title="{{'MENU.PREFERENCES' | translate}}" id="menuBtnPref"><span class="glyphicon glyphicon-cog"></span></a></li>
                 <li ng-show="loggedin"><a href="#" ng-click="logout()" title="{{'MENU.LOGOUT' | translate}}"><span class="glyphicon glyphicon glyphicon-off"></span></a></li>
               </ul>
               <form class="navbar-form navbar-left" ng-submit="login()" ng-hide="loggedin">
