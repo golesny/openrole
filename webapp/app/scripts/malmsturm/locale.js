@@ -32,7 +32,7 @@ app.config(['$translateProvider',function ($translateProvider) {
       MITTEL: 'Mittel',
       SCHWER: 'Schwer',
       BEUTE: 'Beute',
-      DIVERSES: 'Diverse',
+      DIVERSES: 'Diverses',
       ANZAHL_BEUTE_ANZEIGEN: 'Beute-Ankreuzkästchen anzeigen (0 = ausblenden)'
     }
   })

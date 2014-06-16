@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <title>openrole.net - Malmsturm GM</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css styles/vendor.css -->
+    <link rel="stylesheet" href="styles/vendor.css">
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css({.tmp,app}) styles/openrole.css -->
+    <link rel="stylesheet" href="styles/openrole.css">
+    <!-- endbuild -->
+</head>
+<body ng-app="openrole">
+<div ng-controller="MalmsturmGMCtrl as ctrl">
+    <div id="top-layer" ng-hide="loadingReady"><div class="panel panel-default loadinganel">
+        <div class="panel-body">
+            <div class="progress progress-striped active">
+                <div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    {{loading}}
+                </div>
+            </div>
+        </div>
+    </div></div>
+    <div ng-include="'views/nav.html'"></div>
+    <div ng-include="'views/dialog.open.html'"></div>
+    <div ng-include="'views/dialog.alert.html'"></div>
+    <!-- header end -->
+
+    <div class="container hideUninitalized" is-initialized="{{initialized}}">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" translate="MALMSTURMGM.PDFPREF"></h3>
+            </div>
+            <ul  class="list-group">
+                <li class="list-group-item form-inline">
+                    <label class="control-label" translate="PDFTEMPLATE"></label>:
+
+                    <or-dropdown data-menu-type="button" select-val="openrole.pdftemplate = selectedVal"
+                                 preselected-item="openrole.pdftemplate" data-dropdown-data="registeredPDFTemplates"></or-dropdown>
+
+                </li>
+            </ul>
+        </div>
+
+    </div><!-- container -->
+
+    <!-- footer start -->
+    <footer ng-include="'views/footer.html'"></footer>
+</div>
+</body>
+
+<!-- build:js scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/es5-shim/es5-shim.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/json3/lib/json3.min.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/carousel.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
+<script src="bower_components/angular-translate/angular-translate.js"></script>
+<script src="bower_components/jspdf/dist/jspdf.min.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/angular-touch/angular-touch.js"></script>
+<script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+<script src="bower_components/angular-dragdrop/src/angular-dragdrop.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js({.tmp,app}) scripts/openrole.js -->
+<script src="scripts/app.js"></script>
+<script src="scripts/openrole/jsPdf.openrole.plugins.js"></script>
+<script src="scripts/openrole/locale.js"></script>
+<script src="scripts/openrole/common.js"></script>
+<script src="scripts/openrole/DialogOpenCtrl.js"></script>
+<script src="scripts/openrole/DialogRegistrationCtrl.js"></script>
+<script src="scripts/openrole/AlertService.js"></script>
+<script src="scripts/openrole/LoaderService.js"></script>
+<script src="scripts/openrole/directiveInputList.js"></script>
+<script src="scripts/openrole/PreferencesCtrl.js"></script>
+<script src="scripts/openrole/directiveDropdown.js"></script>
+<!-- endbuild -->
+
+<!-- build:js({.tmp,app}) scripts/malmsturmgm.js -->
+<script src="scripts/malmsturmgm/MalmsturmGMCtrl.js"></script>
+<script src="scripts/malmsturmgm/pdf.1.js"></script>
+<script src="scripts/malmsturmgm/locale.js"></script>
+<!-- endbuild -->
+
+</html>
