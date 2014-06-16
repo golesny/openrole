@@ -34,6 +34,10 @@ img { max-width: 100%; height: auto}
   visibility: inherit;
 }
 
+.ng-cloak {
+  display: none;
+}
+
 /* malmsturm */
 $or-skillboxcolor-inactive: rgb(190, 190, 190);
 $or-skillboxcolor-active: rgb(47, 47, 47);
