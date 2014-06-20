@@ -66,7 +66,9 @@ app.config(['$translateProvider', function ($translateProvider) {
       USER_PW_WRONG: 'Falscher User oder falsches Passwort',
       USER_ALREADY_EXISTS: 'Der Username existiert schon. Bitte wähle einen anderen Namen',
       NICK_ALREADY_EXISTS: 'Der Nickname existiert schon. Bitte wähle einen anderen Namen',
-      ID_NOT_FOUND: 'Der Charakter wurde für einen anderen Account angelegt und daher für diesen Account nicht abgespeichert werden. Erstelle einen neuen Charakter'
+      ID_NOT_FOUND: 'Der Charakter wurde für einen anderen Account angelegt und daher für diesen Account nicht abgespeichert werden. Erstelle einen neuen Charakter',
+      COULD_NOT_LOAD_SHARED: 'Konnte die Liste der freigegebenen Charaktere nicht laden.',
+      NOT_LOGGED_IN: 'Du bist nicht eingeloggt. Bitte melde dich neu an.'
     },
     LABEL: {
       NICK: 'Nickname',

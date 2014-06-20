@@ -4,8 +4,8 @@
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
 
-var DialogRegistrationCtrl = ['$scope', '$modalInstance', '$http', '$rootScope', '$translate',
-  function ($scope, $modalInstance, $http, $rootScope,$translate) {
+var DialogRegistrationCtrl = ['$scope', '$modalInstance', '$http', '$rootScope', '$translate','SERVICEURL',
+  function ($scope, $modalInstance, $http, $rootScope,$translate, SERVICEURL) {
 
     $scope.register = function () {
         console.log("validate register user data");
@@ -23,7 +23,7 @@ var DialogRegistrationCtrl = ['$scope', '$modalInstance', '$http', '$rootScope',
         }
         console.log("validation passed email="+this.email);
         $scope.registerError = null;
-        $http.post($rootScope.serviceHost + '/register?email='+window.escape(this.email)+'&nick='+window.escape(this.nick), this.pw)
+        $http.post(SERVICEURL + '/register?email='+window.escape(this.email)+'&nick='+window.escape(this.nick), this.pw)
             .success(function(data, status, headers, config) {
                 console.log("Registered user: ["+status+"] "+data);
                 if (status == 201) {

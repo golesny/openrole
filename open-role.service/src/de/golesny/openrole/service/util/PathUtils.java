@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.golesny.openrole.service.OpenRoleException;
 import de.golesny.openrole.service.RequestInfo;
 import de.golesny.openrole.service.ServiceActions;
 
@@ -35,7 +36,11 @@ public class PathUtils {
 				// parse the action
 				ServiceActions action = null;
 				if (parts.length > 1) {
-					action = ServiceActions.valueOf(parts[1]);
+					try {
+						action = ServiceActions.valueOf(parts[1]);
+					} catch (IllegalArgumentException e) {
+						throw new OpenRoleException("Invalid action called: "+parts[1], "MSG.SERVICE_ACTION_INVALID", 403);
+					}
 				}
 				// parse document id
 				String docId = null;

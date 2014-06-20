@@ -1,9 +1,10 @@
 package de.golesny.openrole.service;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -22,12 +23,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 import de.golesny.openrole.service.util.DigestUtils;
 import de.golesny.openrole.service.util.JsonUtils;
@@ -38,23 +33,18 @@ public class OpenroleServiceServlet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(OpenroleServiceServlet.class.getName());
 	public static final String INTERNAL_SERVER_ERROR = "MSG.INTERNAL_SERVER_ERROR";
 	private static final String CONTENTTYPE_JSON_UTF_8 = "application/json; charset=UTF-8";
-	private static final String USER_PROP_USER = "user";
-	private static final String USER_PROP_NICK = "nick";
 	private static final String USER_PROP_PWHASH = "pwhash";
 	private static final String USER_PROP_RANDOMSHA1 = "randomsha1";
 	private static final String HEADER_TOKEN = "X-Openrole-Token";
-	private static String CONFIG = "config";
-	private static String SLASH_CONFIG = "/"+CONFIG;
 	private static String SLASH_LOGIN = "/login";
 	private static String SLASH_LOGOUT = "/logout";
 	private static String SLASH_REGISTER = "/register";
-	private static Map<String,String> SYSTEMS = new HashMap<String,String>();
+	private static Set<String> SYSTEMS = new HashSet<>();
 	static {
-		SYSTEMS.put("dungeonslayers","Dungeonslayers");
-		SYSTEMS.put("malmsturm", "Malmsturm");
+		SYSTEMS.add("dungeonslayers");
+		SYSTEMS.add("malmsturm");
+		SYSTEMS.add("malmsturmgm");
 	}
-	
-	private String configAsJson;
 	
 	@Override
 	protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
@@ -73,13 +63,6 @@ public class OpenroleServiceServlet extends HttpServlet {
 		try {
 			addAccessControlHeader(resp);
 			resp.setContentType("application/json");
-			if (SLASH_CONFIG.equals(req.getPathInfo())) {
-				// global configuration requested without system
-				initConfig();
-				resp.getWriter().println(configAsJson);
-				log.fine("returning config");
-				return;
-			}
 			String token = req.getHeader(HEADER_TOKEN);
 			Entity user = null;
 			if (StringUtils.isEmpty(token)) {
@@ -89,7 +72,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 					return;
 				}
 			} else {
-				user = getUser(token); 
+				user = new DAO().getUser(token); 
 			}
 			checkUserToken(user);
 			
@@ -99,13 +82,16 @@ public class OpenroleServiceServlet extends HttpServlet {
 				return;
 			}
 			
-			RequestInfo requestInfo = PathUtils.extractRequestInfo(req.getPathInfo(), SYSTEMS.keySet());
+			RequestInfo requestInfo = PathUtils.extractRequestInfo(req.getPathInfo(), SYSTEMS);
 			switch (requestInfo.action) {
 			case get:
 				doGet(req, resp, user, requestInfo);
 				break;
 			case list:
 				doList(req, resp, user, requestInfo);
+				break;
+			case shares:
+				doShares(resp, user, requestInfo);
 				break;
 			default:
 				throw new OpenRoleException("Unhandled get action: "+requestInfo.action, "MSG.ILLEGAL_ACTION", 403);
@@ -121,6 +107,20 @@ public class OpenroleServiceServlet extends HttpServlet {
 			resp.getWriter().append(INTERNAL_SERVER_ERROR);
 			log(e);
 		}
+	}
+
+	private void doShares(HttpServletResponse resp,
+			Entity user, RequestInfo requestInfo) throws IOException {
+		List<Entity> characterList = new DAO().findAllSharedCharactersForUser(user, requestInfo.system);
+		JSONArray jsonArr = new JSONArray();
+		for (Entity entity : characterList) {
+			JSONObject jsonCharacter = JsonUtils.convertEntityObjectToJson(entity);
+			jsonCharacter.put("docId", ""+entity.getKey().getId());
+			jsonArr.put(jsonCharacter);
+		}
+		resp.setContentType(CONTENTTYPE_JSON_UTF_8);
+		resp.getWriter().write(""+jsonArr.toString());
+		resp.setStatus(200);
 	}
 
 	private void doLogout(Entity user) {
@@ -144,18 +144,18 @@ public class OpenroleServiceServlet extends HttpServlet {
 				log.fine("User logged in: "+email);
 				return;
 			} else if (SLASH_REGISTER.equals(req.getPathInfo())) {
-				String hash = doRegister(req.getParameter("email"), PathUtils.getPost(req.getReader()), req.getParameter("nick"));
+				String hash = new DAO().doRegister(req.getParameter("email"), PathUtils.getPost(req.getReader()), req.getParameter("nick"));
 				resp.setContentType("text/plain");
 				resp.setStatus(201); // created
 				resp.getWriter().write(hash);
 				return;
 			}
 			resp.setContentType("application/json");
-			Entity user = getUser(req.getHeader(HEADER_TOKEN)); 
+			Entity user = new DAO().getUser(req.getHeader(HEADER_TOKEN)); 
 			checkUserToken(user);
 
 			log.finer("getPathInfo="+req.getPathInfo());
-			RequestInfo requestInfo = PathUtils.extractRequestInfo(req.getPathInfo(), SYSTEMS.keySet());
+			RequestInfo requestInfo = PathUtils.extractRequestInfo(req.getPathInfo(), SYSTEMS);
 
 
 			switch (requestInfo.action) {
@@ -187,12 +187,15 @@ public class OpenroleServiceServlet extends HttpServlet {
 		String post = PathUtils.getPost(req.getReader());
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
-		Entity entity = new DAO().findOrCreateEntityForUpdate(user, requestInfo.system, requestInfo.docId);
+		DAO dao = new DAO();
+		Entity entity = dao.findOrCreateEntityForUpdate(requestInfo.system, requestInfo.docId);
 
 		JSONObject jsonObject = new JSONObject(post);
-		JsonUtils.updateEntity(entity, jsonObject);
+		List<String> shares = JsonUtils.updateEntity(entity, jsonObject);
+		entity.setProperty(DAO.USER_PROP_USER, user.getKey().getName());
 		Key newKey = datastore.put(entity);
 		log.finer("stored with key = "+newKey);
+		dao.updateShares(newKey, requestInfo.system, shares);
 		
 		resp.setContentType("plain/text");
 		resp.getWriter().write(""+newKey.getId());
@@ -201,9 +204,13 @@ public class OpenroleServiceServlet extends HttpServlet {
 
 	private void doGet(HttpServletRequest req, HttpServletResponse resp,
 			Entity user, RequestInfo requestInfo) throws IOException {
-		Entity entity = new DAO().findCharacter(user, requestInfo);
+		DAO dao = new DAO();
+		Entity entity = dao.findCharacter(user, requestInfo);
 		JSONObject json = JsonUtils.convertEntityObjectToJson(entity);
 		json.put("docId", ""+entity.getKey().getId());
+		// get Shares
+		List<String> nicks = dao.findAllSharesForCharacter(entity.getKey().getId());
+		json.put(DAO.SHARES, nicks);
 		resp.setContentType(CONTENTTYPE_JSON_UTF_8);
 		resp.getWriter().write(""+json.toString());
 		resp.setStatus(200);
@@ -242,7 +249,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 	public String doLogin(String email, String pw) {
 		String lowercaseEmailSHA1 = DigestUtils.getSHA1(email.toLowerCase());
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		Key key = KeyFactory.createKey(USER_PROP_USER, lowercaseEmailSHA1);
+		Key key = KeyFactory.createKey(DAO.USER_PROP_USER, lowercaseEmailSHA1);
 		try {
 			Entity user = datastore.get(key);
 			String pwHash = DigestUtils.getSHA1(pw);
@@ -254,71 +261,17 @@ public class OpenroleServiceServlet extends HttpServlet {
 					datastore.put(user);
 				}
 				JSONObject json = new JSONObject();
-				json.put("nick", user.getProperty(USER_PROP_NICK));
+				json.put("nick", user.getProperty(DAO.USER_PROP_NICK));
 				json.put("token", randomSHA1);
 				return json.toString();
 			} else {
-				throw new OpenRoleException("User ID "+user.getProperty(USER_PROP_USER)+" typed wrong password", "USER_PW_WRONG", 403);
+				throw new OpenRoleException("User ID "+user.getProperty(DAO.USER_PROP_USER)+" typed wrong password", "USER_PW_WRONG", 403);
 			}
 		} catch (EntityNotFoundException e) {
 			throw new OpenRoleException("Couldn't find entity User with key "+key, "MSG.USER_PW_WRONG", 403);
 		}
 	}
 
-	public String doRegister(String email, String pw, String nick) {
-		String lowercaseEmailSHA1 = DigestUtils.getSHA1(email.toLowerCase());
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		Key key = KeyFactory.createKey(USER_PROP_USER, lowercaseEmailSHA1);
-		try {
-			datastore.get(key);
-			throw new OpenRoleException("E-Mail "+lowercaseEmailSHA1+" already exists while registration", "MSG.USER_ALREADY_EXISTS", 409);
-		} catch (EntityNotFoundException e) {
-			// check the nick, if not available
-			if (!StringUtils.isEmpty(nick)) {
-				Query query = new Query(USER_PROP_USER).setFilter(new Query.FilterPredicate(USER_PROP_NICK, FilterOperator.EQUAL, nick));
-				try {
-				  if (datastore.prepare(query).asSingleEntity() != null) {
-					  throw new OpenRoleException("There are to many results for nick "+nick, "MSG.NICK_ALREADY_EXISTS", 409);
-				  }
-				} catch (TooManyResultsException e1) {
-					throw new OpenRoleException("There are to many results for nick "+nick, "MSG.NICK_ALREADY_EXISTS", 409);
-				}
-			}
-			// we can proceed
-			Entity newUser = new Entity(key);
-			newUser.setProperty(USER_PROP_NICK, nick);
-			String pwHash = DigestUtils.getSHA1(pw);
-			newUser.setProperty(USER_PROP_PWHASH, pwHash);
-			String randomsha1 = DigestUtils.getSHA1(email + "-" + System.currentTimeMillis());
-			newUser.setProperty(USER_PROP_RANDOMSHA1, randomsha1);
-			datastore.put(newUser);
-			return randomsha1;
-		}
-	}
-	
-	private Entity getUser(String token) {
-		log.fine("getting user with token "+token);
-		// Get the Datastore Service
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-		Filter randomSha1Filter = new FilterPredicate(USER_PROP_RANDOMSHA1, FilterOperator.EQUAL, token);
-
-		// Use class Query to assemble a query
-		Query q = new Query(USER_PROP_USER).setFilter(randomSha1Filter);
-
-		// Use PreparedQuery interface to retrieve results
-		PreparedQuery pq = datastore.prepare(q);
-
-		Entity result = pq.asSingleEntity();
-		return result;
-	}
-
-	private void initConfig() {
-		if (configAsJson == null) {
-			configAsJson = JsonUtils.getConfigAsString(SYSTEMS);
-		}
-	}
-	
 	private void log(Exception e) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(e.getClass().getSimpleName()).append(": ");

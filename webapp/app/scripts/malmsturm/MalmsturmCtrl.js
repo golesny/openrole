@@ -162,6 +162,14 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
       arraylist.splice($index, 1);
     };
 
+    $scope.newShare = function(arraylist) {
+      arraylist.push("");
+    };
+
+    $scope.deleteShare = function(arraylist, $index) {
+      arraylist.splice($index, 1);
+    };
+
     $scope.move = function(arraylist, fromIdx, toIdx) {
       var tmp = arraylist[fromIdx];
       arraylist[fromIdx] = arraylist[toIdx];

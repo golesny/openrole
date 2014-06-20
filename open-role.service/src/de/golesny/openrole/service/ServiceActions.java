@@ -8,5 +8,7 @@ public enum ServiceActions {
 	/** Get an existing document */
 	get,
 	/** Get a list of all documents for the given system */
-	list
+	list,
+	/** Get all shared characters */
+	shares
 }

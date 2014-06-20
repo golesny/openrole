@@ -13,7 +13,10 @@ app.config(['$translateProvider',function ($translateProvider) {
 
   $translateProvider.translations('de', {
     MALMSTURMGM: {
-      PDFPREF: 'PDF Einstellungen'
+      GROUP: 'Gruppe',
+      CHARACTERSELECTION: 'Wähle die Charakter aus',
+      PDFPREF: 'PDF Einstellungen',
+      'PRINTASPEKTTEXT': 'Text der Aspekte mit ausgeben'
     }
   })
 }]);

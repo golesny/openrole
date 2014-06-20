@@ -2,6 +2,7 @@ package de.golesny.openrole.service.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 
+import de.golesny.openrole.service.DAO;
 import de.golesny.openrole.service.OpenRoleException;
 import de.golesny.openrole.service.OpenroleServiceServlet;
 
@@ -53,10 +55,13 @@ public class JsonUtils {
 			value = lstForStore;
 		} else if (jsonObj instanceof JSONObject) {
 			EmbeddedEntity mapToStore = new EmbeddedEntity();
-			for (String k : JSONObject.getNames((JSONObject)jsonObj)) {
-				mapToStore.setUnindexedProperty(k, jsonToEntityObject(((JSONObject) jsonObj).get(k)));
+			String[] keys = JSONObject.getNames((JSONObject)jsonObj);
+			if (keys != null) {
+				for (String k : keys) {
+					mapToStore.setUnindexedProperty(k, jsonToEntityObject(((JSONObject) jsonObj).get(k)));
+				}
+				value = mapToStore;
 			}
-			value = mapToStore;
 		} else {
 			throw new OpenRoleException("Unhandled object class: "+jsonObj.getClass(), OpenroleServiceServlet.INTERNAL_SERVER_ERROR, 500);
 		}
@@ -112,14 +117,31 @@ public class JsonUtils {
 		return true;
 	}
 
-	public static void updateEntity(Entity entity, JSONObject jsonObject) {
+	/**
+	 * @param entity
+	 * @param jsonObject
+	 * @return all shared nicks, not null
+	 */
+	public static List<String> updateEntity(Entity entity, JSONObject jsonObject) {
+		List<String> shares = new ArrayList<>();
 		for (String k : JSONObject.getNames(jsonObject)) {
 			if (! "docId".equals(k) ) {
 				Object valObj = jsonObject.get(k);
-				Object value = JsonUtils.jsonToEntityObject(valObj);
-				entity.setUnindexedProperty(k, value);
+				if (DAO.SHARES.equals(k)) {
+					// we don't save shares inside the character
+					if (valObj instanceof JSONArray) {
+						JSONArray arr = (JSONArray)valObj;
+						for (int i=0; i<arr.length(); i++) {
+							shares.add(arr.getString(i));
+						} 
+					}
+				} else {
+					Object value = JsonUtils.jsonToEntityObject(valObj);
+					entity.setUnindexedProperty(k, value);
+				}
 			}
-		}		
+		}
+		return shares;	
 	}
 
 }

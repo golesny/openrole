@@ -25,10 +25,6 @@ app.factory('$exceptionHandler', [function () {
   };
 }]);
 
-app.filter('escape', function() {
-  return window.escape;
-});
-
 /* template block is for loading custom templates */
 var registeredTemplates = [];
 var registeredTemplatesCallbacks = {};
@@ -57,16 +53,9 @@ app.controller('OpenroleCtrl',['$scope', function($scope) {
 }]);
 
 // ------------ global controller --------------
-app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal','alertService','loaderService','SYSTEMS',
-    function($scope, $rootScope, $http, $location, localStorageService, $modal, alertService, loaderService, SYSTEMS) {
+app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'localStorageService', '$modal','alertService','loaderService','SYSTEMS','SERVICEURL',
+    function($scope, $rootScope, $http, $location, localStorageService, $modal, alertService, loaderService, SYSTEMS, SERVICEURL) {
       $rootScope.systems = SYSTEMS;
-      $rootScope.serviceHost = "https://open-role.appspot.com";
-      if ($location.$$host == 'localhost') {
-        // for dev
-        $rootScope.serviceHost = "http://localhost:8888";
-      }
-      $rootScope.serviceHost = $rootScope.serviceHost + "/open_role_service";
-      $http.defaults.headers.common["X-Openrole-Token"] = localStorageService.get("X-Openrole-Token");
       $scope.loggedin = ($http.defaults.headers.common["X-Openrole-Token"] != null);
       $rootScope.nick = localStorageService.get("X-Openrole-Nick");
 
@@ -87,11 +76,11 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       // http://gregpike.net/demos/angular-local-storage/demo/demo.html
       $scope.login = function() {
         console.log("login");
-        $http.post($rootScope.serviceHost + '/login?email='+window.escape($scope.email), $scope.pw, {
+        $http.post(SERVICEURL + '/login?email='+window.escape($scope.email), $scope.pw, {
           headers: { 'Content-Type': 'plain/text; charset=UTF-8'}
         })
           .success(function(data, status, headers, config){
-            console.log("logged in. token = "+data);
+            console.log("logged in. token = "+data.token);
             $scope.internalLogin(data);
           })
           .error(function(data, status, headers, config) {
@@ -112,7 +101,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       $scope.logout = function() {
         console.log("log out");
         loaderService.setLoadingStart("Logout");
-        $http.get($rootScope.serviceHost + '/logout')
+        $http.get(SERVICEURL + '/logout')
           .success(function(data, status, headers, config){
             internalClientSideLogout();
             loaderService.setLoadingReady();
@@ -129,6 +118,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       };
 
       $scope.internalLogin = function(responseObj) {
+        console.log("internal log in");
         // http://stackoverflow.com/questions/20777700/angular-js-controller-gets-the-cookie-from-login-request-header-even-after-doing
         $http.defaults.headers.common["X-Openrole-Token"] = responseObj.token;
         $scope.loggedin = true;
@@ -141,11 +131,12 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       $scope.store = function() {
         var theController = this.$parent.$parent;
         var or = theController.openrole;
+        or.nick = $rootScope.nick;
         var docId = or.docId;
 
         loaderService.setLoadingStart("Speichere Charakter");
         var openroleAsJSON = angular.toJson(or);
-        $http.post($rootScope.serviceHost + '/' +theController.openrole_module_name+'/store/'+docId, openroleAsJSON, {
+        $http.post(SERVICEURL + '/' +theController.openrole_module_name+'/store/'+docId, openroleAsJSON, {
           headers: { 'Content-Type': 'application/json; charset=UTF-8'}
         })
           .success(function(data, status, headers, config){
@@ -164,7 +155,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         var theController = this.$parent.$parent;
         loaderService.setLoadingStart("Lade Charakterliste");
 
-        $http.get($rootScope.serviceHost + '/' +theController.openrole_module_name+'/list')
+        $http.get(SERVICEURL + '/' +theController.openrole_module_name+'/list')
           .success(function(data, status, headers, config){
             loaderService.setLoadingReady();
             $scope.openDialog(theController, data);
@@ -194,7 +185,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         modalOpenDialogInstance.result.then(function (characterDocId) {
           console.info("dialog closed. character chosen: "+characterDocId);
           loaderService.setLoadingStart("Lade Charakter "+characterDocId);
-          $http.get($rootScope.serviceHost + '/'+theController.openrole_module_name+'/get/'+characterDocId)
+          $http.get(SERVICEURL + '/'+theController.openrole_module_name+'/get/'+characterDocId)
             .success(function (data, status, headers, config) {
               loaderService.setLoadingReady();
               // here we have to put the new data asychnronously instead of setting references

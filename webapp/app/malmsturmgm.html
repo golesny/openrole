@@ -37,14 +37,48 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
+                <h3 class="panel-title" translate="MALMSTURMGM.GROUP"></h3>
+            </div>
+            <div class="panel-body">
+                <input type="text" ng-model="openrole.charactername" class="form-control" placeholder="{{'MALMSTURMGM.GROUP' |translate}}">
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" translate="MALMSTURMGM.CHARACTERSELECTION"></h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" ng-repeat="character in openrole.characters track by $index">
+                        <or-dropdown-shared-char select-model="openrole.characters[$index]" select-val="openrole.characters[$index] = selectedVal"
+                                     preselected-item="openrole.characters[$index]" data-dropdown-data="data.availableChars"></or-dropdown-shared-char>
+                    </div>
+                </ul>
+            </div>
+            <div class="panel-footer">
+                <button type='button' class='btn btn-default btn-xs' ng-click="newLink(openrole.characters)">
+                    <span class='glyphicon glyphicon-plus-sign'></span>
+                    <span translate="BUTTON.ADD"></span>
+                </button>
+            </div>
+        </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
                 <h3 class="panel-title" translate="MALMSTURMGM.PDFPREF"></h3>
             </div>
             <ul  class="list-group">
                 <li class="list-group-item form-inline">
-                    <label class="control-label" translate="PDFTEMPLATE"></label>:
+                    <span translate="PDFTEMPLATE"></span>:
 
                     <or-dropdown data-menu-type="button" select-val="openrole.pdftemplate = selectedVal"
                                  preselected-item="openrole.pdftemplate" data-dropdown-data="registeredPDFTemplates"></or-dropdown>
+                </li>
+                <li class="list-group-item form-inline">
+                    <input type="checkbox" ng-model="openrole.pdfprintaspecttext" ng-true-value="true" ng-false-value="">
+                    <span translate="MALMSTURMGM.PRINTASPEKTTEXT"></span>
 
                 </li>
             </ul>
@@ -98,6 +132,7 @@
 <script src="scripts/openrole/directiveInputList.js"></script>
 <script src="scripts/openrole/PreferencesCtrl.js"></script>
 <script src="scripts/openrole/directiveDropdown.js"></script>
+<script src="scripts/openrole/directiveDropdownSharedChar.js"></script>
 <!-- endbuild -->
 
 <!-- build:js({.tmp,app}) scripts/malmsturmgm.js -->
