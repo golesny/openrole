@@ -14,6 +14,7 @@ app.config(['$translateProvider',function ($translateProvider) {
   $translateProvider.translations('de', {
     MALMSTURMGM: {
       GROUP: 'Gruppe',
+      CHARACTER: 'Charakter',
       CHARACTERSELECTION: 'Wähle die Charakter aus',
       PDFPREF: 'PDF Einstellungen',
       'PRINTASPEKTTEXT': 'Text der Aspekte mit ausgeben'
