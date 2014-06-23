@@ -94,9 +94,9 @@
             <div class="panel-body">
                 <div class="row" ng-repeat="bel in openrole.belastungspunkte">
                     <div class="col-xs-2"><label class="control-label" translate="MALMSTURM.{{bel.id}}"></label></div>
-                    <div class="col-xs-3" style="text-align: right"><label class="control-label">{{bel.defaultval}} + {{bel.skillbonus}} ({{bel.dependsOnSkill}}) + </label></div>
-                    <div class="col-xs-1"><input type="text" class="form-control input-sm" ng-model="bel.bonus" ng-change="calcBelastung()"></div>
-                    <div class="col-xs-6" style="text-align: left"><label class="control-label">= {{bel.total}} <img src="images/malmsturm/rune.jpg" style="height: 20px;" ng-repeat="x in bel.totalArr track by $index"></label></div>
+                    <div class="col-xs-3" style="text-align: right"><label class="control-label">{{bel.defaultval}} + <span class="e2ebsb{{$index}}">{{bel.skillbonus}}</span> ({{bel.dependsOnSkill}}) + </label></div>
+                    <div class="col-xs-1"><input type="text" class="form-control input-sm  e2ebsf{{$index}}" ng-model="bel.bonus" ng-change="calcBelastung()"></div>
+                    <div class="col-xs-6" style="text-align: left"><label class="control-label e2ebst{{$index}}">= {{bel.total}} <img src="images/malmsturm/rune.jpg" style="height: 20px;" ng-repeat="x in bel.totalArr track by $index"></label></div>
                 </div>
             </div>
         </div>

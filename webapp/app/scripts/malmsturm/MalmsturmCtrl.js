@@ -81,6 +81,8 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
       // reset mark for skill switch
       $scope.markedListIdx = undefined;
       $scope.markedSkillIdx = undefined;
+      //
+      $scope.calcBelastung();
     };
 
     $scope.markOrMoveSkill = function(listIdx, skillIdx) {
@@ -107,6 +109,8 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
         // unmark
         $scope.markedListIdx = undefined;
         $scope.markedSkillIdx = undefined;
+        //
+        $scope.calcBelastung();
       } else {
         $scope.markedListIdx = listIdx;
         $scope.markedSkillIdx = skillIdx;
