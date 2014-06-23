@@ -144,10 +144,11 @@ public class OpenroleServiceServlet extends HttpServlet {
 				log.fine("User logged in: "+email);
 				return;
 			} else if (SLASH_REGISTER.equals(req.getPathInfo())) {
-				String hash = new DAO().doRegister(req.getParameter("email"), PathUtils.getPost(req.getReader()), req.getParameter("nick"));
-				resp.setContentType("text/plain");
+				String nick = req.getParameter("nick");
+				String randomSHA1 = new DAO().doRegister(req.getParameter("email"), PathUtils.getPost(req.getReader()), nick);
+				resp.setContentType(CONTENTTYPE_JSON_UTF_8);
 				resp.setStatus(201); // created
-				resp.getWriter().write(hash);
+				resp.getWriter().write(JsonUtils.getLoginResponse(nick, randomSHA1));
 				return;
 			}
 			resp.setContentType("application/json");
@@ -260,10 +261,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 					user.setProperty(USER_PROP_RANDOMSHA1, randomSHA1);
 					datastore.put(user);
 				}
-				JSONObject json = new JSONObject();
-				json.put("nick", user.getProperty(DAO.USER_PROP_NICK));
-				json.put("token", randomSHA1);
-				return json.toString();
+				return JsonUtils.getLoginResponse(user, randomSHA1);
 			} else {
 				throw new OpenRoleException("User ID "+user.getProperty(DAO.USER_PROP_USER)+" typed wrong password", "USER_PW_WRONG", 403);
 			}

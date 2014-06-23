@@ -143,5 +143,19 @@ public class JsonUtils {
 		}
 		return shares;	
 	}
+	
+	/**
+	 * Returns response for login and register. 
+	 */
+	public static String getLoginResponse(Entity user, String randomSHA1) {
+		return getLoginResponse((String)user.getProperty(DAO.USER_PROP_NICK), randomSHA1);
+	}
+	
+	public static String getLoginResponse(String nick, String randomSHA1) {
+		JSONObject json = new JSONObject();
+		json.put("nick", nick);
+		json.put("token", randomSHA1);
+		return json.toString();
+	}
 
 }

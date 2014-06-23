@@ -91,6 +91,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
           });
       };
       var internalClientSideLogout = function() {
+        console.log("internal log out");
         $http.defaults.headers.common["X-Openrole-Token"] = null;
         $scope.loggedin = false;
         localStorageService.remove("X-Openrole-Token");
@@ -162,7 +163,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
           })
           .error(function(data, status, headers, config){
             loaderService.setLoadingReady();
-            alertService.danger(status+": Could not load character list. Cause: "+data);
+              alertService.danger(status, data);
           })
         ; // get
 
