@@ -33,7 +33,7 @@
     <div ng-include="'views/dialog.alert.html'"></div>
     <!-- header end -->
 
-    <div class="container" ng-cloak>
+    <div class="container hideUninitalized" is-initialized="{{initialized}}">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
