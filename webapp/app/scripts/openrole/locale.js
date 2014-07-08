@@ -53,7 +53,8 @@ app.config(['$translateProvider', function ($translateProvider) {
     MENU: {
       LOGOUT: 'Abmelden',
       PREFERENCES: 'Einstellungen',
-      CONTACT: 'Kontakt/Impressum'
+      CONTACT: 'Kontakt/Impressum',
+      CHANGELOG: 'Changelog'
     },
     COMING: 'Kommt vielleicht mal ...',
     MSG: {
