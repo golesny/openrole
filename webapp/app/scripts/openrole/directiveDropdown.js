@@ -17,7 +17,7 @@ angular.module('openrole').directive('orDropdown', function ($compile) {
           html += '<div class="dropdown"><a class="dropdown-toggle" role="button" data-toggle="dropdown"  href="javascript:;">Dropdown<b class="caret"></b></a>';
           break;
       }
-      html += '<ul class="dropdown-menu"><li ng-repeat="item in items"><a tabindex="-1" data-ng-click="selectVal(item)">{{item.name}}</a></li></ul></div>';
+      html += '<ul class="dropdown-menu"><li ng-repeat="item in items"><a tabindex="-1" data-ng-click="selectVal(item)" style="cursor:pointer">{{item.name}}</a></li></ul></div>';
       element.append($compile(html)(scope));
       for (var i = 0; i < scope.items.length; i++) {
         if (scope.items[i].id === scope.selectedItem) {
