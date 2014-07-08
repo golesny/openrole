@@ -1,3 +1,6 @@
 <div ng-controller="DialogAlertCtrl" class="container">
-    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">
+        {{alert.msg}}
+        <span style="font-size: 60%">{{alert.ts}}</span>
+    </alert>
 </div>

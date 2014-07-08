@@ -101,6 +101,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
 
       $scope.logout = function() {
         console.log("log out");
+        alertService.clearAll();
         loaderService.setLoadingStart("Logout");
         $http.get(SERVICEURL + '/logout')
           .success(function(data, status, headers, config){

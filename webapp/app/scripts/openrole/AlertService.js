@@ -17,8 +17,16 @@ angular.module('openrole')
           msg += $translate.instant(""+args[i]) + " ";
         }
       }
-      console.log("[AlertService/"+type+"] "+msg);
-      $rootScope.alerts.push({type: type, msg: msg});
+      var ts = (new Date()).toLocaleTimeString();
+      console.log("[AlertService/"+type+"] "+msg+", "+ts);
+      // remove all success
+      for (var i=0; i<$rootScope.alerts.length; i++) {
+        if ($rootScope.alerts[i].type == "success") {
+          $rootScope.alerts.splice(i, 1);
+        }
+      }
+      // add new message
+      $rootScope.alerts.push({type: type, msg: msg, ts: ts});
     };
     return {
       danger: function() {
@@ -33,8 +41,12 @@ angular.module('openrole')
       },
       closeAlert: function(index) {
         $rootScope.alerts.splice(index, 1);
+      },
+      clearAll: function() {
+        $rootScope.alerts = [];
       }
     };
+
   }])
   .controller('DialogAlertCtrl', ['$scope', 'alertService', function($scope, alertService) {
     $scope.closeAlert = function(index) {
