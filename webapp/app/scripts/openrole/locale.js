@@ -69,7 +69,8 @@ app.config(['$translateProvider', function ($translateProvider) {
       NICK_ALREADY_EXISTS: 'Der Nickname existiert schon. Bitte wähle einen anderen Namen',
       ID_NOT_FOUND: 'Der Charakter wurde für einen anderen Account angelegt und daher für diesen Account nicht abgespeichert werden. Erstelle einen neuen Charakter',
       COULD_NOT_LOAD_SHARED: 'Konnte die Liste der freigegebenen Charaktere nicht laden.',
-      NOT_LOGGED_IN: 'Du bist nicht eingeloggt. Wenn du dich gerade erst angemeldet/registriert hast, dann warte einen kurzen Moment, ansonsten melde dich neu an.'
+      NOT_LOGGED_IN: 'Du bist nicht eingeloggt. Wenn du dich gerade erst angemeldet/registriert hast, dann warte einen kurzen Moment, ansonsten melde dich neu an.',
+      PDF_LAYOUT_TOO_MUCH_CONTENT: 'Bitte benutze ein anderes Template oder veringere die Menge des Inhalts.'
     },
     LABEL: {
       NICK: 'Nickname',

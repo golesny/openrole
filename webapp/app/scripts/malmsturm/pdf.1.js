@@ -1,7 +1,7 @@
 
 registerTemplate("malmsturm", "templateMalmsturm1", "Default Template 1x A4");
 
-function templateMalmsturm1(charData, imageLoaded, $translate) {
+function templateMalmsturm1(charData, imageLoaded, $translate, alertService) {
   var doc = new jsPDF();
 
 // border
@@ -93,15 +93,26 @@ function templateMalmsturm1(charData, imageLoaded, $translate) {
     if (charData.aspects[i].name != undefined && charData.aspects[i].name.length > 0) {
       var lines = doc.setFontSize(11).splitTextToSize(charData.aspects[i].name, RIGHT_X_COL1 - LEFT_X);
       doc.text(LEFT_X, y, lines);
-      y += lines.length * LINE_HEIGHT_8;
+      y += lines.length * LINE_HEIGHT_11;
     }
     if (charData.aspects[i].description != undefined && charData.aspects[i].description.length > 0) {
+      y -= 0.5;
       var lines = doc.setFontSize(8).splitTextToSize(charData.aspects[i].description, RIGHT_X_COL1 - LEFT_X);
       doc.text(LEFT_X, y, lines);
       y += lines.length * LINE_HEIGHT_8;
+      y += 1;
     }
-    y += LINE_HEIGHT;
+    y += 1;
   }
+  // print empty lines for Aspects
+  for (var i=charData.aspects.length; i<5; i++) {
+    for (var j=0; j<2; j++) {
+      var ly = y + 1 +  (j*LINE_HEIGHT_11);
+      doc.line(LEFT_X, ly, RIGHT_X_COL1, ly);
+    }
+    y += 2 * LINE_HEIGHT_11 + 2;
+  }
+  y += 2;
 
 // *** Talents ***
   y = templateMalmsturm1_1LineBlock(doc, LEFT_X, RIGHT_X_COL1, y, 'Talente und Gaben: ', charData.talents);
@@ -121,24 +132,23 @@ function templateMalmsturm1(charData, imageLoaded, $translate) {
   doc.line(LEFT_X, y + 1, RIGHT_X_COL1, y + 1);
   y += LINE_HEIGHT;
 
+  doc.setFontSize(8);
   var stufenleit = charData.stufenleiter;
   var strows = Math.ceil((charData.stufenleiterend - charData.stufenleiterstart + 1) / 3);
   for (var st=charData.stufenleiterstart, idx=0;
        st <= charData.stufenleiterend; st++, idx++) {
     if (stufenleit.hasOwnProperty(st)) {
       var xOff = (Math.ceil( (idx+0.0000001) / strows) - 1) * 40 + 2;
-      var yOff = (idx % strows) * LINE_HEIGHT;
+      var yOff = (idx % strows) * LINE_HEIGHT_8;
       var numb = st>0?"+"+st:""+st;
       var txtWidth = doc.myGetTextWidth(numb);
       doc.text(LEFT_X + xOff - txtWidth + 3, y + yOff, numb);
       doc.text(LEFT_X + xOff + 6, y + yOff, stufenleit[st]);
     }
   }
-  y += LINE_HEIGHT * strows;
+  y += LINE_HEIGHT_8 * strows;
 
-  y += LINE_HEIGHT;
-
-
+  y += 4;
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  right column ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
   // *** Belastungspunkte ***
@@ -238,6 +248,10 @@ function templateMalmsturm1(charData, imageLoaded, $translate) {
     for (;(y+LINE_HEIGHT) < yf; y += LINE_HEIGHT) {
       doc.line(LEFT_X, y + 1, RIGHT_X_COL1, y + 1);
     }
+  }
+  // check with a small buffer, if the template can show all content
+  if ((y-4) > yf) {
+    alertService.danger("MSG.PDF_LAYOUT_TOO_MUCH_CONTENT");
   }
   return doc;
 };

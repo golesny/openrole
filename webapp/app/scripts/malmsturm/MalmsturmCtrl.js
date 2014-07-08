@@ -197,7 +197,7 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
 
       try {
         var tmplName = eval($scope.openrole.pdftemplate);
-        var doc = tmplName($scope.openrole, $scope.imageLoaded, $translate);
+        var doc = tmplName($scope.openrole, $scope.imageLoaded, $translate, alertService);
         if (!angular.isDefined(doc)) {
           alertService.danger("Template did not return the document.");
         } else {
