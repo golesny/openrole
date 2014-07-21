@@ -189,30 +189,7 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
     };
 
     $scope.createPDF = function() {
-      loaderService.loadImages($scope.imageToLoad, $scope.imageLoaded, $scope.createInternalPDF);
-    };
-
-    $scope.createInternalPDF = function() {
-      console.log("creating PDF.1");
-
-      try {
-        var tmplName = eval($scope.openrole.pdftemplate);
-        var doc = tmplName($scope.openrole, $scope.imageLoaded, $translate, alertService);
-        if (!angular.isDefined(doc)) {
-          alertService.danger("Template did not return the document.");
-        } else {
-          if ($location.$$host == 'localhost') {
-            // for development: open in new window (not working in IE)
-            doc.output('dataurlnewwindow');
-          } else {
-            // for production: download file
-            doc.save("malmsturm.pdf");
-          }
-        }
-      } catch (e) {
-        alertService.danger(e);
-      }
-
+      loaderService.loadImagesAndGeneratePDF($scope);
     };
 
     $scope.emptyCharacterJSON =

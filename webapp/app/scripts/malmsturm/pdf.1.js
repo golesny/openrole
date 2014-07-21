@@ -1,7 +1,7 @@
 
 registerTemplate("malmsturm", "templateMalmsturm1", "Default Template 1x A4");
 
-function templateMalmsturm1(charData, imageLoaded, $translate, alertService) {
+function templateMalmsturm1(charData, imageLoaded, $translate, alertService, params) {
   var doc = new jsPDF();
 
 // border
@@ -95,12 +95,14 @@ function templateMalmsturm1(charData, imageLoaded, $translate, alertService) {
       doc.text(LEFT_X, y, lines);
       y += lines.length * LINE_HEIGHT_11;
     }
-    if (charData.aspects[i].description != undefined && charData.aspects[i].description.length > 0) {
-      y -= 0.5;
-      var lines = doc.setFontSize(8).splitTextToSize(charData.aspects[i].description, RIGHT_X_COL1 - LEFT_X);
-      doc.text(LEFT_X, y, lines);
-      y += lines.length * LINE_HEIGHT_8;
-      y += 1;
+    if (! angular.isDefined(params.hasOwnProperty("dontPrintAspectDescription"))) {
+      if (charData.aspects[i].description != undefined && charData.aspects[i].description.length > 0) {
+        y -= 0.5;
+        var lines = doc.setFontSize(8).splitTextToSize(charData.aspects[i].description, RIGHT_X_COL1 - LEFT_X);
+        doc.text(LEFT_X, y, lines);
+        y += lines.length * LINE_HEIGHT_8;
+        y += 1;
+      }
     }
     y += 1;
   }
@@ -268,4 +270,4 @@ var templateMalmsturm1_1LineBlock = function(doc, LEFT_X, RIGHT_X_COL1, y, title
   }
   y += 11/2.54 + 2;
   return y;
-}
+};

@@ -5,7 +5,11 @@ Features:
 
 * Openrole
     * md format for changelog
+    * better API for pdf creation
 
+* Malmsturm
+    * 2 A4 pages template
+    
 ## 2014-06-08
 
 Bugfixes:
