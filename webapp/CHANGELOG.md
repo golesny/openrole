@@ -1,3 +1,11 @@
+## Unreleased
+
+Features:
+
+Bugfixes:
+
+* Openrole
+    * PDF-Template Dropdown didn't show the loaded value of the character
 
 ## 2014-07-21
 
@@ -12,12 +20,6 @@ Features:
     
 ## 2014-06-08
 
-Bugfixes:
-
-* Openrole
-    * Fix wrong cursor in directive dropdown links
-    * Fix hide until initialized on index.html
-
 Features:
 
 * Openrole
@@ -25,3 +27,9 @@ Features:
 
 * Malmsturm
     * Improve default pdf layout, warning if too much content
+    
+Bugfixes:
+    
+* Openrole
+    * Fix wrong cursor in directive dropdown links
+    * Fix hide until initialized on index.html
