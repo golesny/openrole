@@ -2,7 +2,7 @@
 <div ng-controller="LoginCtrl">
     <script type="text/ng-template" id="id.dialog.open.html">
         <div class="modal-header">
-            <h3 translate="OPEN_CHARACTER_TITLE"></h3>
+            <h3 translate="{{titleResKey}}"></h3>
         </div>
         <div class="modal-body">
           <div class="pre-scrollable" style="height: 200px">
@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="openCharacter()" translate="BUTTON.OPEN"></button>
+            <button class="btn btn-primary" ng-click="open()" translate="BUTTON.OPEN"></button>
             <button class="btn btn-warning" ng-click="cancel()" translate="BUTTON.CANCEL"></button>
         </div>
     </script>

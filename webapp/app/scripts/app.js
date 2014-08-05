@@ -5,14 +5,16 @@ var app = angular.module('openrole',
      'pascalprecht.translate',
       'ui.bootstrap',
       'ngTouch',
-      'ngDragDrop'
+      'ngDragDrop',
+      'ui.ace'
     ]);
 
 app.constant("SYSTEMS",
   [
     //{"id":"dungeonslayers", "name":"Dungeonslayers"},
-    {"id":"malmsturm", "name":"Malmsturm"},
-    {"id":"malmsturmgm", "name":"Malmsturm Gamemaster"}
+    {"id":"malmsturm", "name":"Malmsturm", "customConf":"true"},
+    {"id":"malmsturmgm", "name":"Malmsturm Gamemaster", "customConf":"false"},
+    {"id":"customconf", "name":"Konfigurations-Editor", "customConf":"false"}
   ]
 );
 

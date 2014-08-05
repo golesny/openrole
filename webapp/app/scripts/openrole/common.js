@@ -50,6 +50,8 @@ var initPDFTemplates = function(system, callback) {
 // global controller
 app.controller('OpenroleCtrl',['$scope', function($scope) {
   $scope.openrole_module_name = 'Overview';
+  $scope.openrole_hide_pdf_button = "true";
+  $scope.openrole_hide_new_button = "true";
 }]);
 
 // ------------ global controller --------------
@@ -65,7 +67,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
 
       // init developer extension
       var devUrl = localStorageService.get("DeveloperExtensionURL");
-      if (angular.isDefined(devUrl) && ! angular.isDefined($rootScope.devUrlAdded)) {
+      if (angular.isDefined(devUrl) && devUrl != null && ! angular.isDefined($rootScope.devUrlAdded)) {
         console.log("loading developer extension url: "+devUrl);
         var s = document.createElement('script'); // use global document since Angular's $document is weak
         s.src = devUrl;
@@ -160,7 +162,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         $http.get(SERVICEURL + '/' +theController.openrole_module_name+'/list')
           .success(function(data, status, headers, config){
             loaderService.setLoadingReady();
-            $scope.openDialog(theController, data);
+            $scope.openDialog(theController, data, 'OPEN_CHARACTER_TITLE', 'openCharacter');
           })
           .error(function(data, status, headers, config){
             loaderService.setLoadingReady();
@@ -171,7 +173,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
 
       };
 
-      $scope.openDialog = function(theController, characterlistJson) {
+      $scope.openDialog = function(theController, characterlistJson, titleResKey, okActionRef) {
         // create and open the dialog
         var modalOpenDialogInstance = $modal.open({
           templateUrl: 'id.dialog.open.html',
@@ -180,12 +182,17 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
             characterlist: function() {
               // the the character list from service
               return angular.fromJson(characterlistJson);
+            },
+            titleResKey: function() {
+              return titleResKey;
+            },
+            okActionRef: function() {
+              return okActionRef;
             }
           }
         });
 
-        modalOpenDialogInstance.result.then(function (characterDocId) {
-          console.info("dialog closed. character chosen: "+characterDocId);
+        $scope.openCharacter = function(characterDocId) {
           loaderService.setLoadingStart("Lade Charakter "+characterDocId);
           $http.get(SERVICEURL + '/'+theController.openrole_module_name+'/get/'+characterDocId)
             .success(function (data, status, headers, config) {
@@ -200,9 +207,38 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
               loaderService.setLoadingReady();
               alertService.danger(status+": Could not load character. Cause: "+data);
             });
+        };
+
+        modalOpenDialogInstance.result.then(function (responseObj) {
+          console.info("dialog closed. item id chosen: "+responseObj.docId);
+          if ("openCharacter" === responseObj.action) {
+            $scope.openCharacter(responseObj.docId);
+          } else if ("resetConf"=== responseObj.action){
+            $scope.resetConf(responseObj.docId);
+          }
         }, function () {
           console.info('Modal dismissed at: ' + new Date());
         });
+
+        $scope.resetConf =function(confDocId) {
+          if ("default" === confDocId) {
+            var ctrler = theController;
+            ctrler.reset(undefined);
+          } else {
+            loaderService.setLoadingStart("Lade Konfiguration " + confDocId);
+            $http.get(SERVICEURL + '/customconf/get/' + confDocId)
+              .success(function (data, status, headers, config) {
+                loaderService.setLoadingReady();
+                // here we have to put the new data asychnronously instead of setting references
+                var ctrler = theController;
+                ctrler.reset(JSON.parse(data.configuration));
+              })
+              .error(function (data, status, headers, config) {
+                loaderService.setLoadingReady();
+                alertService.danger(status + ": Could not load configuration. Cause: " + data);
+              });
+          }
+        }
       };
 
       $scope.registerDialog = function () {
@@ -223,6 +259,44 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
         }, function () {
           console.info('Modal dismissed at: ' + new Date());
         });
+      };
+
+      $scope.reset = function() {
+        var theController = this.$parent.$parent;
+        // only show conf dialog for systems that have is turned on
+        var customConfEnabled = false;
+        for (var i=0; i<SYSTEMS.length; i++) {
+          if (SYSTEMS[i].id === theController.openrole_module_name) {
+            customConfEnabled = (SYSTEMS[i].customConf == "true");
+          }
+        }
+
+        if (customConfEnabled) {
+          loaderService.setLoadingStart("Lade Konfigurationsliste");
+
+          $http.get(SERVICEURL + '/customconf/list/' + theController.openrole_module_name)
+            .success(function (data, status, headers, config) {
+              loaderService.setLoadingReady();
+              if (angular.isDefined(data) && data.length > 0) {
+                var tmpList = [
+                  {"docId": "default", "charactername": "Default"}
+                ];
+                tmpList = tmpList.concat(data);
+                $scope.openDialog(theController, tmpList, "OPEN_WITH_CUSTOM_CONF_TITLE", "resetConf");
+              } else {
+                // no custom config available
+                theController.reset(undefined);
+              }
+            })
+            .error(function (data, status, headers, config) {
+              loaderService.setLoadingReady();
+              alertService.danger(status, data);
+            })
+          ; // get
+        } else {
+          // custom config not enabled
+          theController.reset(undefined);
+        }
       };
     }]
 

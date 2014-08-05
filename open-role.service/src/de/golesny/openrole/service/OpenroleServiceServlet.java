@@ -41,6 +41,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 	private static String SLASH_REGISTER = "/register";
 	private static Set<String> SYSTEMS = new HashSet<>();
 	static {
+		SYSTEMS.add("customconf");
 		SYSTEMS.add("dungeonslayers");
 		SYSTEMS.add("malmsturm");
 		SYSTEMS.add("malmsturmgm");

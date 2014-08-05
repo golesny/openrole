@@ -32,8 +32,8 @@ app.controller('MalmsturmGMCtrl',['$scope','$rootScope','$http', '$location','al
     };
 
     $scope.reset = function() {
-      // to avoid references we deep copy it
-      $scope.openrole = JSON.parse(JSON.stringify($scope.emptyCharacterJSON));
+      // to avoid references we parse it each time
+      $scope.openrole = JSON.parse($translate.instant('MALMSTURMGM.DEFAULT_EMPTY_CONFIG_BLOCK'));
     };
 
     $scope.createPDF = function() {
@@ -83,15 +83,6 @@ app.controller('MalmsturmGMCtrl',['$scope','$rootScope','$http', '$location','al
       };
     };
 
-    $scope.emptyCharacterJSON =
-    {
-      "docId": '',
-      "file_version": 1,
-      "characters": [],
-      "pdftemplate": "templateMalmsturmGM1"
-    };
-
-    // end empty character JSON
     // init
     $scope.reset();
     $scope.loadSharedCharacters();

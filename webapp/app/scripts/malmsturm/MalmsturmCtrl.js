@@ -35,14 +35,17 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
       return true;
     };
 
-    $scope.reset = function() {
-      // to avoid references we deep copy it
-      $scope.openrole = JSON.parse(JSON.stringify($scope.emptyCharacterJSON));
+    $scope.reset = function(configObj) {
+      // to avoid references we parse it each time
+      $scope.openrole = JSON.parse($translate.instant('MALMSTURM.DEFAULT_EMPTY_CONFIG_BLOCK'));
+      if (angular.isDefined(configObj)) {
+        $.extend($scope.openrole, configObj);
+      }
       $scope.calcBelastung();
     };
 
     $scope.characterLoaded = function(newCharacter) {
-      $scope.reset();
+      $scope.reset(JSON.parse($translate.instant('MALMSTURM.DEFAULT_EMPTY_CONFIG_BLOCK')));
       // merge JSONS if a new field has been added
       $.extend($scope.openrole, newCharacter);
       $scope.calcBelastung();
@@ -192,133 +195,6 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
       loaderService.loadImagesAndGeneratePDF($scope);
     };
 
-    $scope.emptyCharacterJSON =
-    {
-      "docId": '' ,
-      "file_version": 1,
-      "charactername": '',
-
-      "skillpyramidstartvalue": 5,
-      "skillpyramid":
-        [
-          [ {"title": "_"}],
-          [ {"title": "_"}, {"title": "_"}],
-          [ {"title": "_"}, {"title": "_"}, {"title": "_"} ],
-          [ {"title": "_"}, {"title": "_"}, {"title": "_"}, {"title": "_"} ],
-          [ {"title": "_"}, {"title": "_"}, {"title": "_"}, {"title": "_"}, {"title": "_"} ],
-          [
-            { "title": "Athletik" },
-            { "title": "Ausdauer" },
-            { "title": "Ausstrahlung" },
-            { "title": "Besitz" },
-            { "title": "Einbruch" },
-            { "title": "Einschüchtern" } ,
-            { "title": "Entschlossenheit"},
-            { "title": "Ermitteln" },
-            { "title": "Gelehrsamkeit" },
-            { "title": "Fahrzeug steuern" },
-            { "title": "Fingerfertigkeit" },
-            { "title": "Führungsqualitäten" },
-            { "title": "Gespür" },
-            { "title": "Handwerk" },
-            { "title": "Heimlichkeit" },
-            { "title": "Waffenloser Kampf" },
-            { "title": "Nahkampf" },
-            { "title": "Fernkampf" },
-            { "title": "Kunst" },
-            { "title": "Reiten" },
-            { "title": "Scharfsinn" },
-            { "title": "Spiele" },
-            { "title": "Sprachen" },
-            { "title": "Täuschung" },
-            { "title": "Technik" },
-            { "title": "Zaubern"}
-          ]
-        ],
-      "stufenleiter":
-      { "12": "Perfekt",
-        "11": "Göttergleich",
-        "10": "Überirdisch",
-        "9": "Übernatürlich",
-        "8": "Übermenschlich",
-        "7": "Legendär",
-        "6": "Weltklasse",
-        "5": "Großartig",
-        "4": "Hervorragend",
-        "3": "Gut",
-        "2": "Ordentlich",
-        "1": "Durchschnittlich",
-        "0": "Mäßig",
-        "-1": "Armselig",
-        "-2": "Grauenhaft"},
-      "stufenleiterstart": -2,
-      "stufenleiterend": 12,
-      "konsequenzen":  ["LEICHT","MITTEL","SCHWER"],
-
-      "aspects": [{"name": "", "description": ""}],
-      "talents": [{"name": ""}],
-      "weapons": [{"name": ""}],
-      "beute": 6,
-      "belastungspunkte": [
-        {
-          "id": "koerper",
-          "defaultval": 5,
-          "skillbonus": 0,
-          "bonus": 0,
-          "dependsOnSkill":"Ausdauer",
-          "total": 0,
-          "totalArr": new Array(0)
-        },
-        {
-          "id": "mental",
-          "defaultval": 5,
-          "skillbonus": 0,
-          "bonus": 0,
-          "dependsOnSkill":"Entschlossenheit",
-          "total": 0,
-          "totalArr": new Array(0)
-        },
-        {
-          "id": "arkan",
-          "defaultval": 5,
-          "skillbonus": 0,
-          "bonus": 0,
-          "dependsOnSkill":"Zaubern",
-          "total": 0,
-          "totalArr": new Array(0)
-        }
-      ],
-      "pdffooter": [
-        {"header": "Der Einsatz eines SP erlaubt wahlweise",
-         "content":["+1 auf vor einen Wurf","eine Behauptung",
-           "auslösen eines Aspekts (+2, neuer Wurf, andere Fertigkeit)"
-          ]},
-        {"header":"",
-          "content":[
-            "die Aktivierung mancher Talente/Gaben",
-            "der Erzwingung eines Aspekts zu widerstehen",
-            "den Aspekt eines Gegners auszunutzen"
-          ]
-        },
-        {"header":"SP erhält man durch",
-          "content":[
-            "Hinnahme der Erzwingung eines Aspekts",
-            "Gutes Rollenspiel"
-          ]
-        },
-        {"header":"Jede Stufe erlaubt wahlweise die Erhöhung von",
-          "content":["Qualität, Zeit oder Unauffälligkeit einer Aufgabe",
-            "Angriffstress"
-          ]
-        },
-        {"header":"Spin (3 Erfolge) erlaubt wahlweise",
-        "content":["+1/-1 auf die nächste Aktion",
-        "die Erzeugung eines zeitweiligen Aspekts"]}
-      ],
-      "pdftemplate": "templateMalmsturm1",
-      "shares": []
-    };
-    // end empty character JSON
     // init
     $scope.reset();
     // end init

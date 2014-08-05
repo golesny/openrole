@@ -1,6 +1,9 @@
-## Unreleased
+## 2014-08-05
 
 Features:
+* CustomConf
+    * New generic module that enables the user to create a custom module configuration
+    * Configuration can be share with other users
 
 Bugfixes:
 

@@ -4,7 +4,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
-    <title>openrole.net - Dungeonslayers</title>
+    <title>openrole.net - CustomConf</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -18,7 +18,7 @@
     <!-- endbuild -->
 </head>
 <body ng-app="openrole">
-<div ng-controller="DungeonslayersCtrl as ctrl">
+<div ng-controller="CustomConfCtrl as ctrl">
     <div id="top-layer" ng-hide="loadingReady"><div class="panel panel-default loadinganel">
         <div class="panel-body">
             <div class="progress progress-striped active">
@@ -35,16 +35,38 @@
 
     <div class="container hideUninitalized" is-initialized="{{initialized}}">
 
-        <!--<div class="panel panel-default">
+        <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Spielerfigur:</h3>
+                <h3 class="panel-title" translate="CUSTOMCONF.NAME"></h3>
             </div>
             <div class="panel-body">
-                <input type="text" ng-model="charactername" class="form-control" placeholder="Name">
+                <input type="text" ng-model="openrole.charactername" class="form-control" placeholder="{{'CUSTOMCONF.NAME' |translate}}">
             </div>
-        </div> -->
-        <div class="well" translate="COMING"></div>
-    </div>
+            <ul  class="list-group">
+                <li class="list-group-item form-inline">
+                    <label class="control-label" translate="CUSTOMCONF.SYSTEM"></label>:
+
+                    <or-dropdown ng-model="openrole.systemname" data-dropdown-data="availableSystems"></or-dropdown>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" translate="CUSTOMCONF.EDITCONFIG"></h3>
+            </div>
+            <div class="panel-body">
+                <div ui-ace="{mode: 'json'}" style="height:300px;border: 1px solid darkgray; margin-bottom: 4px" ng-model="openrole.configuration"></div>
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn-danger btn-xs" ng-click="loadDefaultConf()" translate="CUSTOMCONF.BTN_RESET_DEFAULT"></button>
+            </div>
+        </div>
+
+        <div or-shares></div>
+
+    </div><!-- container -->
 
     <!-- footer start -->
     <footer ng-include="'views/footer.html'"></footer>
@@ -97,7 +119,12 @@
 <script src="scripts/openrole/directiveDropdownSharedChar.js"></script>
 <!-- endbuild -->
 
-<!-- build:js({.tmp,app}) scripts/dungeonslayers.js -->
+<!-- build:js({.tmp,app}) scripts/customconf.js -->
+<script src="bower_components/ace-builds/src/ace.js"></script>
+<script src="scripts/customconf/CustomConfCtrl.js"></script>
+<script src="scripts/customconf/locale.js"></script>
+<script src="scripts/malmsturm/locale.js"></script>
+<script src="scripts/malmsturmgm/locale.js"></script>
 <!-- endbuild -->
 
 </html>

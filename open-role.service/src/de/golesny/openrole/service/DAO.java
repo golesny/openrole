@@ -102,16 +102,26 @@ public class DAO {
 	}
 
 	public List<Map<String, String>> getCharacterOverview(Entity user, RequestInfo reqInfo) {
-		Filter forUser = new FilterPredicate(USER_PROP_USER, FilterOperator.EQUAL, user.getKey().getName());
-		Query query = new Query(reqInfo.system).setFilter(forUser);
+		Filter filter = new FilterPredicate(USER_PROP_USER, FilterOperator.EQUAL, user.getKey().getName());
+		Query query = new Query(reqInfo.system).setFilter(filter);
 		List<Map<String, String>> result = new ArrayList<>();
 		for (Entity ent : datastore.prepare(query).asIterable()) {
-			Map<String, String> entry = new HashMap<>();
-			entry.put("docId", ""+ent.getKey().getId());
-			entry.put("charactername", ""+ent.getProperty("charactername"));
-			result.add(entry);
+			if (StringUtils.isNotBlank(reqInfo.docId)) {
+				if (ent.hasProperty("systemname") && StringUtils.equals(reqInfo.docId, ""+ent.getProperty("systemname"))) {
+					createEntry(result, ent);
+				}
+			} else {
+				createEntry(result, ent);
+			}
 		}
 		return result;
+	}
+
+	private void createEntry(List<Map<String, String>> result, Entity ent) {
+		Map<String, String> entry = new HashMap<>();
+		entry.put("docId", ""+ent.getKey().getId());
+		entry.put("charactername", ""+ent.getProperty("charactername"));
+		result.add(entry);
 	}
 	
 	public String doRegister(String email, String pw, String nick) {
