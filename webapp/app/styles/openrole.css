@@ -1,11 +1,10 @@
-
 body {
   padding-top: 70px;
-  padding-bottom: 20px;
-}
+  padding-bottom: 20px; }
 
-img { max-width: 100%; height: auto}
-
+img {
+  max-width: 100%;
+  height: auto; }
 
 #top-layer {
   position: fixed;
@@ -18,86 +17,85 @@ img { max-width: 100%; height: auto}
   opacity: 0.7;
   background-color: black;
   z-index: 99999;
-  cursor: wait;
-}
+  cursor: wait; }
 
 .loadinganel {
   margin-top: 10%;
   margin-left: 30%;
-  margin-right: 30%;
-}
+  margin-right: 30%; }
 
 .hideUninitalized {
-  visibility: hidden;
-}
+  visibility: hidden; }
+
 .hideUninitalized[is-initialized="true"] {
-  visibility: inherit;
-}
+  visibility: inherit; }
 
 .ng-cloak {
-  display: none;
-}
+  display: none; }
 
 /* malmsturm */
-$or-skillboxcolor-inactive: rgb(190, 190, 190);
-$or-skillboxcolor-active: rgb(47, 47, 47);
-
 span.or-skill-box[data-drag="false"] {
   background-color: white;
   cursor: default;
-  background: rgb(190, 190, 190);
-  color: rgb(190, 190, 190);
-}
+  background: #bebebe;
+  color: #bebebe; }
 
 .btn-or-skill-dd {
   color: white;
-  background-color: $or-skillboxcolor-active;
-  border-color: darken($or-skillboxcolor-active, 10%);}
+  background-color: #2f2f2f;
+  border-color: #161616; }
+
 .btn-or-skill-dd:hover, .btn-or-skill-dd:focus, .btn-or-skill-dd:active, .btn-or-skill-dd.active, .open > .btn-or-skill-dd.dropdown-toggle {
   color: white;
-  background-color: lighten($or-skillboxcolor-active, 20%);
-  border-color: lighten($or-skillboxcolor-active, 10%); }
+  background-color: #626262;
+  border-color: #494949; }
+
 .btn-or-skill-dd:active, .btn-or-skill-dd.active, .open > .btn-or-skill-dd.dropdown-toggle {
   background-image: none; }
+
 .btn-or-skill-dd.disabled, .btn-or-skill-dd.disabled:hover, .btn-or-skill-dd.disabled:focus, .btn-or-skill-dd.disabled:active, .btn-or-skill-dd.disabled.active, .btn-or-skill-dd[disabled], .btn-or-skill-dd[disabled]:hover, .btn-or-skill-dd[disabled]:focus, .btn-or-skill-dd[disabled]:active, .btn-or-skill-dd[disabled].active, fieldset[disabled] .btn-or-skill-dd, fieldset[disabled] .btn-or-skill-dd:hover, fieldset[disabled] .btn-or-skill-dd:focus, fieldset[disabled] .btn-or-skill-dd:active, fieldset[disabled] .btn-or-skill-dd.active {
-  background-color: lighten($or-skillboxcolor-active, 40%);
-  border-color: lighten($or-skillboxcolor-active, 20%); }
+  background-color: #959595;
+  border-color: #626262; }
+
 .btn-or-skill-dd .badge {
-  color: $or-skillboxcolor-active;
+  color: #2f2f2f;
   background-color: white; }
 
 .btn-or-skill, .btn-or-skill:focus {
   color: white;
-  background-color: $or-skillboxcolor-active;
-  border-color: darken($or-skillboxcolor-active, 10%);}
+  background-color: #2f2f2f;
+  border-color: #161616; }
+
 .btn-or-skill:hover, .btn-or-skill:active, .btn-or-skill.active {
   color: white;
-  background-color: lighten($or-skillboxcolor-active, 20%);
-  border-color: lighten($or-skillboxcolor-active, 10%); }
+  background-color: #626262;
+  border-color: #494949; }
+
 .btn-or-skill:active, .btn-or-skill.active {
   background-image: none; }
-.btn-or-skill.disabled, .btn-or-skill.disabled:hover, .btn-or-skill.disabled:focus, .btn-or-skill.disabled:active, .btn-or-skill.disabled.active, .btn-or-skill[disabled], .btn-or-skill[disabled]:hover, .btn-or-skill[disabled]:focus, .btn-or-skill[disabled]:active, .btn-or-skill[disabled].active, fieldset[disabled] .btn-or-skill, fieldset[disabled] .btn-or-skill:hover, fieldset[disabled] .btn-or-skill:focus, fieldset[disabled] .btn-or-skill:active, fieldset[disabled] .btn-or-skill.active {
-  background-color: lighten($or-skillboxcolor-active, 40%);
-  border-color: lighten($or-skillboxcolor-active, 20%); }
-.btn-or-skill .badge {
-  color: $or-skillboxcolor-active;
-  background-color: white; }
 
+.btn-or-skill.disabled, .btn-or-skill.disabled:hover, .btn-or-skill.disabled:focus, .btn-or-skill.disabled:active, .btn-or-skill.disabled.active, .btn-or-skill[disabled], .btn-or-skill[disabled]:hover, .btn-or-skill[disabled]:focus, .btn-or-skill[disabled]:active, .btn-or-skill[disabled].active, fieldset[disabled] .btn-or-skill, fieldset[disabled] .btn-or-skill:hover, fieldset[disabled] .btn-or-skill:focus, fieldset[disabled] .btn-or-skill:active, fieldset[disabled] .btn-or-skill.active {
+  background-color: #959595;
+  border-color: #626262; }
+
+.btn-or-skill .badge {
+  color: #2f2f2f;
+  background-color: white; }
 
 .btn-or-skill[data-mark="empty"] {
   color: white;
   background-color: white;
   border-color: #cccccc;
-  width: 120px}
+  width: 120px; }
 
 .btn-or-skill[data-mark="marked"] {
   color: white;
   background-color: #306593;
   border-color: #1e4b6f;
-  width: 120px}
+  width: 120px; }
 
 .btn-or-skill[data-mark="markedempty"] {
   color: #306593;
   background-color: #306593;
   border-color: #1e4b6f;
-  width: 120px}
+  width: 120px; }

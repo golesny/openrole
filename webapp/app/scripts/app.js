@@ -5,7 +5,6 @@ var app = angular.module('openrole',
      'pascalprecht.translate',
       'ui.bootstrap',
       'ngTouch',
-      'ngDragDrop',
       'ui.ace'
     ]);
 

@@ -19,25 +19,12 @@ module.exports = function(config) {
       'app/bower_components/es5-shim/es5-shim.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/json3/lib/json3.min.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/carousel.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/scrollspy.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js',
-      'app/bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js',
-      'app/bower_components/angular-resource/angular-resource.js',
-      'app/bower_components/angular-local-storage/angular-local-storage.js',
+      'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/angular-translate/angular-translate.js',
       'app/bower_components/jspdf/dist/jspdf.min.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/angular-touch/angular-touch.js',
-      'app/bower_components/jquery-ui/ui/jquery-ui.js',
+      'app/bower_components/jquery-ui/jquery-ui.js',
       'app/bower_components/angular-dragdrop/src/angular-dragdrop.js',
       'app/bower_components/ace-builds/src/ace.js',
       'app/bower_components/angular-ui-ace/ui-ace.js',
@@ -82,7 +69,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome', 'Firefox', 'IE'],
+    browsers: ['Chrome' ], // , 'Firefox', 'IE'],
 
 
     // Continuous Integration mode
