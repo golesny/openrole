@@ -15,6 +15,31 @@ app.config(['$translateProvider', function ($translateProvider) {
   $translateProvider.determinePreferredLanguage();
 }]);
 
+app.config(['$routeProvider','$locationProvider',function ($routeProvider, $locationProvider) {
+    $routeProvider
+        .when('/credits', {
+            templateUrl: 'views/index.credits.html',
+            controller: 'OpenroleCtrl'
+        })
+        .when('/contact', {
+            templateUrl: 'views/index.contact.html',
+            controller: 'OpenroleCtrl'
+        })
+        .when('/pwreset', {
+            templateUrl: 'views/index.pwreset.html',
+            controller: 'OpenroleCtrl'
+        })
+        .when('/pwresetcode', {
+            templateUrl: 'views/index.pwresetcode.html',
+            controller: 'OpenroleCtrl'
+        })
+        .otherwise({
+            //redirectTo: '/'
+            templateUrl: 'views/index.welcome.html',
+            controller: 'OpenroleCtrl'
+        });
+}]);
+
 // exception handling
 app.factory('$exceptionHandler', [function () {
   return function (exception, cause) {
@@ -48,10 +73,44 @@ var initPDFTemplates = function(system, callback) {
 };
 
 // global controller
-app.controller('OpenroleCtrl',['$scope', function($scope) {
+app.controller('OpenroleCtrl',['$scope','$http','alertService', 'loaderService','SERVICEURL', function($scope, $http, alertService, loaderService, SERVICEURL) {
   $scope.openrole_module_name = 'Overview';
   $scope.openrole_hide_pdf_button = "true";
   $scope.openrole_hide_new_button = "true";
+
+    $scope.sendPasswordResetCode = function () {
+        console.log("sendPasswordResetCode");
+        loaderService.setLoadingStart("Logout");
+        $http.get(SERVICEURL + '/pwreset?email='+window.escape($scope.email), {
+            headers: { 'Content-Type': 'plain/text; charset=UTF-8'}
+        })
+        .success(function(data, status, headers, config){
+               alertService.success('MSG.PWRESETSEND');
+               loaderService.setLoadingReady();
+                window.location = '/#/pwresetcode';
+            })
+            .error(function(data, status, headers, config) {
+                alertService.danger(status, ': Error on requesting pw reset: ', data);
+                loaderService.setLoadingReady();
+            });
+    };
+
+    $scope.sendPasswordResetNewPW = function() {
+        loaderService.setLoadingStart("Logout");
+        $http.get(SERVICEURL + '/pwreset?email='+window.escape($scope.email)+'&code='+window.escape($scope.code), {
+            headers: { 'Content-Type': 'plain/text; charset=UTF-8'}
+        })
+            .success(function(data, status, headers, config){
+                alertService.success('MSG.PWRESETSUCCESSFUL');
+                loaderService.setLoadingReady();
+                window.location = '/#/';
+            })
+            .error(function(data, status, headers, config) {
+                alertService.danger(status, ': Error on requesting pw reset: ', data);
+                loaderService.setLoadingReady();
+            });
+    }
+
 }]);
 
 // ------------ global controller --------------
@@ -94,7 +153,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', '$http', '$location', 'loca
       };
       var internalClientSideLogout = function() {
         console.log("internal log out");
-        $http.defaults.headers.common["X-Openrole-Token"] = null;
+        delete $http.defaults.headers.common["X-Openrole-Token"];
         $scope.loggedin = false;
         localStorageService.remove("X-Openrole-Token");
         localStorageService.remove("X-Openrole-Nick");

@@ -26,6 +26,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 import de.golesny.openrole.service.util.DigestUtils;
 import de.golesny.openrole.service.util.JsonUtils;
+import de.golesny.openrole.service.util.MailUtils;
 import de.golesny.openrole.service.util.PathUtils;
 
 @SuppressWarnings("serial")
@@ -39,6 +40,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 	private static String SLASH_LOGIN = "/login";
 	private static String SLASH_LOGOUT = "/logout";
 	private static String SLASH_REGISTER = "/register";
+	private static String SLASH_PWRESET = "/pwreset";
 	private static Set<String> SYSTEMS = new HashSet<>();
 	static {
 		SYSTEMS.add("customconf");
@@ -64,6 +66,11 @@ public class OpenroleServiceServlet extends HttpServlet {
 		try {
 			addAccessControlHeader(resp);
 			resp.setContentType("application/json");
+			if (SLASH_PWRESET.equals(req.getPathInfo())) {
+				doPWReset(req);
+				resp.setStatus(200);
+				return;
+			}
 			String token = req.getHeader(HEADER_TOKEN);
 			Entity user = null;
 			if (StringUtils.isEmpty(token)) {
@@ -107,6 +114,24 @@ public class OpenroleServiceServlet extends HttpServlet {
 			resp.setContentType("plain/text");
 			resp.getWriter().append(INTERNAL_SERVER_ERROR);
 			log(e);
+		}
+	}
+
+	private void doPWReset(HttpServletRequest req) {
+		String email = req.getParameter("email");
+		String code = req.getParameter("code");
+		if (email != null) {
+			if (code == null) {
+				// request link
+				MailInfo mailInfo = new DAO().createPWResetCodeForUserByEmail(email);
+				MailUtils.sendPWResetCode(mailInfo);
+			} else {
+				MailInfo mailInfo = new DAO().createNewPasswordForUser(email, code);
+				MailUtils.sendNewPassword(mailInfo);
+			}
+		}
+		else {
+			throw new OpenRoleException("no email for pwreset", "MSG.SERVICE_ACTION_INVALID", 500);
 		}
 	}
 
@@ -254,7 +279,8 @@ public class OpenroleServiceServlet extends HttpServlet {
 		Key key = KeyFactory.createKey(DAO.USER_PROP_USER, lowercaseEmailSHA1);
 		try {
 			Entity user = datastore.get(key);
-			String pwHash = DigestUtils.getSHA1(pw);
+			// we have to trim the PW, because it has a trailing blank by copy/paste it
+			String pwHash = DigestUtils.getSHA1(StringUtils.trimToEmpty(pw));
 			if (pwHash.equals(user.getProperty(USER_PROP_PWHASH))) {
 				String randomSHA1 = (String) user.getProperty(USER_PROP_RANDOMSHA1);
 				if (randomSHA1 == null) {
@@ -264,7 +290,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 				}
 				return JsonUtils.getLoginResponse(user, randomSHA1);
 			} else {
-				throw new OpenRoleException("User ID "+user.getProperty(DAO.USER_PROP_USER)+" typed wrong password", "USER_PW_WRONG", 403);
+				throw new OpenRoleException("User ID "+user.getProperty(DAO.USER_PROP_USER)+"("+email+"/"+lowercaseEmailSHA1+") typed wrong password", "USER_PW_WRONG", 403);
 			}
 		} catch (EntityNotFoundException e) {
 			throw new OpenRoleException("Couldn't find entity User with key "+key, "MSG.USER_PW_WRONG", 403);

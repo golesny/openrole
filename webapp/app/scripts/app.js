@@ -5,7 +5,8 @@ var app = angular.module('openrole',
      'pascalprecht.translate',
       'ui.bootstrap',
       'ngTouch',
-      'ui.ace'
+      'ui.ace',
+      'ngRoute'
     ]);
 
 app.constant("SYSTEMS",
@@ -24,6 +25,11 @@ app.constant("SERVICEURL",
 // In some cases the token was reset. This works better ...
 app.run(['$http','localStorageService', function($http, localStorageService) {
   var token = localStorageService.get("X-Openrole-Token");
-  console.log("put token to $http "+token);
-  $http.defaults.headers.common["X-Openrole-Token"] = token;
+  if (angular.isDefined(token) && token != null) {
+      console.log("put token to $http "+token);
+      $http.defaults.headers.common["X-Openrole-Token"] = token;
+  } else {
+      console.log("reset token at $http");
+      delete $http.defaults.headers.common["X-Openrole-Token"];
+  }
 }]);

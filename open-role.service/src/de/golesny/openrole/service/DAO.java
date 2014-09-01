@@ -33,6 +33,8 @@ public class DAO {
 	public static final String USER_PROP_USER = "user";
 	public static final String USER_PROP_PWHASH = "pwhash";
 	public static final String USER_PROP_RANDOMSHA1 = "randomsha1";
+	public static final String USER_PROP_EMAIL = "email";
+	public static final String USER_PROP_PWRESETCODE = "pwresetcode";
 	
 	private DatastoreService datastore;
 	
@@ -125,11 +127,11 @@ public class DAO {
 	}
 	
 	public String doRegister(String email, String pw, String nick) {
-		String lowercaseEmailSHA1 = DigestUtils.getSHA1(email.toLowerCase());
+		String lowercaseEmailSHA1 = getEMailDigest(email);
 		Key key = KeyFactory.createKey(USER_PROP_USER, lowercaseEmailSHA1);
 		try {
 			datastore.get(key);
-			throw new OpenRoleException("E-Mail "+lowercaseEmailSHA1+" already exists while registration", "MSG.USER_ALREADY_EXISTS", 409);
+			throw new OpenRoleException("E-Mail "+lowercaseEmailSHA1+" ("+email+") already exists while registration", "MSG.USER_ALREADY_EXISTS", 409);
 		} catch (EntityNotFoundException e) {
 			// check the nick, if not available
 			if (!StringUtils.isEmpty(nick)) {
@@ -152,6 +154,10 @@ public class DAO {
 			datastore.put(newUser);
 			return randomsha1;
 		}
+	}
+
+	private String getEMailDigest(String email) {
+		return DigestUtils.getSHA1(email.toLowerCase());
 	}
 	
 	public Entity getUser(String token) {
@@ -211,6 +217,53 @@ public class DAO {
 			nicks.add((String)shar.getProperty(USER_PROP_NICK));
 		}
 		return nicks;
+	}
+
+	public MailInfo createPWResetCodeForUserByEmail(String email) {
+		log.fine("getting user with email "+email);
+		Key key = KeyFactory.createKey(USER_PROP_USER, getEMailDigest(email));
+
+		// Use PreparedQuery interface to retrieve results
+		try {
+			Entity entity = datastore.get(key);
+			String newCode = DigestUtils.createRandomString();
+			entity.setProperty(USER_PROP_PWRESETCODE, newCode);
+			datastore.put(entity);
+			
+			MailInfo mailInfo = new MailInfo();
+			mailInfo.email = email;
+			mailInfo.nick = (String) entity.getProperty(USER_PROP_NICK);
+			mailInfo.code = newCode; 
+			return mailInfo;
+		} catch (EntityNotFoundException e) {
+			throw new OpenRoleException("E-Mail "+email+" does not exist", "MSG.EMAIL_NOT_EXISTS", 404);
+		}
+	}
+	
+	public MailInfo createNewPasswordForUser(String email, String code) {
+		log.fine("getting user with email "+email);
+		Key key = KeyFactory.createKey(USER_PROP_USER, getEMailDigest(email));
+
+		// Use PreparedQuery interface to retrieve results
+		try {
+			Entity entity = datastore.get(key);
+			String pw = DigestUtils.createPassword();
+			if (StringUtils.equals((String)entity.getProperty(USER_PROP_PWRESETCODE), code)) {
+				entity.removeProperty(USER_PROP_PWRESETCODE);
+				entity.setProperty(USER_PROP_PWHASH, DigestUtils.getSHA1(pw));
+				datastore.put(entity);
+				
+				MailInfo mailInfo = new MailInfo();
+				mailInfo.email = email;
+				mailInfo.nick = (String) entity.getProperty(USER_PROP_NICK);
+				mailInfo.pw = pw; 
+				return mailInfo;
+			} else {
+				throw new OpenRoleException("wrong pw reset code (user:"+email+"/code="+code+")", "MSG.WRONG_PWRESET_CODE", 404);
+			}
+		} catch (EntityNotFoundException e) {
+			throw new OpenRoleException("E-Mail "+email+" does not exist", "MSG.EMAIL_NOT_EXISTS", 404);
+		}
 	}
 	
 }

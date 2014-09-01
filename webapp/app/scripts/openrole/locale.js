@@ -55,7 +55,8 @@ app.config(['$translateProvider', function ($translateProvider) {
       LOGOUT: 'Abmelden',
       PREFERENCES: 'Einstellungen',
       CONTACT: 'Kontakt/Impressum',
-      CHANGELOG: 'Changelog'
+      CHANGELOG: 'Changelog',
+      PWRESET: 'Passwort vergessen'
     },
     COMING: 'Kommt vielleicht mal ...',
     MSG: {
@@ -71,7 +72,13 @@ app.config(['$translateProvider', function ($translateProvider) {
       ID_NOT_FOUND: 'Der Charakter wurde für einen anderen Account angelegt und daher für diesen Account nicht abgespeichert werden. Erstelle einen neuen Charakter',
       COULD_NOT_LOAD_SHARED: 'Konnte die Liste der freigegebenen Charaktere nicht laden.',
       NOT_LOGGED_IN: 'Du bist nicht eingeloggt. Wenn du dich gerade erst angemeldet/registriert hast, dann warte einen kurzen Moment, ansonsten melde dich neu an.',
-      PDF_LAYOUT_TOO_MUCH_CONTENT: 'Bitte benutze ein anderes Template oder veringere die Menge des Inhalts.'
+      PDF_LAYOUT_TOO_MUCH_CONTENT: 'Bitte benutze ein anderes Template oder veringere die Menge des Inhalts.',
+      EMAIL_NOT_EXISTS: 'Die E-Mail existiert nicht im System',
+      WRONG_PWRESET_CODE: 'Der Code zum Passwort zurücksetzen ist falsch.',
+      PWRESETSEND: 'Code wurde versendet. Bitte den Code in der in das Formular eingeben, um neues Passwort zu bekommen.',
+      PWRESETSUCCESSFUL: 'Neues Passwort versendet',
+      WRONG_EMAILFORMAT: 'Die E-Mail Adresse konnte nicht konvertiert werden',
+      MAIL_COULDNOT_SEND: 'Mail konnte nicht versendet werden (Interner Fehler)'
     },
     LABEL: {
       NICK: 'Nickname',
@@ -82,13 +89,17 @@ app.config(['$translateProvider', function ($translateProvider) {
       DATAPROTECTION: 'Die E-Mail und das Passwort werden unumkehrbar verschlüsselt (SHA1 Hash) abgespeichert und können daher nicht wiederhergestellt werden. Nur zum Login und für die Passwort vergessen Funktion wird die E-Mail übertragen.\n'+
         'Die E-Mail wird nie geprüft, nicht weitergegeben und wird in keinster Weise weiterverwendet außer für die Passwort vergessen Funktion.\n'+
         'Möchtest du auf die Passwort vergessen Funktion verzichten, kannst du einen beliebigen Usernamen benutzen, das hat zur Folge, dass bei einem Verlust des Passworts der Zugang nur mit einer freiwilligen Spende und einer E-Mail über das Support-System wiederhergestellt werden.',
-      SHARES: 'Lese-Freigaben für folgende Benutzer (Nick)'
+      SHARES: 'Lese-Freigaben für folgende Benutzer (Nick)',
+      CODE: 'Code'
     },
     BUTTON: {
       OPEN: 'Öffnen',
       ADD: '{{name}} hinzufügen',
       SAVE: 'Speichern',
-      CANCEL: 'Abbrechen'
+      CANCEL: 'Abbrechen',
+      LOGIN: 'Anmelden',
+      SENDPWRESETCODE: 'Passwort zurücksetzen anfordern',
+      SENDNEWPW: 'Neues Passwort zusenden'
     },
     PREF: {
       DEVURL: 'Entwickler Extension URL'
@@ -104,7 +115,9 @@ app.config(['$translateProvider', function ($translateProvider) {
         STEP4: 'Gehe zu dem System, dass du erweitert hast, und lade das Template',
         STEP5: 'Nachdem du Änderungen an dem js gemacht hast, lade die Seite neu',
         STEP6: 'Wenn du fertig bist melde dich bei mir und schicke mir das Template, dann können es alle benutzen'
-      }
+      },
+      PWRESETDESCRIPTION: 'Es wird ein Code an die E-Mail Adresse geschickt. Mit dem Code bekommst ein neues Passwort zugesendet.',
+      PWRESETDESCRIPTION2: 'Es wurde ein Code an die E-Mail Adresse geschickt. Mit dem Code bekommst ein neues Passwort zugesendet.'
     }
   })
 }]);
