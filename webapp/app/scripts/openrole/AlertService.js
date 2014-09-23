@@ -10,7 +10,7 @@ angular.module('openrole')
       for (var i = 1; i < args.length; i++) {
         if (args[i] instanceof Error) {
           var splits = args[i].stack.split("\n");
-          for (var j=0; j < 4 && j < splits.length; j++) {
+          for (var j=0; j < 8 && j < splits.length; j++) {
             msg += splits[j]+" ";
           }
         } else {

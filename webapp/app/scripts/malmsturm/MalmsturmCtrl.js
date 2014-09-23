@@ -161,6 +161,7 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
     $scope.newAspect = function() {
       $scope.openrole.aspects[$scope.openrole.aspects.length] = {"name": "", "description": ""};
     };
+
     $scope.new = function(arraylist) {
       arraylist[arraylist.length] = {"name": ""};
     };

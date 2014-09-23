@@ -2,7 +2,7 @@
   "name": "webapp",
   "version": "0.2.0",
   "dependencies": {
-    "angular": "1.2.23",
+    "angular": "1.3.0-rc.1",
     "json3": "~3.3.1",
     "es5-shim": "~3.1.0",
     "jquery": "~1.11.0",
@@ -14,7 +14,8 @@
     "angular-bootstrap": "~0.11.0",
     "angular-touch": "~1.2.23",
     "angular-ui-ace": "~0.1.1",
-    "angular-route": "~1.2.23"
+    "angular-route": "~1.2.23",
+    "angular-bootstrap-colorpicker": "~3.0.8"
   },
   "devDependencies": {
     "angular-mocks": "1.2.23"

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <title>openrole.net - Song of Ice and Fire - Housesheet</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- build:css(app) styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="bower_components/angular-bootstrap-colorpicker/css/colorpicker.css" />
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css(.tmp) styles/openrole.css -->
+  <link rel="stylesheet" href="styles/openrole.css">
+  <!-- endbuild -->
+</head>
+<body ng-app="openrole">
+<div ng-controller="SifHouseCtrl as ctrl">
+  <div id="top-layer" ng-hide="loadingReady"><div class="panel panel-default loadinganel">
+    <div class="panel-body">
+      <div class="progress progress-striped active">
+        <div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+          {{loading}}
+        </div>
+      </div>
+    </div>
+  </div></div>
+  <div ng-include="'views/nav.html'"></div>
+  <div ng-include="'views/dialog.open.html'"></div>
+  <div ng-include="'views/dialog.alert.html'"></div>
+  <!-- header end -->
+
+  <div class="container hideUninitalized" is-initialized="{{initialized}}">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title" translate="SIFHOUSE.HOUSE"></h3>
+      </div>
+      <div class="panel-body form-horizontal">
+        <div class="form-group">
+          <label class="control-label col-xs-2" translate="SIFHOUSE.HOUSENAME"></label>
+          <div class="col-xs-10">
+            <input type="text" ng-model="openrole.housename" class="form-control" placeholder="{{'SIFHOUSE.HOUSENAME' |translate}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" translate="SIFHOUSE.CAMPAIGN"></label>
+          <div class="col-xs-10">
+            <input type="text" ng-model="openrole.campaign" class="form-control" placeholder="{{'SIFHOUSE.CAMPAIGN' |translate}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" translate="SIFHOUSE.REALM"></label>
+          <div class="col-xs-10">
+            <input type="text" ng-model="openrole.realm" class="form-control" placeholder="{{'SIFHOUSE.REALM' |translate}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" translate="SIFHOUSE.LIEGE"></label>
+          <div class="col-xs-10">
+            <input type="text" ng-model="openrole.liege" class="form-control" placeholder="{{'SIFHOUSE.LIEGE' |translate}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" translate="SIFHOUSE.MOTTO"></label>
+          <div class="col-xs-10">
+            <input type="text" ng-model="openrole.motto" class="form-control" placeholder="{{'SIFHOUSE.MOTTO' |translate}}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title" translate="SIFHOUSE.CREST"></h3>
+      </div>
+      <div class="panel-body container-fluid">
+        <div class="col-xs-1" style="width: 210px;">
+          <svg style="height:250px; width:180px; border:1px dotted darkgray;">
+            <defs>
+            <clipPath id="clipPath">
+              <path ng-attr-d="{{openrole.crest.shape.path}}"></path>
+              </clipPath>
+            </defs>
+            <g ng-repeat="el in openrole.crest.elements">
+              <path ng-attr-d="{{el.path}}" ng-show="isEqual(el.svgType,['path'])" ng-attr-fill="{{el.fill}}" style="clip-path: url(#clipPath);" ></path>
+              <circle ng-attr-r="{{el.r}}" ng-attr-cx="{{el.x}}" ng-attr-cy="{{el.y}}"  ng-attr-fill="{{el.fill}}" ng-show="isEqual(el.svgType,['circle'])"  style="clip-path: url(#clipPath);" ></circle>
+              <rect ng-attr-height="{{el.h}}" ng-attr-width="{{el.w}}" ng-attr-x="{{el.x}}" ng-attr-y="{{el.y}}" ng-attr-fill="{{el.fill}}" ng-show="isEqual(el.svgType,['rect'])"  style="clip-path: url(#clipPath);" ></rect>
+            </g>
+            <path ng-attr-d="{{openrole.crest.shape.path}}" fill="none" stroke-width="3px" ng-attr-stroke="{{openrole.crest.shape.strokecolor}}"  ></path>
+          </svg>
+        </div>
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2">
+          <div class="list-group" style="max-height:250px; overflow:auto;">
+            <a href="#" class="list-group-item" ng-class="{active: crestSelItem === openrole.crest.shape}" ng-click="selectSVGElement(openrole.crest.shape)">Umriss/Füllung</a>
+            <a href="#" class="list-group-item" ng-repeat="el in openrole.crest.elements"
+                ng-class="{active: crestSelItem === el}" ng-click="selectSVGElement(el)">{{el.name}}</a>
+          </div>
+        </div>
+        <div class="form-horizontal col-xs-12 col-sm-5 col-md-5 col-lg-4">
+          <div class="form-group">
+            <label class="control-label col-xs-4">Name</label>
+            <div class="col-xs-8">
+              <input type="text" ng-model="crestSelItem.name" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="form-group" ng-hide="isEqual(crestSelItem.svgType, ['shapepath'])">
+            <label class="control-label  col-xs-4">Farbe</label>
+            <div class=" col-xs-8">
+              <input type="text" ng-model="crestSelItem.fill" colorpicker  class="form-control"/>
+            </div>
+          </div>
+
+          <div class="form-group" ng-show="isEqual(crestSelItem.svgType, ['shapepath'])">
+            <label class="control-label  col-xs-4">Form (0-100)</label>
+            <div class=" col-xs-8">
+              <input type="text" ng-model="crestSelItem.shape" class="form-control" ng-change="crestShapeChanged()"/>
+            </div>
+          </div>
+
+          <div class="form-group" ng-show="isEqual(crestSelItem.svgType, ['shapepath'])">
+            <label class="control-label  col-xs-4">Umrissfarbe</label>
+            <div class=" col-xs-8">
+              <input type="text" ng-model="crestSelItem.strokecolor" colorpicker  class="form-control"/>
+            </div>
+          </div>
+
+          <div class="form-group" ng-show="isEqual(crestSelItem.svgType, ['path', 'shapepath'])">
+            <label class="control-label  col-xs-4">Pfad</label>
+            <div class=" col-xs-8">
+              <div class="input-group">
+              <input type="text" ng-model="crestSelItem.path" ng-readonly="isEqual(crestSelItem.svgType, ['shapepath'])" class="form-control"/>
+              <span class="input-group-addon"><a href="http://www.mediaevent.de/tutorial/svg-cheat-sheet.html" target="_blank"><span class="glyphicon glyphicon-question-sign"></span></a></span>
+            </div></div>
+          </div>
+
+          <div class="form-group" ng-show="isEqual(crestSelItem.svgType, ['rect', 'circle'])">
+            <label class="control-label  col-xs-2">X</label>
+            <div class=" col-xs-4">
+              <input type="text" ng-model="crestSelItem.x" class="form-control"/>
+            </div>
+            <label class="control-label  col-xs-2">Y</label>
+            <div class=" col-xs-4">
+              <input type="text" ng-model="crestSelItem.y" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="form-group" ng-show="isEqual(crestSelItem.svgType, ['circle'])">
+            <label class="control-label  col-xs-4">Radius</label>
+            <div class=" col-xs-8">
+              <input type="text" ng-model="crestSelItem.r" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="form-group" ng-show="isEqual(crestSelItem.svgType, ['rect'])">
+            <label class="control-label  col-xs-2">Height</label>
+            <div class=" col-xs-4">
+              <input type="text" ng-model="crestSelItem.h" class="form-control"/>
+            </div>
+            <label class="control-label  col-xs-2">Breite</label>
+            <div class=" col-xs-4">
+              <input type="text" ng-model="crestSelItem.w" class="form-control"/>
+            </div>
+          </div>
+
+          <div class="form-group" ng-hide="isEqual(crestSelItem.svgType, ['shapepath'])">
+            <button class="btn btn-xs btn-default" ng-click="svgDuplicate()"><span class="glyphicon glyphicon-asterisk"></span> Duplizieren</button>
+            <button class="btn btn-xs btn-danger"  ng-click="svgRemove()"><span class="glyphicon glyphicon-remove"></span> Löschen</button>
+          </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
+              <span class="glyphicon glyphicon-plus-sign"></span> Add new svg element
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="svgAdd('circle')">Circle</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="svgAdd('rect')">Rectangle</a></li>
+              <li role="presentation" class="divider"></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="svgAdd('path')">Path</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title" translate="SIFHOUSE.STATISTICS"></h3>
+      </div>
+      <div class="panel-body form-horizontal">
+        <div class="form-group" ng-repeat="txtblk in openrole.stats">
+          <label class="control-label col-xs-2">{{txtblk.name}}</label>
+          <div class="col-xs-1">
+            <input type="text" ng-model="txtblk.val" class="form-control">
+          </div>
+          <div class="col-xs-9">
+            <input type="text" ng-model="txtblk.text" class="form-control">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title" translate="SIFHOUSE.DESCRIPTIONS"></h3>
+      </div>
+      <div class="panel-body form-horizontal">
+        <div class="form-group" ng-repeat="txtblk in openrole.textblocks">
+          <label class="control-label col-xs-2">{{txtblk.name}}</label>
+          <div class="col-xs-10">
+            <textarea ng-model="txtblk.text" class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title" translate="SIFHOUSE.PDFPREF"></h3>
+      </div>
+      <ul  class="list-group">
+        <li class="list-group-item form-inline">
+          <span translate="PDFTEMPLATE"></span>:
+
+          <or-dropdown ng-model="openrole.pdftemplate" data-dropdown-data="registeredPDFTemplates"></or-dropdown>
+        </li>
+        <li class="list-group-item form-inline">
+          <!--input type="checkbox" ng-model="openrole.pdfprintaspecttext" ng-true-value="true" ng-false-value="">
+          <span translate="MALMSTURMGM.PRINTASPEKTTEXT"></span-->
+
+        </li>
+      </ul>
+    </div>
+
+    <div or-shares></div>
+
+  </div><!-- container -->
+
+  <!-- footer start -->
+  <footer ng-include="'views/footer.html'"></footer>
+</div>
+</body>
+
+<!-- build:js(app) scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/es5-shim/es5-shim.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/json3/lib/json3.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
+<script src="bower_components/angular-translate/angular-translate.js"></script>
+<script src="bower_components/jspdf/dist/jspdf.min.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/angular-touch/angular-touch.js"></script>
+<script src="bower_components/angular-ui-ace/ui-ace.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js({.tmp,app}) scripts/openrole.js -->
+<script src="scripts/app.js"></script>
+<script src="scripts/openrole/jsPdf.openrole.plugins.js"></script>
+<script src="scripts/openrole/locale.js"></script>
+<script src="scripts/openrole/common.js"></script>
+<script src="scripts/openrole/utils.js"></script>
+<script src="scripts/openrole/DialogOpenCtrl.js"></script>
+<script src="scripts/openrole/DialogRegistrationCtrl.js"></script>
+<script src="scripts/openrole/AlertService.js"></script>
+<script src="scripts/openrole/LoaderService.js"></script>
+<script src="scripts/openrole/directiveInputList.js"></script>
+<script src="scripts/openrole/PreferencesCtrl.js"></script>
+<script src="scripts/openrole/directiveDropdown.js"></script>
+<script src="scripts/openrole/directiveShares.js"></script>
+<script src="scripts/openrole/directiveDropdownSharedChar.js"></script>
+<!-- endbuild -->
+
+<!-- build:js({.tmp,app}) scripts/sifhouse.js -->
+<script src="scripts/sifhouse/SifHouseCtrl.js"></script>
+<script src="scripts/sifhouse/pdf.1.js"></script>
+<script src="scripts/sifhouse/locale.js"></script>
+<!-- endbuild -->
+
+<!-- build:js{{.tmp,app}} scripts/pdfkit.js -->
+<script src="scripts/3rdparty/pdfkit-0.7.0.js"></script>
+<script src="scripts/3rdparty/blob-stream-v0.1.2.js"></script>
+<script src="scripts/3rdparty/FileSaver.min.js"></script>
+<!-- endbuild -->
+
+</html>

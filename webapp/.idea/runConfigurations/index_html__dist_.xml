@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="index.html (dist)" type="JavascriptDebugType" factoryName="JavaScript Debug" uri="http://localhost:63342/webapp/dist/index.html">
-    <RunnerSettings RunnerId="JavascriptDebugRunner" />
-    <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
-    <method />
-  </configuration>
-</component>

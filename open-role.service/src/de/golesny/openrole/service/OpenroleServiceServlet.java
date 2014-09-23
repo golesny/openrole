@@ -47,6 +47,7 @@ public class OpenroleServiceServlet extends HttpServlet {
 		SYSTEMS.add("dungeonslayers");
 		SYSTEMS.add("malmsturm");
 		SYSTEMS.add("malmsturmgm");
+		SYSTEMS.add("sifhouse");
 	}
 	
 	@Override

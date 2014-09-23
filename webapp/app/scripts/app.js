@@ -6,7 +6,8 @@ var app = angular.module('openrole',
       'ui.bootstrap',
       'ngTouch',
       'ui.ace',
-      'ngRoute'
+      'ngRoute',
+      'colorpicker.module'
     ]);
 
 app.constant("SYSTEMS",
@@ -14,6 +15,7 @@ app.constant("SYSTEMS",
     //{"id":"dungeonslayers", "name":"Dungeonslayers"},
     {"id":"malmsturm", "name":"Malmsturm", "customConf":"true"},
     {"id":"malmsturmgm", "name":"Malmsturm Gamemaster", "customConf":"false"},
+    {"id":"sifhouse", "name":"Song of Ice and Fire - House Sheet", "customConf":"true"},
     {"id":"customconf", "name":"Konfigurations-Editor", "customConf":"false"}
   ]
 );
