@@ -225,10 +225,10 @@ module.exports = function (grunt) {
        }
      },
     //uglify: {
-    //   dist: {}	   
+    //   dist: {}
     // },
     //concat: {
-    //   dist: {}	
+    //   dist: {}
     //},
 
     imagemin: {
@@ -307,7 +307,8 @@ module.exports = function (grunt) {
             '*.html',
             'views/{,*/}*.html',
             'images/{,*/}*.{webp,ico,png,jpg,dataurl}',
-            'fonts/*'
+            'fonts/*',
+            'scripts/3rdpartymins/*'
           ]
         }, {
           expand: true,
@@ -360,7 +361,7 @@ module.exports = function (grunt) {
         configFile: 'protractor.conf.js'
       }
     }
-    
+
   });
 
 

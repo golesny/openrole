@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/CHANGELOG.md" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Gruntfile.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/customconf.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/index.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/preferences.html" charset="UTF-8" />
@@ -14,6 +15,8 @@
     <file url="file://$PROJECT_DIR$/app/scripts/sifhouse/pdf.1.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/sifhouse.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/views/index.credits.html" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bower.json" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dist/scripts/openrole.7918f118.js" charset="UTF-8" />
   </component>
 </project>
 

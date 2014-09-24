@@ -78,7 +78,7 @@ function templateSifHouse1(charData, resLoaded, $translate, alertService, option
   // crest
   doc.save(); // store graphic context
   // clipping path
-  const scaleX=0.67;
+  var scaleX=0.67;
   var translateX = OPTS.RIGHT_X - 180 * scaleX - 10;
   var translateY = OPTS.BORDER + OPTS.RECT_HEIGHT + 10;
 
