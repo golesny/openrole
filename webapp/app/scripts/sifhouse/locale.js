@@ -37,7 +37,7 @@ app.config(['$translateProvider',function ($translateProvider) {
   "file_version": 1,\n\
   "pdftemplate": "templateSifHouse1",\n\
   "crest": {\n\
-    "shape": { "name":"Form", \
+    "shape": { "name":"Form", \n\
                "svgType": "shapepath",\n\
                "strokecolor": "#000000",\n\
                "shape": 0,\n\
@@ -45,7 +45,7 @@ app.config(['$translateProvider',function ($translateProvider) {
     },\n\
     "elements": [{"name":"Background",  "svgType":"rect",   "path":"M 0,0", "x":"0", "y":"0", "w":"180", "h":"250", "fill":"#CCCC00"},\n\
                  {"name":"path (lu)",   "svgType":"path",   "path":"M 0,0 90,0 90,100 0,100", "fill":"#00cc00"},\n\
-                 {"name":"rect (rb)", "svgType":"rect",   "path":"M 0,0", "x":"90", "y":"100", "h":"150","w":"90", "fill":"#cc0000"},\
+                 {"name":"rect (rb)", "svgType":"rect",   "path":"M 0,0", "x":"90", "y":"100", "h":"150","w":"90", "fill":"#cc0000"},\n\
                  {"name":"circle",  "svgType":"circle", "path":"M 0,0", "x":"50", "y":"80","r":"20","fill":"#0000cc"}]\n\
   },\n\
   "stats": [{"name":"Verteidigung", "val":"2","text":""},\n\
