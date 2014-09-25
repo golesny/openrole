@@ -38,7 +38,6 @@ app.controller('MalmsturmGMCtrl',['$scope','$rootScope','$http', '$location','al
 
     $scope.createPDF = function() {
         try {
-          var tmplName = eval($scope.openrole.pdftemplate);
           var dataCopy = JSON.parse(JSON.stringify($scope.openrole));
           // add the character data to data for PDF
           for (var i=0; i<dataCopy.characters.length; i++) {
@@ -50,18 +49,10 @@ app.controller('MalmsturmGMCtrl',['$scope','$rootScope','$http', '$location','al
               }
             }
           }
-          var doc = tmplName(dataCopy, $scope.imageLoaded, $translate);
-          if (!angular.isDefined(doc)) {
-            alertService.danger("Template did not return the document.");
-          } else {
-            if ($location.$$host == 'localhost') {
-              // for development: open in new window (not working in IE)
-              doc.output('dataurlnewwindow');
-            } else {
-              // for production: download file
-              doc.save("malmsturmgm.pdf");
-            }
-          }
+          // We don't want to save the content of the loaded characters in the $scope
+          var pseudoScope = {"openrole":dataCopy};
+          loaderService.loadResourcesAndGeneratePDF(pseudoScope);
+
         } catch (e) {
           alertService.danger(e);
         }

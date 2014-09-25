@@ -1,9 +1,13 @@
 ## next
 
 Features:
-    
+ 
 * Song of Ice and Fire - House Sheet
     * first version of the House Sheet generator
+
+* MalmsturmGM
+    * Refactoring: Using now pdfkit for pdf creation
+   
 
 ## 2014-09-01
 

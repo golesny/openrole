@@ -2,7 +2,6 @@
 registerTemplate("sifhouse", "templateSifHouse1", "Default");
 
 function templateSifHouse1_resources() {
-  // Font Monument: http://moorstation.org/typoasis/designers/steffmann/samples/m/monument.htm
   return ['/fonts/AveriaSerifLibre-Bold.ttf', '/fonts/JustAnotherHand.ttf'];
 }
 

@@ -77,7 +77,7 @@
                     <or-dropdown ng-model="openrole.pdftemplate" data-dropdown-data="registeredPDFTemplates"></or-dropdown>
                 </li>
                 <li class="list-group-item form-inline">
-                    <input type="checkbox" ng-model="openrole.pdfprintaspecttext" ng-true-value="true" ng-false-value="">
+                    <input type="checkbox" ng-model="openrole.pdfprintaspecttext" ng-true-value="'true'" ng-false-value="''">
                     <span translate="MALMSTURMGM.PRINTASPEKTTEXT"></span>
 
                 </li>
@@ -109,6 +109,8 @@
 <script src="bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
+
+<script src="scripts/3rdpartymins/pdfkit0.7.blob0.1.2.filesaver.min.js"></script>
 
 <!-- build:js({.tmp,app}) scripts/openrole.js -->
 <script src="scripts/app.js"></script>
