@@ -1,41 +1,59 @@
 
 registerTemplate("malmsturm", "templateMalmsturm1", "Default Template 1x A4");
 
-function templateMalmsturm1(charData, imageLoaded, $translate, alertService, params) {
-  var doc = new jsPDF();
 
-// border
-  var pageSize = doc.internal.pageSize;
-  var LEFT_X = 8;
-  var TOP_Y = 6;
-  var RIGHT_X = pageSize.width - LEFT_X;
-  var RIGHT_X_COL1 = (RIGHT_X - LEFT_X) / 3 * 2;
-  var LEFT_X_COL2 = RIGHT_X_COL1 + 5;
-  var BOTTOM_Y = pageSize.height - TOP_Y * 2;
-  var LINE_HEIGHT = 6;
-  var LINE_HEIGHT_8 = 8 / 2.54;
-  var LINE_HEIGHT_11 = 11 / 2.54;
+function templateMalmsturm1_resources() {
+  return ['/images/malmsturm/logo.dataurl','/images/malmsturm/rune.dataurl',
+          '/fonts/Goudy Mediaeval Regular.ttf', '/fonts/JustAnotherHand.ttf'];
+}
+
+function templateMalmsturm1(charData, resLoaded, $translate, alertService, options) {
+  var doc = new PDFDocument({size: 'A4'});
+
+  var OPTS = {
+    'FONT_HEAD': 'fontHead',
+    'FONT_HEAD_SIZE': 11,
+    'FONT_USER': 'fontUser',
+    'FONT_USER_SIZE': 12,
+    'HEIGHT': doc.page.height,
+    'WIDTH': doc.page.width,
+    'LEFT_X': 20,
+    'TOP_Y': 20,
+    'RIGHT_X': doc.page.width - 20,
+    'LINE_HEIGHT': 12,
+    'LINE_HEIGHT_1_5': 18,
+    'LINE_HEIGHT_11': 27,
+    'RIGHT_X_COL1':0,
+    'LEFT_X_COL2':0,
+    'BOTTOM_Y':0,
+    'STROKE_COLOR': '#000000'
+  };
+  OPTS['RIGHT_X_COL1'] = (OPTS.RIGHT_X - OPTS.LEFT_X) / 3 * 2;
+  OPTS['LEFT_X_COL2'] = OPTS.RIGHT_X_COL1 + 5;
+  OPTS['BOTTOM_Y'] = OPTS.HEIGHT - OPTS.TOP_Y * 1.4;
+  doc.page.margins.bottom = 0;
+
+  doc.registerFont(OPTS.FONT_HEAD, resLoaded['/fonts/Goudy Mediaeval Regular.ttf'], OPTS.FONT_HEAD);
+  doc.registerFont(OPTS.FONT_USER, resLoaded['/fonts/JustAnotherHand.ttf'], OPTS.FONT_USER);
 
 // Malmsturm Logo
-  doc.addImage(imageLoaded[0], 'JPEG', 115, 2, 90, 45);
-//doc.rect(LEFT_X, TOP_Y, RIGHT_X, BOTTOM_Y);
+  doc.image(resLoaded['/images/malmsturm/logo.dataurl'], OPTS.RIGHT_X - 210, 2, {width: 200});
+  //doc.rect(OPTS.LEFT_X, OPTS.TOP_Y, OPTS.RIGHT_X - OPTS.LEFT_X, OPTS.BOTTOM_Y - OPTS.TOP_Y).stroke();
 
-  doc.setFontSize(11);
-  doc.setFont("times");
-  doc.setFontType("italic");
+  doc.fontSize(OPTS.FONT_HEAD_SIZE).font(OPTS.FONT_HEAD);
+
 // *** Character name ***
-  var y = TOP_Y + LINE_HEIGHT;
-  doc.text(LEFT_X, y, 'Spielerfigur: ' + charData.charactername);
-  doc.line(LEFT_X, y + 1, 110, y + 1);
-  y += LINE_HEIGHT + LINE_HEIGHT;
+  var y = OPTS.TOP_Y + OPTS.LINE_HEIGHT;
+  doc.text($translate.instant('MALMSTURM.TITLE_CHARACTER')+': ', OPTS.LEFT_X, y);
+  doc.font(OPTS.FONT_USER).fontSize(OPTS.FONT_USER_SIZE).text(charData.charactername, OPTS.LEFT_X + 50, y + 1.5);
+  doc.lineWidth(1).moveTo(OPTS.LEFT_X, y + OPTS.LINE_HEIGHT).lineTo(280, y + OPTS.LINE_HEIGHT).stroke(OPTS.STROKE_COLOR);
+
+  y += 2 * OPTS.LINE_HEIGHT;
 
 // *** Skills ***
-  doc.text(LEFT_X, y, 'Fertigkeiten: ');
-  doc.line(LEFT_X, y + 1, 110, y + 1);
-  y += LINE_HEIGHT;
+  y = templateMalmsturm1_headline(doc, $translate.instant('MALMSTURM.SKILLS'), OPTS.LEFT_X, y, 280, OPTS);
 
-  doc.setFontSize(9);
-  var imgRuneAlias = "";
+  doc.fontSize(OPTS.FONT_HEAD_SIZE - 2);
   for (var i = 0; i < charData.skillpyramid.length; i++) {
     var lvl = charData.skillpyramidstartvalue - i;
     if (lvl > 0) {
@@ -45,14 +63,9 @@ function templateMalmsturm1(charData, imageLoaded, $translate, alertService, par
     } else {
       lvl = "" + lvl;
     }
-    doc.text(LEFT_X, y, lvl + " " + charData.stufenleiter[charData.skillpyramidstartvalue - i]);
-    if (imgRuneAlias == "") {
-      doc.addImage(imageLoaded[1], 'JPEG', 36, y - 3, 4, 3, "rune");
-      imgRuneAlias = "rune";
-    } else {
-      doc.addImage(imgRuneAlias, 'JPEG', 36, y - 3, 4, 3);
-    }
-    var slotWidth = 27;
+    doc.text(lvl + " " + charData.stufenleiter[charData.skillpyramidstartvalue - i], OPTS.LEFT_X, y);
+    doc.image(resLoaded['/images/malmsturm/rune.dataurl'], 90, y + 2, {width: 8});
+    var slotWidth = 68;
     // skills
     var skillsLine = '';
     for (var j = 0; j < charData.skillpyramid[i].length; j++) {
@@ -64,210 +77,206 @@ function templateMalmsturm1(charData, imageLoaded, $translate, alertService, par
 
     }
     if (i < (charData.skillpyramid.length - 1)) {
-      doc.text(42, y, skillsLine);
-      doc.line(LEFT_X, y + 3, 35 + charData.skillpyramid[i].length * slotWidth, y + 3);
+      doc.text(skillsLine, 106, y);
+      doc.moveTo(OPTS.LEFT_X, y + OPTS.LINE_HEIGHT + 2).lineTo(88 + charData.skillpyramid[i].length * slotWidth, y + OPTS.LINE_HEIGHT + 2);
     } else {
-      // last line has many skills
-      var lines = doc.splitTextToSize(skillsLine, RIGHT_X - 42);
-      for (var j = 0; j < lines.length; j++) {
-        var line = lines[j];
-        doc.text(42, y, line);
-        if (j < lines.length - 1) {
-          y += 4;
-        }
-      }
-      doc.line(LEFT_X, y + 3, RIGHT_X, y + 3);
+      // last line has many skills and a break
+      doc.text(skillsLine, 106, y, {width: OPTS.RIGHT_X - 110});
+      var height = doc.heightOfString(skillsLine, {width: OPTS.RIGHT_X - 110});
+      y += height;
+      doc.moveTo(OPTS.LEFT_X, y + 2).lineTo(OPTS.RIGHT_X, y + 2).stroke(OPTS.STROKE_COLOR);
     }
-    y += LINE_HEIGHT + 2;
+    y += OPTS.LINE_HEIGHT_1_5;
   }
-  y += LINE_HEIGHT;
+  y += OPTS.LINE_HEIGHT;
 
   var yr = y; // right y
-  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  left column ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  left column ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // *** Aspects ***
-  doc.setFontSize(11);
-  doc.text(LEFT_X, y, 'Aspekte: ');
-  doc.line(LEFT_X, y + 1, RIGHT_X_COL1, y + 1);
-  y += LINE_HEIGHT;
+  y = templateMalmsturm1_headline(doc, $translate.instant('MALMSTURM.ASPECTS'), OPTS.LEFT_X, y, OPTS.RIGHT_X_COL1, OPTS);
+
+  doc.font(OPTS.FONT_USER);
   for (var i=0; i<charData.aspects.length; i++) {
     if (charData.aspects[i].name != undefined && charData.aspects[i].name.length > 0) {
-      var lines = doc.setFontSize(11).splitTextToSize(charData.aspects[i].name, RIGHT_X_COL1 - LEFT_X);
-      doc.text(LEFT_X, y, lines);
-      y += lines.length * LINE_HEIGHT_11;
+      doc.fontSize(OPTS.FONT_USER_SIZE).text(charData.aspects[i].name, OPTS.LEFT_X, y, {width: OPTS.RIGHT_X_COL1 - OPTS.LEFT_X});
+      y += doc.heightOfString(charData.aspects[i].name, {width: OPTS.RIGHT_X_COL1 - OPTS.LEFT_X});
     }
-    if (! angular.isDefined(params.hasOwnProperty("dontPrintAspectDescription"))) {
+    if (! options.hasOwnProperty("dontPrintAspectDescription")) {
       if (charData.aspects[i].description != undefined && charData.aspects[i].description.length > 0) {
         y -= 0.5;
-        var lines = doc.setFontSize(8).splitTextToSize(charData.aspects[i].description, RIGHT_X_COL1 - LEFT_X);
-        doc.text(LEFT_X, y, lines);
-        y += lines.length * LINE_HEIGHT_8;
-        y += 1;
+        doc.fontSize(OPTS.FONT_USER_SIZE - 2).text(charData.aspects[i].description, OPTS.LEFT_X, y, {width: OPTS.RIGHT_X_COL1 - OPTS.LEFT_X});
+        y += doc.heightOfString(charData.aspects[i].description, {width: OPTS.RIGHT_X_COL1 - OPTS.LEFT_X}) + 4;
+
       }
     }
-    y += 1;
+    y += 2;
   }
+  y += OPTS.LINE_HEIGHT;
   // print empty lines for Aspects
   for (var i=charData.aspects.length; i<5; i++) {
     for (var j=0; j<2; j++) {
-      var ly = y + 1 +  (j*LINE_HEIGHT_11);
-      doc.line(LEFT_X, ly, RIGHT_X_COL1, ly);
+      var ly = y + 1 +  (j*OPTS.LINE_HEIGHT_1_5);
+      doc.moveTo(OPTS.LEFT_X, ly).lineTo(OPTS.RIGHT_X_COL1, ly).stroke(OPTS.STROKE_COLOR);
     }
-    y += 2 * LINE_HEIGHT_11 + 2;
+    y += 2 * OPTS.LINE_HEIGHT_1_5 + 2;
   }
-  y += 2;
+  y += 5;
 
 // *** Talents ***
-  y = templateMalmsturm1_1LineBlock(doc, LEFT_X, RIGHT_X_COL1, y, 'Talente und Gaben: ', charData.talents);
+  y = templateMalmsturm1_1LineBlock(doc, y, $translate.instant('MALMSTURM.TALENTS'), charData.talents, OPTS);
 
 // *** Waffen und Rüstungen ***
-  y = templateMalmsturm1_1LineBlock(doc, LEFT_X, RIGHT_X_COL1, y, 'Waffen und Rüstungen: ', charData.weapons);
+  y = templateMalmsturm1_1LineBlock(doc, y, $translate.instant('MALMSTURM.WEAPONS'), charData.weapons, OPTS);
 
 // *** Schicksalspunkte ***
-  doc.setFontSize(11);
-  doc.text(LEFT_X, y, 'Schicksalspunkte   Gesamt:      Aktuell:');
-  doc.line(LEFT_X, y + 1, RIGHT_X_COL1, y + 1);
-  y += LINE_HEIGHT;
+  doc.fontSize(OPTS.FONT_HEAD_SIZE).font(OPTS.FONT_HEAD);
+  doc.text('Schicksalspunkte   Gesamt:      Aktuell:', OPTS.LEFT_X, y);
+  y += OPTS.LINE_HEIGHT;
+  doc.moveTo(OPTS.LEFT_X, y + 1).lineTo(OPTS.RIGHT_X_COL1, y + 1).stroke(OPTS.STROKE_COLOR);
+  y += 5;
 
 // *** Stufenleiter ***
-  doc.setFontSize(11);
-  doc.text(LEFT_X, y, 'Stufenleiter: ');
-  doc.line(LEFT_X, y + 1, RIGHT_X_COL1, y + 1);
-  y += LINE_HEIGHT;
-
-  doc.setFontSize(8);
+  doc.fontSize(OPTS.FONT_HEAD_SIZE);
+  doc.text('Stufenleiter: ', OPTS.LEFT_X, y);
+  y += OPTS.LINE_HEIGHT;
+  doc.moveTo(OPTS.LEFT_X, y + 1).lineTo(OPTS.RIGHT_X_COL1, y + 1).stroke(OPTS.STROKE_COLOR);
+  y += 3;
+  doc.fontSize(OPTS.FONT_HEAD_SIZE - 3);
   var stufenleit = charData.stufenleiter;
   var strows = Math.ceil((charData.stufenleiterend - charData.stufenleiterstart + 1) / 3);
   for (var st=charData.stufenleiterstart, idx=0;
        st <= charData.stufenleiterend; st++, idx++) {
     if (stufenleit.hasOwnProperty(st)) {
-      var xOff = (Math.ceil( (idx+0.0000001) / strows) - 1) * 40 + 2;
-      var yOff = (idx % strows) * LINE_HEIGHT_8;
+      var xOff = (Math.ceil( (idx+0.0000001) / strows) - 1) * 100 + 5;
+      var yOff = (idx % strows) * 12;
       var numb = st>0?"+"+st:""+st;
-      var txtWidth = doc.myGetTextWidth(numb);
-      doc.text(LEFT_X + xOff - txtWidth + 3, y + yOff, numb);
-      doc.text(LEFT_X + xOff + 6, y + yOff, stufenleit[st]);
+      var txtWidth = doc.widthOfString(numb);
+      doc.text(numb, OPTS.LEFT_X + xOff - txtWidth + 8, y + yOff);
+      doc.text(stufenleit[st], OPTS.LEFT_X + xOff + 15, y + yOff);
     }
   }
-  y += LINE_HEIGHT_8 * strows;
+  y += doc.heightOfString("0") * (strows + 2);
 
-  y += 4;
-
-  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  right column ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  right column ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // *** Belastungspunkte ***
-  doc.setFontSize(11);
-  doc.text(LEFT_X_COL2, yr, $translate.instant('MALMSTURM.BELASTUNG')+': ');
-  doc.line(LEFT_X_COL2, yr + 1, RIGHT_X, yr + 1);
-  yr += LINE_HEIGHT;
+  yr = templateMalmsturm1_headline(doc, $translate.instant('MALMSTURM.BELASTUNG'), OPTS.LEFT_X_COL2, yr, OPTS.RIGHT_X, OPTS);
+
   for (var i=0; i<charData.belastungspunkte.length; i++) {
     var bel = charData.belastungspunkte[i];
-    doc.text(LEFT_X_COL2, yr, $translate.instant('MALMSTURM.'+bel.id));
-    yr += LINE_HEIGHT;
+    doc.text($translate.instant('MALMSTURM.'+bel.id), OPTS.LEFT_X_COL2, yr);
+    yr += OPTS.LINE_HEIGHT;
     for (var j=0; j<bel.total; j++) {
-      var runeX = LEFT_X_COL2 + 5 + j * 4.5 + Math.floor(j / 5) * 2;
-      doc.addImage(imgRuneAlias, 'JPEG', runeX, yr - 3, 4, 3, imgRuneAlias);
+      var runeX = OPTS.LEFT_X_COL2 + 12 + j * 8.5 /* distance */ + Math.floor(j / 5) * 3 /* distance every 5th */;
+      doc.image(resLoaded['/images/malmsturm/rune.dataurl'], runeX, yr + 4, {width: 8});
     }
-    yr += LINE_HEIGHT;
+    yr += OPTS.LINE_HEIGHT;
   }
-  yr += LINE_HEIGHT;
+  yr += OPTS.LINE_HEIGHT;
 
-  /* Konsequenzen */
-  doc.text(LEFT_X_COL2, yr, $translate.instant('MALMSTURM.KONSEQUENZEN')+': ');
-  doc.line(LEFT_X_COL2, yr + 1, RIGHT_X, yr + 1);
-  yr += LINE_HEIGHT;
+  // === Konsequenzen
+  yr = templateMalmsturm1_headline(doc, $translate.instant('MALMSTURM.KONSEQUENZEN'), OPTS.LEFT_X_COL2, yr, OPTS.RIGHT_X, OPTS);
+  //doc.text($translate.instant('MALMSTURM.KONSEQUENZEN')+': ', OPTS.LEFT_X_COL2, yr);
+  //yr += LINE_HEIGHT;
+  //doc.line(LEFT_X_COL2, yr + 1, RIGHT_X, yr + 1);
+
   for (var i=0; i< charData.konsequenzen.length; i++) {
-    doc.text(LEFT_X_COL2, yr, $translate.instant('MALMSTURM.' + charData.konsequenzen[i])+":");
+    doc.text($translate.instant('MALMSTURM.' + charData.konsequenzen[i])+":", OPTS.LEFT_X_COL2, yr + 2);
     for (var j = 0; j < 5; j++) {
-      doc.line(LEFT_X_COL2, yr + 1, RIGHT_X, yr + 1);
-      yr += LINE_HEIGHT;
+      yr += OPTS.LINE_HEIGHT_1_5;
+      doc.moveTo(OPTS.LEFT_X_COL2, yr).lineTo(OPTS.RIGHT_X, yr).stroke(OPTS.STROKE_COLOR);
     }
+    yr += 5;
   }
-  yr += LINE_HEIGHT;
+  yr += OPTS.LINE_HEIGHT;
+
 
   if (charData.beute > 0) {
-    /* Beute */
-    doc.text(LEFT_X_COL2, yr, $translate.instant('MALMSTURM.BEUTE')+': ');
-    doc.line(LEFT_X_COL2, yr + 1, RIGHT_X, yr + 1);
-    yr += LINE_HEIGHT;
+    // == Beute
+    yr = templateMalmsturm1_headline(doc, $translate.instant('MALMSTURM.BEUTE'), OPTS.LEFT_X_COL2, yr, OPTS.RIGHT_X, OPTS);
+
     for (var i=0;i<charData.beute;i++) {
-      var runeX = LEFT_X_COL2 + 5 + i * 4.5 + Math.floor(i / 5) * 2;
-      doc.addImage(imgRuneAlias, 'JPEG', runeX, yr - 3, 4, 3, imgRuneAlias);
+      var runeX = OPTS.LEFT_X_COL2 + 5 + i * 8.5 /* distance */ + Math.floor(i / 5) * 3 /* distance every 5th */;
+      doc.image(resLoaded['/images/malmsturm/rune.dataurl'], runeX, yr + 4, {width: 8});
     }
-    yr += LINE_HEIGHT;
+    yr += OPTS.LINE_HEIGHT;
   }
 
-  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  footer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  footer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // *** Einsatz von Schicksalspunkten ***
   var footerCols = charData.pdffooter.length;
-  var colWidth = (RIGHT_X - LEFT_X) / footerCols;
-  var maxHeaderLines = 1;
-  var yf = BOTTOM_Y - 3 * LINE_HEIGHT;
-  var footerLines = new Array(footerCols);
-  doc.setFontSize(8);
-  // collect the headers
-  for (var i=0; i<footerCols; i++) {
-    footerLines[i] = doc.splitTextToSize(charData.pdffooter[i].header, colWidth - 1);
-    var headerLines = footerLines[i].length;
-    if (headerLines > maxHeaderLines) {
-      maxHeaderLines = headerLines;
+  var colWidth = (OPTS.RIGHT_X - OPTS.LEFT_X) / footerCols;
+  console.log("footer colWidth="+colWidth);
+  var maxHeaderHeight = 0;
+  var maxContentHeight = 0;
+  doc.fontSize(OPTS.FONT_HEAD_SIZE - 2).font(OPTS.FONT_HEAD);
+  // get the height of headline+content
+  for (var j=0; j<footerCols; j++) {
+    var h = doc.heightOfString(charData.pdffooter[j].header, {width: colWidth - 1});
+    if (h > maxHeaderHeight) {
+      maxHeaderHeight = h;
+    }
+    h = 0;
+    for (var k = 0; k < charData.pdffooter[j].content.length; k++) {
+      h += doc.heightOfString("- "+charData.pdffooter[j].content[k], {width: colWidth - 6});
+    }
+    if (h > maxContentHeight) {
+      maxContentHeight = h;
     }
   }
-  // add the content
-  for (var i=0; i<footerCols; i++) {
-    // expand the headers
-    for (var j=footerLines[i].length-1; j<maxHeaderLines; j++) {
-      footerLines[i].push("");
-    }
-    for (var j=0; j<charData.pdffooter[i].content.length; j++) {
-      var contentLines = doc.splitTextToSize(charData.pdffooter[i].content[j], colWidth - 4);
-      for (var k=0; k<contentLines.length; k++) {
-        var line = contentLines[k];
-        if (k==0) {
-          line = "- "+line;
-        } else {
-          line = "   "+line;
-        }
-        footerLines[i].push(line);
-      }
-    }
-    var newY = BOTTOM_Y - 3 * LINE_HEIGHT - footerLines[i].length * LINE_HEIGHT_8;
-    if (newY > yf) {
-      yf = newY;
-    }
-  }
+
   // print all lines
   for (var i=0; i<footerCols; i++) {
-    doc.text(LEFT_X + i * colWidth, yf, footerLines[i]);
+    var yf = OPTS.BOTTOM_Y - maxHeaderHeight - 2 - maxContentHeight;
+    doc.text(charData.pdffooter[i].header, OPTS.LEFT_X + i * colWidth, yf, {width: colWidth - 1});
+    yf += maxHeaderHeight + 2;
+    // content
+    for (var k = 0; k < charData.pdffooter[i].content.length; k++) {
+      doc.text("- "+charData.pdffooter[i].content[k], OPTS.LEFT_X + i * colWidth + 5, yf, {width: colWidth - 6});
+      h = doc.heightOfString("- " + charData.pdffooter[i].content[k], {width: colWidth - 6});
+      yf += h;
+      console.log("content col "+i+" y="+yf+" h="+h);
+    }
   }
-  var lineYF = yf + (headerLines - 1) * LINE_HEIGHT_8 + 1;
-  doc.line(LEFT_X, lineYF, RIGHT_X, lineYF);
+  var lineYF = OPTS.BOTTOM_Y - maxContentHeight - 1;
+  doc.moveTo(OPTS.LEFT_X, lineYF).lineTo(OPTS.RIGHT_X, lineYF).stroke(OPTS.STROKE_COLOR);
 
-  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  notizen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-  /* fill the space between left colum and footer*/
+  yf = OPTS.BOTTOM_Y - maxHeaderHeight - 2 - maxContentHeight;
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  notizen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // fill the space between left colum and footer
   // *** Notizen ***
   if (y < yf) {
-    doc.setFontSize(11);
-    doc.text(LEFT_X, y, 'Notizen:');
-    for (;(y+LINE_HEIGHT) < yf; y += LINE_HEIGHT) {
-      doc.line(LEFT_X, y + 1, RIGHT_X_COL1, y + 1);
+    doc.fontSize(11);
+    doc.text($translate.instant('MALMSTURM.NOTES')+':', OPTS.LEFT_X, y);
+    y += OPTS.LINE_HEIGHT_1_5;
+    for (;(y+OPTS.LINE_HEIGHT_1_5) < yf; y += OPTS.LINE_HEIGHT_1_5) {
+      doc.moveTo(OPTS.LEFT_X, y + 1).lineTo(OPTS.RIGHT_X_COL1, y + 1).stroke(OPTS.STROKE_COLOR);
     }
   }
   // check with a small buffer, if the template can show all content
   if ((y-4) > yf) {
     alertService.danger("MSG.PDF_LAYOUT_TOO_MUCH_CONTENT");
   }
+
   return doc;
 };
 
-var templateMalmsturm1_1LineBlock = function(doc, LEFT_X, RIGHT_X_COL1, y, title, contentArray) {
-  doc.setFontSize(11);
-  doc.text(LEFT_X, y, title);
-  doc.line(LEFT_X, y + 1, RIGHT_X_COL1, y + 1);
-  y += 11/2.54 + 2;
+var templateMalmsturm1_1LineBlock = function(doc, y, title, contentArray, OPTS) {
+  y = templateMalmsturm1_headline(doc, title, OPTS.LEFT_X, y, OPTS.RIGHT_X_COL1, OPTS);
+
   for (var i=0; i<contentArray.length; i++) {
-    var lines = doc.splitTextToSize(contentArray[i].name, RIGHT_X_COL1 - LEFT_X);
-    doc.text(LEFT_X, y, lines);
-    y += lines.length * 11/2.54 + 2;
+    doc.font(OPTS.FONT_USER).fontSize(OPTS.FONT_USER_SIZE);
+    var height = doc.heightOfString(contentArray[i].name, {width:OPTS.RIGHT_X_COL1 - OPTS.LEFT_X});
+    doc.text(contentArray[i].name, OPTS.LEFT_X, y, {width:OPTS.RIGHT_X_COL1 - OPTS.LEFT_X});
+    y += height + 1;
   }
-  y += 11/2.54 + 2;
+  return y;
+};
+
+var templateMalmsturm1_headline = function(doc, title, x, y, lineX, OPTS) {
+  doc.font(OPTS.FONT_HEAD).fontSize(OPTS.FONT_HEAD_SIZE);
+  doc.text(title+': ', x, y);
+  y += OPTS.LINE_HEIGHT;
+  doc.moveTo(x, y).lineTo(lineX, y).stroke(OPTS.STROKE_COLOR);
+  y += 5;
   return y;
 };

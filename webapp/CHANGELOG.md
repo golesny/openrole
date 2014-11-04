@@ -7,7 +7,9 @@ Features:
 
 * MalmsturmGM
     * Refactoring: Using now pdfkit for pdf creation
-   
+
+* Malmsturm
+    * Refactoring: Using now pdfkit for pdf creation (with other fonts)
 
 ## 2014-09-01
 

@@ -29,7 +29,6 @@ module.exports = function(config) {
       'app/bower_components/ace-builds/src/ace.js',
       'app/bower_components/angular-ui-ace/ui-ace.js',
       'app/scripts/app.js',
-      'app/scripts/openrole/jsPdf.openrole.plugins.js',
       'app/scripts/openrole/locale.js',
       'app/scripts/openrole/common.js',
       'app/scripts/openrole/DialogOpenCtrl.js',

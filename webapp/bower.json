@@ -10,7 +10,6 @@
     "angular-resource": "1.2.23",
     "angular-local-storage": "~0.0.4",
     "angular-translate": "~2.1.0",
-    "jspdf": "~1.0.138",
     "angular-bootstrap": "~0.11.0",
     "angular-touch": "~1.2.23",
     "angular-ui-ace": "~0.1.1",

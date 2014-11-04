@@ -7,8 +7,6 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
   function($scope, $rootScope, $http, $location, alertService, loaderService, $translate)
   {
     $scope.openrole_module_name = "malmsturm";
-    $scope.imageToLoad = ['images/malmsturm/logo.dataurl','images/malmsturm/rune.dataurl'];
-    $scope.imageLoaded = [];
     $scope.openrole = {'docId': ''};
     $scope.registeredPDFTemplates = [];
     initPDFTemplates($scope.openrole_module_name, function(obj, isAdditionalAdd) {
@@ -193,7 +191,7 @@ app.controller('MalmsturmCtrl',['$scope','$rootScope','$http', '$location','aler
     };
 
     $scope.createPDF = function() {
-      loaderService.loadImagesAndGeneratePDF($scope);
+      loaderService.loadResourcesAndGeneratePDF($scope);
     };
 
     // init

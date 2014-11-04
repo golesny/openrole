@@ -34,6 +34,7 @@ app.config(['$translateProvider',function ($translateProvider) {
       BEUTE: 'Beute',
       DIVERSES: 'Diverses',
       ANZAHL_BEUTE_ANZEIGEN: 'Beute-Ankreuzkästchen anzeigen (0 = ausblenden)',
+      NOTES: 'Notizen',
       DEFAULT_EMPTY_CONFIG_BLOCK:
 '{ \n\
   "docId": "",\n\

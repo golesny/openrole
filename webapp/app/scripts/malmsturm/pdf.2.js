@@ -1,83 +1,95 @@
 
 registerTemplate("malmsturm", "templateMalmsturm2", "Default Template 2x A4");
 
+function templateMalmsturm2_resources() {
+  return ['/images/malmsturm/logo.dataurl','/images/malmsturm/rune.dataurl',
+    '/fonts/Goudy Mediaeval Regular.ttf', '/fonts/JustAnotherHand.ttf'];
+}
+
 function templateMalmsturm2(charData, imageLoaded, $translate, alertService) {
   // first page without aspect description
-  var params = {"dontPrintAspectDescription": 'true'};
-  var doc = templateMalmsturm1(charData, imageLoaded, $translate, alertService, params);
+  var options = {"dontPrintAspectDescription": 'true'};
+  var doc = templateMalmsturm1(charData, imageLoaded, $translate, alertService, options);
 
-  var pageSize = doc.internal.pageSize;
-  var LEFT_X = 8;
-  var TOP_Y = 6;
-  var TOP_Y_COLRIGHT = 15;
-  var RIGHT_X = pageSize.width - LEFT_X;
-  var RIGHT_X_COL1 = (RIGHT_X - LEFT_X) / 3 * 2;
-  var LEFT_X_COL2 = RIGHT_X_COL1 + 5;
-  var BOTTOM_Y = pageSize.height - TOP_Y * 2;
-  var LINE_HEIGHT = 6;
-  var LINE_HEIGHT_8 = 8 / 2.54;
-  var LINE_HEIGHT_11 = 11 / 2.54;
+  var OPTS = {
+    'FONT_HEAD': 'fontHead',
+    'FONT_HEAD_SIZE': 11,
+    'FONT_USER': 'fontUser',
+    'FONT_USER_SIZE': 12,
+    'HEIGHT': doc.page.height,
+    'WIDTH': doc.page.width,
+    'LEFT_X': 20,
+    'TOP_Y': 20,
+    'RIGHT_X': doc.page.width - 20,
+    'LINE_HEIGHT': 12,
+    'LINE_HEIGHT_1_5': 18,
+    'LINE_HEIGHT_11': 27,
+    'RIGHT_X_COL1':0,
+    'LEFT_X_COL2':0,
+    'BOTTOM_Y':0,
+    TOP_Y_COLRIGHT: 15,
+    'STROKE_COLOR': '#000000'
+  };
+  OPTS['RIGHT_X_COL1'] = (OPTS.RIGHT_X - OPTS.LEFT_X) / 3 * 2;
+  OPTS['LEFT_X_COL2'] = OPTS.RIGHT_X_COL1 + 5;
+  OPTS['BOTTOM_Y'] = OPTS.HEIGHT - OPTS.TOP_Y * 1.4;
+  doc.page.margins.bottom = 0;
 
-  doc.setFont("times");
-  doc.setFontType("italic");
+  doc.font(OPTS.FONT_HEAD);
 
-
-  var y = TOP_Y + LINE_HEIGHT;
-  templateMalmsturm2_addPageWithRightCol(doc, LEFT_X_COL2, RIGHT_X, TOP_Y_COLRIGHT, BOTTOM_Y, LINE_HEIGHT_11);
+  var y = OPTS.TOP_Y + OPTS.LINE_HEIGHT;
+  templateMalmsturm2_addPageWithRightCol(doc, OPTS);
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  left column ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
   // *** Aspects ***
-  doc.setFontSize(11);
-  doc.text(LEFT_X, y, 'Aspekte: ');
-  doc.line(LEFT_X, y + 1, RIGHT_X_COL1, y + 1);
-  y += LINE_HEIGHT;
+  y = templateMalmsturm1_headline(doc, $translate.instant('MALMSTURM.ASPECTS'), OPTS.LEFT_X, y, OPTS.RIGHT_X_COL1, OPTS);
+
   for (var i=0; i<charData.aspects.length; i++) {
     // calculate content
-    var lines1;
     var yToAdd1 = 0;
     if (charData.aspects[i].name != undefined && charData.aspects[i].name.length > 0) {
-      lines1 = doc.setFontSize(11).splitTextToSize(charData.aspects[i].name, RIGHT_X_COL1 - LEFT_X);
-      yToAdd1 = lines1.length * LINE_HEIGHT_11;
+      yToAdd1 += doc.font(OPTS.FONT_USER).fontSize(OPTS.FONT_USER_SIZE + 2).heightOfString(charData.aspects[i].name, {width: OPTS.RIGHT_X_COL1 - OPTS.LEFT_X});
     }
-    var lines2;
     var yToAdd2 = 0;
     if (charData.aspects[i].description != undefined && charData.aspects[i].description.length > 0) {
-      lines2 = doc.setFontSize(8).splitTextToSize(charData.aspects[i].description, RIGHT_X_COL1 - LEFT_X);
-      yToAdd2 = lines2.length * LINE_HEIGHT_8 + 1;
+      yToAdd2 += 1 + doc.font(OPTS.FONT_USER).fontSize(OPTS.FONT_USER_SIZE).heightOfString(charData.aspects[i].description, {width: OPTS.RIGHT_X_COL1 - OPTS.LEFT_X - 10});
     }
+
     // check if content fits to page
-    if (y+yToAdd1+yToAdd2 > BOTTOM_Y) {
-      templateMalmsturm2_addPageWithRightCol(doc, LEFT_X_COL2, RIGHT_X, TOP_Y_COLRIGHT, BOTTOM_Y, LINE_HEIGHT_11);
-      y = TOP_Y + LINE_HEIGHT;
+    if (y+yToAdd1+yToAdd2 > OPTS.BOTTOM_Y) {
+      // content does not fit
+      templateMalmsturm2_addPageWithRightCol(doc, OPTS);
+      y = OPTS.TOP_Y; // reset y
     }
     // print content
     if (charData.aspects[i].name != undefined && charData.aspects[i].name.length > 0) {
-      doc.setFontSize(11);
-      doc.text(LEFT_X, y, lines1);
+      doc.font(OPTS.FONT_USER).fontSize(OPTS.FONT_USER_SIZE + 2);
+      doc.text(charData.aspects[i].name, OPTS.LEFT_X, y, {width: OPTS.RIGHT_X_COL1 - OPTS.LEFT_X});
       y += yToAdd1;
     }
 
     if (charData.aspects[i].description != undefined && charData.aspects[i].description.length > 0) {
-      doc.setFontSize(8);
-      doc.text(LEFT_X, y, lines2);
+      doc.font(OPTS.FONT_USER).fontSize(OPTS.FONT_USER_SIZE);
+      doc.text(charData.aspects[i].description, OPTS.LEFT_X + 10, y, {width: OPTS.RIGHT_X_COL1 - OPTS.LEFT_X - 10});
       y += yToAdd2;
     }
-    y += LINE_HEIGHT_8;
+    y + OPTS.LINE_HEIGHT_1_5 + 5;
   }
-  y += LINE_HEIGHT_11;
+  y += OPTS.LINE_HEIGHT_1_5;
   // print empty lines to the end
-  while (y < BOTTOM_Y) {
-    doc.line(LEFT_X, y, RIGHT_X_COL1, y);
-    y += LINE_HEIGHT_11;
+  while (y < OPTS.BOTTOM_Y) {
+    doc.moveTo(OPTS.LEFT_X, y).lineTo(OPTS.RIGHT_X_COL1, y).stroke(OPTS.STROKE_COLOR);
+    y += OPTS.LINE_HEIGHT_1_5;
   }
   return doc;
-};
+}
 
-function templateMalmsturm2_addPageWithRightCol(doc, LEFT_X, RIGHT_X, TOP_Y, BOTTOM_Y, LINE_HEIGHT) {
+  function templateMalmsturm2_addPageWithRightCol(doc, OPTS) {
   doc.addPage();
+  doc.page.margins.bottom = 0;
 
-  var y = TOP_Y;
-  while (y < BOTTOM_Y) {
-    doc.line(LEFT_X, y, RIGHT_X, y);
-    y += LINE_HEIGHT;
+  var y = OPTS.TOP_Y + 2 * OPTS.LINE_HEIGHT;
+  while (y < OPTS.BOTTOM_Y) {
+    doc.moveTo(OPTS.LEFT_X_COL2, y).lineTo(OPTS.RIGHT_X, y).stroke(OPTS.STROKE_COLOR);
+    y += OPTS.LINE_HEIGHT_1_5;
   }
 }
