@@ -40,7 +40,7 @@ function templateSifHouse1(charData, resLoaded, $translate, alertService, option
   var y = OPTS.BORDER + 3;
   // headline with housename + campaign
   templateSifHouse1_line(doc, OPTS.BORDER, y, 130, OPTS.MIDDLE_X - 7 - OPTS.BORDER,
-    $translate.instant('SIFHOUSE.HOUSENAME'), charData.housename,
+    $translate.instant('SIFHOUSE.HOUSENAME'), charData.charactername,
     OPTS, {"bigHead":"yes"});
 
   templateSifHouse1_line(doc, OPTS.MIDDLE_X + 3, y, 130, OPTS.MIDDLE_X - 7 - OPTS.BORDER,
