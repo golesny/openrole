@@ -66,6 +66,8 @@ function templateSifHouse1(charData, resLoaded, $translate, alertService, option
     OPTS);
   y += OPTS.RECT_HEIGHT + 4;
 
+  var mottoY = y + 4 * (OPTS.RECT_HEIGHT + 2);
+
   for (var i=0; i<charData.stats.length; i++) {
     var stat = charData.stats[i];
     templateSifHouse1_line(doc, OPTS.BORDER, y, 85, 400,
@@ -74,7 +76,11 @@ function templateSifHouse1(charData, resLoaded, $translate, alertService, option
     y += OPTS.RECT_HEIGHT + 2;
   }
 
-  // crest
+  // =============== motto =======================
+  templateSifHouse1_textbox(doc, 430, mottoY, OPTS.RIGHT_X - 430, 3 * (OPTS.RECT_HEIGHT + 2) - 2,
+    $translate.instant('SIFHOUSE.MOTTO'), charData.motto, OPTS);
+
+  // ============== crest ========================
   doc.save(); // store graphic context
   // clipping path
   var scaleX=0.67;
