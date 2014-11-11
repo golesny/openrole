@@ -19,11 +19,14 @@ app.controller('SifHouseCtrl',['$scope','$rootScope','$http', '$location','alert
 
     $scope.reset = function() {
       // to avoid references we parse it each time
+      var emptyConfigString;
       try {
-        $scope.openrole = JSON.parse($translate.instant('SIFHOUSE.DEFAULT_EMPTY_CONFIG_BLOCK'));
+        emptyConfigString = $translate.instant('SIFHOUSE.DEFAULT_EMPTY_CONFIG_BLOCK');
+        $scope.openrole = JSON.parse(emptyConfigString);
         $scope.crestShapeChanged();
         $scope.crestSelItem = $scope.openrole.crest.elements[0];
       } catch (e) {
+        console.log("Parse Error on block: "+emptyConfigString);
         alertService.danger("Could not load the empty default config block", e);
       }
     };

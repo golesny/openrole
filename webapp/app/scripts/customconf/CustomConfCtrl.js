@@ -27,7 +27,7 @@ app.controller('CustomConfCtrl',['$scope','$rootScope','$http', '$location','ale
       var sysConfBlock = $scope.openrole.systemname.toUpperCase() + '.DEFAULT_EMPTY_CONFIG_BLOCK';
       var text = $translate.instant(sysConfBlock);
       if (text === sysConfBlock) {
-        $scope.openrole.configuration = "Error: script tag for locale.js missing?"
+        $scope.openrole.configuration = "Error: script tag for locale.js missing? Or is there no language available for the selected system?"
       } else {
         $scope.openrole.configuration = text;
       }

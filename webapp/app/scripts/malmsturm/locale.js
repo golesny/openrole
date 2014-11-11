@@ -4,12 +4,8 @@
 var app = angular.module('openrole');
 
 app.config(['$translateProvider',function ($translateProvider) {
-  //$translateProvider.translations('en', {
-  // MALMSTURM: {
-  //   TITLE_CHARACTER: 'Character',
-  //   CHARACTERNAME: 'Charactername',
-  // }
-  //});
+  $translateProvider.registerAvailableLanguageKeys(["de"]);
+  $translateProvider.use("de");
 
   $translateProvider.translations('de', {
     MALMSTURM: {

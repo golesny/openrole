@@ -1,6 +1,10 @@
 ## next
 
 Features:
+
+* Openrole
+    * New logo - designed by Alexandra Sieger
+    * Locale is determined by browsers language settings
  
 * Song of Ice and Fire - House Sheet
     * first version of the House Sheet generator

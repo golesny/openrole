@@ -9,16 +9,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">openrole.net</a>
+            <a class="navbar-brand" href="/#/">openrole.net</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar-collapse-main" ng-controller="LoginCtrl">
             <ul class="nav navbar-nav">
-                <li ng-hide="openrole_hide_new_button === 'true'"><a href="#" ng-click="reset()" title="Neu / Reset"><span class="glyphicon glyphicon-file"></span> Neu</a></li>
-                <li ng-hide="openrole_hide_pdf_button === 'true'"><a  href="#" ng-click="createPDF()" title="PDF erzeugen"><span class="glyphicon glyphicon-download"></span> PDF</a></li>
-                <li ng-show="loggedin && openrole_module_name != 'Overview'"><a href="#" ng-click="open()"><span class="glyphicon glyphicon-open"></span> Öffnen</a></li>
-                <li ng-show="loggedin && openrole_module_name != 'Overview'"><a href="#" ng-click="store()"><span class="glyphicon glyphicon-save"></span> Speichern</a></li>
+                <li ng-hide="openrole_hide_new_button === 'true'"><a href="#" ng-click="reset()" title="Neu / Reset"><span class="glyphicon glyphicon-file"></span> <span translate="MENU.NEW">New</span></a></li>
+                <li ng-hide="openrole_hide_pdf_button === 'true'"><a  href="#" ng-click="createPDF()" title="PDF erzeugen"><span class="glyphicon glyphicon-download"></span> <span translate="MENU.PDF">PDF</span></a></li>
+                <li ng-show="loggedin && openrole_module_name != 'Overview'"><a href="#" ng-click="open()"><span class="glyphicon glyphicon-open"></span> <span translate="MENU.OPEN">Open</span></a></li>
+                <li ng-show="loggedin && openrole_module_name != 'Overview'"><a href="#" ng-click="store()"><span class="glyphicon glyphicon-save"></span> <span translate="MENU.SAVE">Save</span></a></li>
                 <li><a href="preferences.html" title="{{'MENU.PREFERENCES' | translate}}" id="menuBtnPref"><span class="glyphicon glyphicon-cog"></span></a></li>
                 <li ng-show="loggedin"><a href="#" ng-click="logout()" title="{{'MENU.LOGOUT' | translate}}"><span class="glyphicon glyphicon glyphicon-off"></span></a></li>
               </ul>

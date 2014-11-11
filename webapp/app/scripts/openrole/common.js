@@ -11,8 +11,9 @@ app.config(['localStorageServiceProvider', function(localStorageServiceProvider)
 
 // init translation
 app.config(['$translateProvider', function ($translateProvider) {
-  $translateProvider.fallbackLanguage('de');
-  $translateProvider.determinePreferredLanguage();
+  console.log("common.js-translation");
+//  $translateProvider.fallbackLanguage('de');
+//  $translateProvider.determinePreferredLanguage();
 }]);
 
 app.config(['$routeProvider','$locationProvider',function ($routeProvider, $locationProvider) {

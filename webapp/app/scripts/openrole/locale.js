@@ -4,28 +4,73 @@
 var app = angular.module('openrole');
 
 app.config(['$translateProvider', function ($translateProvider) {
+
+
   $translateProvider.translations('en', {
-    WELCOME: 'Welcome to Open Role ...',
-    INTRODUCTION: 'Click on the system logo you like to create a character for',
+    WELCOME: 'Welcome at openrole.net',
+    INTRODUCTION: 'Click the system logo to create a character',
     LOADING: 'Loading',
     GENERATING_PDF : 'Generating PDF',
     ERROR_LOAD_IMG : 'Could not load images. Cause:',
     OPEN_CHARACTER_TITLE: 'Open a character',
-    OPEN: 'Open',
-    CANCEL: 'Cancel',
+    OPEN_WITH_CUSTOM_CONF_TITLE: 'Choose configuration',
+    PDFTEMPLATE:'PDF-Template',
     MENU: {
-      LOGOUT: 'Log out',
-      PREFERENCES: 'Preferences'
+      LOGOUT: 'Logout',
+      PREFERENCES: 'Preferences',
+      CONTACT: 'Contact/Impressum',
+      CHANGELOG: 'Changelog',
+      PWRESET: 'Forgot password?',
+      NEW: 'New',
+      PDF: 'PDF',
+      OPEN: 'Open',
+      SAVE: 'Save'
     },
-    COMING: 'Perhaps coming ...',
+    COMING: 'Perhaps in the future ...',
     MSG: {
-      SERVER_NOT_AVAILABLE: 'Server not available to load the configuration.',
-      LOGGED_IN: 'You are logged in, now.',
-      INTERNAL_SERVER_ERROR: 'Server error occurred.',
-      COULD_NOT_STORE_CHAR: 'Could not store character'
+      SERVER_NOT_AVAILABLE: 'The server is not available to load the configuration.',
+      LOGGED_IN: 'You are now logged in.',
+      INTERNAL_SERVER_ERROR: 'An server error occurred.',
+      COULD_NOT_STORE_CHAR: 'Could not load the character.',
+      ILLEGAL_ACTION: 'Illegal operation',
+      SERVICE_ACTION_INVALID: 'Illegal server action',
+      USER_PW_WRONG: 'Wrong user or wrong password',
+      USER_ALREADY_EXISTS: 'The user name already exists. Please choose another user name',
+      NICK_ALREADY_EXISTS: 'The nick name already exists.  Please choose another nick name',
+      ID_NOT_FOUND: 'The character was created on another account and therefor it cannot be saved. Please create a new character',
+      COULD_NOT_LOAD_SHARED: 'Could not load the list of shared characters.',
+      NOT_LOGGED_IN: 'Your are not logged in. Please just wait some seconds if you have logged in or registered a moment ago. Otherwise please log in again.',
+      PDF_LAYOUT_TOO_MUCH_CONTENT: 'Please use another template or reduce the content size.',
+      EMAIL_NOT_EXISTS: 'This e-Mail does not exist',
+      WRONG_PWRESET_CODE: 'The code for resetting the password is wrong.',
+      PWRESETSEND: 'Code has been sent. Please type in the code into the form to get a new password.',
+      PWRESETSUCCESSFUL: 'New password sent',
+      WRONG_EMAILFORMAT: 'The e-Mail could not converted',
+      MAIL_COULDNOT_SEND: 'Mail could not be sent (Internal Error)'
+    },
+    LABEL: {
+      NICK: 'Nick Name',
+      NICK_NOTE: ' (optional, only for the functionality character sharing)',
+      EMAIL: 'e-Mail',
+      PW1: 'Password',
+      PW2: 'Password (repeat)',
+      DATAPROTECTION: 'Your e-Mail and the password will be saved one-way encrypted (SHA1 Hash) and it is not possible to decode it again. The e-Mail is transmitted only for login and reset password.\n'+
+      'The e-Mail will never be validated or shared with third persons. The only usage is the password reset function.\n'+
+      'You do not need the password reset use any user name but you can only recover your password with an optional donation.',
+      SHARES: 'Read access for following users (nick)',
+      CODE: 'Code'
     },
     BUTTON: {
-      ADD: 'Add {{name}}'
+      OPEN: 'Open',
+      ADD: 'Add {{name}}',
+      SAVE: 'Save',
+      CANCEL: 'Cancel',
+      LOGIN: 'Log in',
+      SENDPWRESETCODE: 'Request Password Reset',
+      SENDNEWPW: 'Send New Password'
+    },
+    PREF: {
+      DEVURL: 'Developer Extension URL'
     },
     HELP: {
       DEVURL: {
@@ -56,7 +101,11 @@ app.config(['$translateProvider', function ($translateProvider) {
       PREFERENCES: 'Einstellungen',
       CONTACT: 'Kontakt/Impressum',
       CHANGELOG: 'Changelog',
-      PWRESET: 'Passwort vergessen'
+      PWRESET: 'Passwort vergessen',
+      NEW: 'Neu',
+      PDF: 'PDF',
+      OPEN: 'Öffnen',
+      SAVE: 'Speichern'
     },
     COMING: 'Kommt vielleicht mal ...',
     MSG: {
@@ -119,7 +168,8 @@ app.config(['$translateProvider', function ($translateProvider) {
       PWRESETDESCRIPTION: 'Es wird ein Code an die E-Mail Adresse geschickt. Mit dem Code bekommst ein neues Passwort zugesendet.',
       PWRESETDESCRIPTION2: 'Es wurde ein Code an die E-Mail Adresse geschickt. Mit dem Code bekommst ein neues Passwort zugesendet.'
     }
-  })
+  });
+
 }]);
 
 // locale controller
